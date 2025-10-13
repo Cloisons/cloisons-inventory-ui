@@ -1,0 +1,61 @@
+.mat-label {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+
+  &.required {
+    .required-indicator {
+      color: #f44336;
+      margin-left: 0.25rem;
+    }
+  }
+
+  &.disabled {
+    color: #9e9e9e;
+    cursor: not-allowed;
+  }
+
+  .required-indicator {
+    color: #f44336;
+    margin-left: 0.25rem;
+    font-weight: 600;
+  }
+}
+
+// Material Design variants
+.mat-label.primary {
+  color: #182996;
+}
+
+.mat-label.secondary {
+  color: #666;
+}
+
+.mat-label.error {
+  color: #f44336;
+}
+
+.mat-label.success {
+  color: #4caf50;
+}
+
+.mat-label.warning {
+  color: #ff9800;
+}
+
+// Size variants
+.mat-label.small {
+  font-size: 0.75rem;
+}
+
+.mat-label.large {
+  font-size: 1rem;
+}
+
+.mat-label.extra-large {
+  font-size: 1.125rem;
+}

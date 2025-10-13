@@ -1,0 +1,39 @@
+{
+  "messages": {
+    "getAll": {
+      "success": true,
+      "message": "Messages retrieved successfully",
+      "data": []
+    },
+    "getById": {
+      "success": true,
+      "message": "Message retrieved successfully",
+      "data": {}
+    },
+    "sendMessage": {
+      "success": true,
+      "message": "Message sent successfully",
+      "data": {}
+    },
+    "replyToMessage": {
+      "success": true,
+      "message": "Reply sent successfully",
+      "data": {}
+    },
+    "markAsRead": {
+      "success": true,
+      "message": "Messages marked as read successfully",
+      "data": {}
+    },
+    "delete": {
+      "success": true,
+      "message": "Message deleted successfully",
+      "data": {}
+    },
+    "getByCategory": {
+      "success": true,
+      "message": "Messages retrieved by category successfully",
+      "data": []
+    }
+  }
+}

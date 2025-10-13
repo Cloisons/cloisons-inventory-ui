@@ -1,0 +1,48 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f8f9fa;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 70px;
+  transition: margin-left 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+
+  &.side-nav-expanded {
+    margin-left: 260px;
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  height: calc(100vh - 70px); // Subtract header height
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    height: 100vh;
+
+    &.side-nav-expanded {
+      margin-left: 0;
+    }
+  }
+
+  .content {
+    padding: 1rem;
+    height: calc(100vh - 100px); // Account for header height
+  }
+}

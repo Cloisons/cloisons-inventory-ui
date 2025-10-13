@@ -1,0 +1,55 @@
+<div class="content-wrapper pb-0">
+  <div class="page-header flex-wrap">
+    <h3 class="mb-0">
+      Edit Supplier <br>
+      <span class="pl-0 h6 text-sub d-inline-block">Update supplier details</span>
+    </h3>
+    <div class="d-flex">
+      <ul class="breadcrumb">
+        <li><a routerLink="/dashboard">Dashboard</a></li>
+        <li><a routerLink="/suppliers">Supplier management</a></li>
+        <li>Edit supplier</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Enter supplier details</h4>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-outer-block">
+              <div class="row">
+                <div class="col-md-6">
+                  <app-mat-input label="Supplier Name" formControlName="supplierName" [required]="true"></app-mat-input>
+                </div>
+                <div class="col-md-6">
+                  <app-mat-input label="Contact Person" formControlName="contactPerson" [required]="true"></app-mat-input>
+                </div>
+                <div class="col-md-6">
+                  <app-mat-input label="Email" formControlName="email" [required]="true" type="email"></app-mat-input>
+                </div>
+                <div class="col-md-6">
+                  <app-mat-input label="Phone Number" formControlName="phoneNumber" [required]="true"></app-mat-input>
+                </div>
+                <div class="col-md-12">
+                  <app-mat-input label="Address" formControlName="address" [required]="true"></app-mat-input>
+                </div>
+                <div class="col-md-6">
+                  <app-mat-input label="Country of Origin" formControlName="countryOfOrigin" [required]="true"></app-mat-input>
+                </div>
+                <div class="col-xl-12 form-btns-bottom">
+                  <div class="d-flex justify-content-end gap-2">
+                    <a class="btn btn-light" [routerLink]="['/suppliers']">Cancel</a>
+                    <mat-button [type]="'submit'" [loading]="submitting" [disabled]="form.invalid">Update</mat-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

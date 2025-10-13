@@ -1,0 +1,21 @@
+<div class="mat-select-container" [class.disabled]="disabled" [class.focused]="isFocused" [class.has-error]="errorMessage">
+  <label *ngIf="showLabel && label" class="mat-select-label">
+    {{ label }}<span class="required-indicator" *ngIf="required">*</span>
+  </label>
+  <div class="mat-select-wrapper">
+    <select
+      class="mat-select-element"
+      [disabled]="disabled"
+      [value]="value"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      (change)="onSelect($event)"
+    >
+      <option value="" disabled [selected]="!value">{{ placeholder }}</option>
+      <option *ngFor="let opt of options" [value]="opt.value">{{ opt.label }}</option>
+    </select>
+  </div>
+  <div class="mat-select-error error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
+</div>
+
+

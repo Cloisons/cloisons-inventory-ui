@@ -1,0 +1,94 @@
+<div class="container-scroller login-wrapper">
+  <div class="login-left">
+    <span>Welcome to</span>
+    <h1>Inventory Management <br>
+      Application</h1>
+  </div>
+  <div class="login-right">
+    <div class="login-form-inner">
+      <div class="login-logo">
+        <img src="assets/images/login-logo.png" alt="Cloisons Inventory Management Logo" />
+      </div>
+      <h2>Welcome back</h2>
+      <p>Please enter your details & explore the features.</p>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form" novalidate>
+        <div class="row">
+          <div class="col-xl-12">
+            <mat-label [required]="true">Email</mat-label>
+            <app-mat-input
+              formControlName="email"
+              placeholder="Enter your email"
+              type="email"
+              [required]="true"
+              icon="mdi-email"
+              [showLabel]="false"
+              [errorMessage]="getFieldError('email')"
+            ></app-mat-input>
+          </div>
+          <div class="col-xl-12">
+            <mat-label [required]="true">Password</mat-label>
+            <app-mat-input
+              formControlName="password"
+              placeholder="Enter your password"
+              type="password"
+              [required]="true"
+              [showPasswordToggle]="true"
+              [showLabel]="false"
+              [errorMessage]="getFieldError('password')"
+            ></app-mat-input>
+          </div>
+          <div class="col-xl-12">
+            <div class="remember-forgot">
+              <div class="remember-pass">
+                <label class="check-container">
+                  <input 
+                    type="checkbox" 
+                    [(ngModel)]="rememberPassword" 
+                    [ngModelOptions]="{standalone: true}"
+                    aria-describedby="remember-help"
+                  >
+                  <span class="checkmark"></span>
+                  Remember password
+                </label>
+                <div id="remember-help" class="sr-only">Check this box to stay logged in on this device</div>
+              </div>
+              <!-- <div class="forgot-pass">
+                <button 
+                  type="button" 
+                  class="btn-link" 
+                  (click)="onForgotPassword()"
+                  aria-label="Forgot password? Click to reset"
+                >
+                  Forgot password?
+                </button>
+              </div> -->
+            </div>
+          </div>
+          <div class="col-xl-12 login-btn">
+            <button
+              type="submit"
+              [disabled]="loginForm.invalid"
+              class="btn btn-primary w-100"
+              aria-describedby="login-help"
+            >
+              Log in
+            </button>
+            <div id="login-help" class="sr-only">Click to sign in to your account</div>
+          </div>
+          <!-- <div class="col-xl-12 create-account-link">
+            Don't have an account? 
+            <button 
+              type="button" 
+              class="btn-link" 
+              (click)="onCreateAccount()"
+              aria-label="Create a new account"
+            >
+              Create an account
+            </button>
+          </div> -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

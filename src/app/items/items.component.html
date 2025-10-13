@@ -1,0 +1,316 @@
+<div class="content-wrapper pb-0">
+  <header class="page-header flex-wrap">
+    <div class="page-title">
+      <h1 class="mb-0">
+        Item Management
+      </h1>
+      <p class="text-sub">Manage your inventory items</p>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard" aria-label="Go to Dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Item Management</li>
+      </ol>
+    </nav>
+  </header>
+
+  <!-- Image Preview Modal -->
+  <div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1"
+    role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true" (click)="closeModal()"
+    (keydown.escape)="closeModal()">
+    <div class="modal-dialog modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="imageModalLabel">Item Image Preview</h2>
+          <button type="button" class="close" (click)="closeModal()" aria-label="Close image preview"
+            title="Close image preview">
+            <span aria-hidden="true">
+              <i class="mdi mdi-close" aria-hidden="true"></i>
+            </span>
+          </button>
+        </header>
+        <div class="modal-body pt-0">
+          <img [src]="selectedImage || NO_IMAGE_PLACEHOLDER" class="w-100"
+            [alt]="selectedImage ? 'Image preview for item' : 'No image available'"
+            [class.placeholder-image]="!selectedImage" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Management Modal -->
+  <div class="modal fade" [class.show]="showStockModal" [style.display]="showStockModal ? 'block' : 'none'"
+    tabindex="-1" role="dialog" aria-labelledby="stockModalLabel" aria-hidden="true" (click)="closeStockModal()"
+    (keydown.escape)="closeStockModal()">
+    <div class="modal-dialog modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2 class="modal-title" id="stockModalLabel">Stock Management</h2>
+          <button type="button" class="close" (click)="closeStockModal()" aria-label="Close stock management"
+            title="Close stock management">
+            <span aria-hidden="true">
+              <i class="mdi mdi-close" aria-hidden="true"></i>
+            </span>
+          </button>
+        </header>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label for="stockItemSelect" class="form-label">Select Item</label>
+                <ng-select
+                  id="stockItemSelect"
+                  class="w-100"
+                  [items]="allStockItems"
+                  bindLabel="itemName"
+                  bindValue="_id"
+                  [searchable]="true"
+                  [clearable]="true"
+                  [virtualScroll]="true"
+                  placeholder="Choose an item..."
+                  [(ngModel)]="selectedStockItem"
+                  (change)="onStockItemChange()">
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.itemName }} - {{ getSupplierName(item.supplierId) }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                <label for="availableStock" class="form-label">Available Stock</label>
+                <input type="number" class="form-control" id="availableStock" [(ngModel)]="availableStock" readonly
+                  placeholder="Select an item to view available stock">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group mb-3">
+                <app-user-input
+                  id="stockQuantity"
+                  label="Quantity *"
+                  type="number"
+                  placeholder="Enter quantity"
+                  [required]="true"
+                  [(ngModel)]="stockQuantity">
+                </app-user-input>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="!isUser2">
+              <div class="form-group mb-3">
+                <app-user-input
+                  id="unitCost"
+                  label="Unit Cost (AED) *"
+                  type="number"
+                  placeholder="Enter unit cost"
+                  [required]="true"
+                  [(ngModel)]="unitCost">
+                </app-user-input>
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="isSuperAdmin">
+              <div class="form-group mb-3">
+                <app-user-input
+                  id="sellingCost"
+                  label="Selling Cost (AED) *"
+                  type="number"
+                  placeholder="Enter selling cost"
+                  [required]="true"
+                  [(ngModel)]="sellingCost">
+                </app-user-input>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="stockNotes" class="form-label">Notes</label>
+            <textarea class="form-control" id="stockNotes" rows="3" [(ngModel)]="stockNotes"
+              placeholder="Enter notes for stock addition (optional)"></textarea>
+          </div>
+
+          <div *ngIf="selectedStockItem && stockQuantity && (!isUser2 ? unitCost : true) && (!isSuperAdmin || sellingCost)" class="alert alert-info">
+            <strong>Stock Addition Summary:</strong>
+            <ul class="mb-0 mt-2">
+              <li><strong>Item:</strong> {{ getSelectedItemName() }}</li>
+              <li><strong>Quantity:</strong> {{ stockQuantity }} units</li>
+              <li *ngIf="!isUser2"><strong>Unit Cost:</strong> AED {{ unitCost | number:'1.2-2' }}</li>
+              <li  *ngIf="isSuperAdmin"><strong>Selling Cost:</strong> AED {{ sellingCost | number:'1.2-2' }}</li>
+              <li><strong>New Available Stock:</strong> {{ availableStock + stockQuantity }} units</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeStockModal()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary"
+            [disabled]="!selectedStockItem || !stockQuantity || (!isUser2 ? !unitCost : false) || (isSuperAdmin && !sellingCost)" (click)="addStock()">
+            <i class="mdi mdi-plus mr-2"></i>
+            Add Stock
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="row">
+    <div class="col-xl-12 grid-margin stretch-card">
+      <section class="card" role="region" aria-labelledby="items-section-title">
+        <div class="card-body px-0 overflow-auto">
+          <div class="title-and-button mb-3">
+            <h4 class="card-title pl-4">Items list</h4>
+            <div class="header-actions">
+              <div class="search-box">
+                <input type="text" class="form-control search-input" placeholder="Search items..."
+                  [(ngModel)]="searchQuery" (input)="onSearchInput($event)" (keypress)="onSearchKeyPress($event)"
+                  aria-label="Search items">
+                <i class="mdi mdi-magnify search-icon" [class.spinning]="isSearching" *ngIf="!searchQuery"></i>
+                <i class="mdi mdi-close search-clear" *ngIf="searchQuery && !isSearching" (click)="clearSearch()"
+                  title="Clear search"></i>
+              </div>
+              <button *ngIf="!isUser2" class="btn btn-primary btn-primary-md btn-with-icon me-2" (click)="openStockManagementModal()"
+                title="Manage stock levels" aria-label="Open stock management">
+                <i class="mdi mdi-warehouse mr-2"></i>
+                Stock Management
+              </button>
+              <a *ngIf="!isUser2" routerLink="/items/add" class="btn btn btn-primary btn-primary-md btn-with-icon">
+                <i class="mdi mdi-plus mr-2"></i>
+                Add new item
+              </a>
+            </div>
+          </div>
+
+
+
+          <!-- Error State -->
+          <div *ngIf="errorMessage && !isLoading" class="alert alert-danger mx-4" role="alert">
+            <div class="d-flex align-items-center">
+              <i class="mdi mdi-alert-circle me-2" aria-hidden="true"></i>
+              <div>
+                <h4 class="alert-heading mb-1">Error Loading Items</h4>
+                <p class="mb-0">{{ errorMessage }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="text-center py-5" role="status" aria-live="polite">
+            <div class="spinner-border text-primary" role="status" aria-hidden="true">
+              <span class="visually-hidden">Loading items...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading items...</p>
+          </div>
+
+          <!-- Authentication Required State -->
+          <div *ngIf="!isLoading && !isAuthenticated" class="text-center py-5">
+            <div class="alert alert-warning mx-4" role="alert">
+              <i class="mdi mdi-lock-alert-outline mb-3" style="font-size: 3rem; color: #ffc107;"
+                aria-hidden="true"></i>
+              <h4 class="alert-heading">Authentication Required</h4>
+              <p>You need to be logged in to view items. Please log in to continue.</p>
+              <hr>
+              <a routerLink="/login" class="btn btn-primary" aria-label="Go to login page">
+                <i class="mdi mdi-login me-2" aria-hidden="true"></i>
+                Go to Login
+              </a>
+            </div>
+          </div>
+
+          <!-- Items Table -->
+          <div *ngIf="!isLoading && isAuthenticated && !errorMessage" class="table-responsive">
+            <table class="table table-common">
+              <thead class="bg-light">
+                <tr>
+                  <th>Item name</th>
+                  <th>Item Code</th>
+                  <th>Image</th>
+                  <th>Description</th>
+                  <th>Supplier ID</th>
+                  <th>Unit scale</th>
+                  <th>Available Qty</th>
+                  <th *ngIf="!isUser2">Selling cost</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of paginatedItems; trackBy: trackByItemId">
+                  <td>{{ item.itemName }}</td>
+                  <td>{{ item.itemCode || '-' }}</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img class="table-img" [src]="getItemImage(item)"
+                        [alt]="shouldShowPlaceholder(item) ? 'No image available for ' + item.itemName : 'Image of ' + item.itemName"
+                        (error)="onImageError(item)" (load)="onImageLoad(item)"
+                        (click)="shouldShowPlaceholder(item) ? null : openImageModal(item.itemImage)"
+                        (keydown.enter)="shouldShowPlaceholder(item) ? null : openImageModal(item.itemImage)"
+                        tabindex="0" role="button"
+                        [attr.aria-label]="shouldShowPlaceholder(item) ? 'No image available for ' + item.itemName : 'View image of ' + item.itemName"
+                        [title]="shouldShowPlaceholder(item) ? 'No image available' : 'Click to view full size image'"
+                        [class.placeholder-image]="shouldShowPlaceholder(item)">
+                    </div>
+                  </td>
+                  <td>{{ item.itemDescription || 'No description' }}</td>
+                  <td>{{ getSupplierName(item.supplierId) }}</td>
+                  <td>{{ item.unitScale }}</td>
+                  <td>{{ item.availableQty | number:'1.0-0' }}</td>
+                  <td *ngIf="!isUser2">AED {{ item.sellingCost | number:'1.0-0' }}</td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                        (click)="onView(item)" title="View item" aria-label="View item">
+                        <i class="mdi mdi-eye"></i>
+                      </button>
+                      <button *ngIf="!isUser2" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                        (click)="onEdit(item)" title="Edit item" aria-label="Edit item">
+                        <i class="mdi mdi-pencil"></i>
+                      </button>
+                      <button *ngIf="!isUser2" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                        (click)="onDelete(item)" title="Delete item" aria-label="Delete item">
+                        <i class="mdi mdi-delete"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="paginatedItems.length === 0">
+                  <td [attr.colspan]="isUser2 ? '8' : '9'" class="text-center py-5">
+                    <div class="empty-state">
+                      <i class="mdi mdi-package-variant-empty mb-3" style="font-size: 3rem; color: #6c757d;"
+                        aria-hidden="true"></i>
+                      <h5 class="text-muted">No items found</h5>
+                      <p class="text-muted mb-0">
+                        Start by adding your first item to the inventory.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div *ngIf="!isLoading && isAuthenticated && totalPages > 1" class="pagination-block">
+            <span class="pagecount">{{ ((currentPage - 1) * itemsPerPage) + 1 }}-{{ Math.min(currentPage * itemsPerPage,
+              totalItems) }} of {{ totalItems }} items</span>
+            <ul class="pagination">
+              <li [class.disabled]="currentPage === 1">
+                <a href="#" (click)="onPageChange(currentPage - 1); $event.preventDefault()"
+                  [class.disabled]="currentPage === 1">&laquo;</a>
+              </li>
+              <li *ngFor="let page of pageRange; trackBy: trackByPageNumber" [class.active]="page === currentPage">
+                <a href="#" (click)="onPageChange(page); $event.preventDefault()">{{ page }}</a>
+              </li>
+              <li [class.disabled]="currentPage === totalPages">
+                <a href="#" (click)="onPageChange(currentPage + 1); $event.preventDefault()"
+                  [class.disabled]="currentPage === totalPages">&raquo;</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

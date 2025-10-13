@@ -1,0 +1,65 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onBackdropClick($event)">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Selling Cost</h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div *ngIf="stockHistoryItem" class="mb-3">
+          <small class="text-muted">
+            <strong>Date:</strong> {{ stockHistoryItem.createdAt | date:'medium' }}<br>
+            <strong>Change:</strong> {{ stockHistoryItem.change > 0 ? '+' : '' }}{{ stockHistoryItem.change }}<br>
+            <strong>Previous Qty:</strong> {{ stockHistoryItem.previousAvailableQty }} → 
+            <strong>New Qty:</strong> {{ stockHistoryItem.newAvailableQty }}
+          </small>
+        </div>
+
+        <form (ngSubmit)="onUpdate()">
+          <div class="mb-3">
+            <label for="sellingCost" class="form-label">Selling Cost (AED) *</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="sellingCost"
+              [(ngModel)]="sellingCost"
+              name="sellingCost"
+              step="0.01"
+              min="0"
+              placeholder="Enter selling cost"
+              required
+              [disabled]="isUpdating"
+            >
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="onClose()"
+          [disabled]="isUpdating"
+        >
+          Cancel
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="onUpdate()"
+          [disabled]="isUpdating || sellingCost < 0"
+        >
+          <span *ngIf="isUpdating" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isUpdating ? 'Updating...' : 'Update' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

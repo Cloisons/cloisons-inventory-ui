@@ -1,0 +1,199 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h2>Profile Management</h2>
+    <p class="profile-subtitle">Manage your account information and security settings</p>
+  </div>
+
+  <div class="profile-content">
+    <!-- Profile Information Section -->
+    <div class="profile-section">
+      <div class="section-header">
+        <h3>Profile Information</h3>
+        <button 
+          type="button" 
+          class="btn btn-outline-primary"
+          (click)="toggleEditProfile()"
+          [disabled]="isLoading">
+          {{ isEditingProfile ? 'Cancel' : 'Edit Profile' }}
+        </button>
+      </div>
+
+      <div class="section-content">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading profile information...</p>
+        </div>
+        
+        <!-- View Mode -->
+        <div *ngIf="!isEditingProfile && userProfile && !isLoading" class="profile-view">
+          <div class="profile-info-grid">
+            <div class="info-item">
+              <label>First Name:</label>
+              <span>{{ userProfile.firstName }}</span>
+            </div>
+            <div class="info-item">
+              <label>Last Name:</label>
+              <span>{{ userProfile.lastName }}</span>
+            </div>
+            <div class="info-item">
+              <label>Email:</label>
+              <span>{{ userProfile.email }}</span>
+            </div>
+            <div class="info-item">
+              <label>Role:</label>
+              <span class="role-badge">{{ userProfile.role }}</span>
+            </div>
+            <div class="info-item">
+              <label>Member Since:</label>
+              <span>{{ userProfile.createdAt | date:'medium' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Last Updated:</label>
+              <span>{{ userProfile.updatedAt | date:'medium' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Mode -->
+        <form *ngIf="isEditingProfile" [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="profile-edit">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-control"
+                [class.is-invalid]="hasFieldError(profileForm, 'firstName')"
+                placeholder="Enter first name">
+              <div *ngIf="hasFieldError(profileForm, 'firstName')" class="invalid-feedback">
+                {{ getFieldError(profileForm, 'firstName') }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-control"
+                [class.is-invalid]="hasFieldError(profileForm, 'lastName')"
+                placeholder="Enter last name">
+              <div *ngIf="hasFieldError(profileForm, 'lastName')" class="invalid-feedback">
+                {{ getFieldError(profileForm, 'lastName') }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [class.is-invalid]="hasFieldError(profileForm, 'email')"
+              placeholder="Enter email address">
+            <div *ngIf="hasFieldError(profileForm, 'email')" class="invalid-feedback">
+              {{ getFieldError(profileForm, 'email') }}
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="toggleEditProfile()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isLoading">
+              Update Profile
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Change Password Section -->
+    <div class="profile-section">
+      <div class="section-header">
+        <h3>Security Settings</h3>
+        <button 
+          type="button" 
+          class="btn btn-outline-warning"
+          (click)="toggleChangePassword()"
+          [disabled]="isLoading">
+          {{ isChangingPassword ? 'Cancel' : 'Change Password' }}
+        </button>
+      </div>
+
+      <div class="section-content">
+        <!-- Password Change Form -->
+        <form *ngIf="isChangingPassword" [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="password-change">
+          <div class="form-group">
+            <label for="currentPassword">Current Password *</label>
+            <input
+              type="password"
+              id="currentPassword"
+              formControlName="currentPassword"
+              class="form-control"
+              [class.is-invalid]="hasFieldError(passwordForm, 'currentPassword')"
+              placeholder="Enter current password">
+            <div *ngIf="hasFieldError(passwordForm, 'currentPassword')" class="invalid-feedback">
+              {{ getFieldError(passwordForm, 'currentPassword') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newPassword">New Password *</label>
+            <input
+              type="password"
+              id="newPassword"
+              formControlName="newPassword"
+              class="form-control"
+              [class.is-invalid]="hasFieldError(passwordForm, 'newPassword')"
+              placeholder="Enter new password">
+            <div *ngIf="hasFieldError(passwordForm, 'newPassword')" class="invalid-feedback">
+              {{ getFieldError(passwordForm, 'newPassword') }}
+            </div>
+            <small class="form-text text-muted">
+              Password must be at least 6 characters long
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm New Password *</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              class="form-control"
+              [class.is-invalid]="hasFieldError(passwordForm, 'confirmPassword')"
+              placeholder="Confirm new password">
+            <div *ngIf="hasFieldError(passwordForm, 'confirmPassword')" class="invalid-feedback">
+              {{ getFieldError(passwordForm, 'confirmPassword') }}
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="toggleChangePassword()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-warning" [disabled]="passwordForm.invalid || isLoading">
+              Change Password
+            </button>
+          </div>
+        </form>
+
+        <!-- Password Info -->
+        <div *ngIf="!isChangingPassword" class="password-info">
+          <div class="info-card">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+              <h4>Password Security</h4>
+              <p>Keep your account secure by using a strong password. Click "Change Password" to update your current password.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="mat-input-container" [class.focused]="isFocused" [class.has-value]="hasValue" [class.disabled]="disabled" [class.has-error]="errorMessage">
+  <div class="mat-input-wrapper">
+    <div class="mat-input-field">
+      <input
+        [type]="inputType"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [value]="value"
+        (input)="onInput($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        class="mat-input-element"
+        [class.has-icon]="icon"
+        [class.has-password-toggle]="showPasswordToggle"
+      />
+      
+      <label class="mat-input-label" [class.floating]="isFloating" *ngIf="showLabel && label">
+        {{ label }}
+        <span class="required-indicator" *ngIf="required">*</span>
+      </label>
+      
+      <div class="mat-input-icon" *ngIf="icon && !showPasswordToggle">
+        <i class="mdi" [class]="icon"></i>
+      </div>
+      
+      <button 
+        type="button" 
+        class="mat-input-password-toggle" 
+        *ngIf="showPasswordToggle"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+      >
+        <i class="mdi" [class.mdi-eye]="showPassword" [class.mdi-eye-off]="!showPassword"></i>
+      </button>
+    </div>
+    
+    <div class="mat-input-underline" [class.active]="isFocused"></div>
+  </div>
+  
+  <div class="mat-input-hint" *ngIf="hint && !errorMessage">{{ hint }}</div>
+  <div class="mat-input-error error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
+</div>

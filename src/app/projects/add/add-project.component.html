@@ -1,0 +1,240 @@
+<div class="content-wrapper">
+  <header class="page-header flex-wrap">
+    <div class="page-title">
+      <h1 class="mb-0">Add Project</h1>
+      <p class="text-sub">Create a new project</p>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a routerLink="/projects">Projects</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add</li>
+      </ol>
+    </nav>
+  </header>
+
+  <main class="row">
+    <div class="col-xl-12 grid-margin stretch-card">
+      <section class="card">
+        <div class="card-body">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-group">
+              <label for="projectName">Project Name</label>
+              <input id="projectName" class="form-control" type="text" formControlName="projectName" />
+            </div>
+
+            <div class="form-group">
+              <label for="projectDescription">Description</label>
+              <textarea id="projectDescription" class="form-control" rows="3" formControlName="projectDescription"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="contractorId">Contractor</label>
+              <select id="contractorId" class="form-control" formControlName="contractorId">
+                <option value="" disabled>Select contractor</option>
+                <option *ngFor="let c of contractors" [value]="c._id">{{ c.contractorName }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select id="status" class="form-control" formControlName="status">
+                <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="startDate">Start Date</label>
+              <input id="startDate" type="date" class="form-control" formControlName="startDate" />
+            </div>
+
+            <!-- Products Section -->
+            <div class="form-group mb-4">
+              <label class="mb-2">Products <span class="text-muted">(optional)</span></label>
+              
+              <!-- Products Table -->
+              <div formArrayName="products" class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th width="50%">Product <span class="text-danger">*</span></th>
+                      <th width="25%">Quantity</th>
+                      <th width="15%">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      *ngFor="let product of products.controls; let i = index" 
+                      [formGroupName]="i"
+                    >
+                      <td>
+                        <ng-multiselect-dropdown
+                          *ngIf="productDropdownSettings"
+                          [placeholder]="'Select a product'"
+                          [settings]="productDropdownSettings"
+                          [data]="getAvailableProductsForIndex(i)"
+                          formControlName="selectedProduct"
+                          (onSelect)="onProductSelect($event, i)"
+                          (onDeSelect)="onProductDeSelect($event, i)"
+                          class="form-control"
+                          [ngClass]="{'is-invalid': product.get('productId')?.invalid && product.get('productId')?.touched}"
+                        >
+                        </ng-multiselect-dropdown>
+                        <div 
+                          *ngIf="product.get('productId')?.invalid && product.get('productId')?.touched" 
+                          class="invalid-feedback d-block"
+                        >
+                          <div *ngIf="product.get('productId')?.errors?.['required']">Please select a product</div>
+                          <div *ngIf="product.get('productId')?.errors?.['duplicate']">This product is already selected</div>
+                        </div>
+                      </td>
+                      <td>
+                        <input 
+                          type="number" 
+                          formControlName="quantity" 
+                          class="form-control"
+                          min="1"
+                          [class.is-invalid]="product.get('quantity')?.invalid && product.get('quantity')?.touched"
+                        >
+                        <div 
+                          *ngIf="product.get('quantity')?.invalid && product.get('quantity')?.touched" 
+                          class="invalid-feedback d-block"
+                        >
+                          <div *ngIf="product.get('quantity')?.errors?.['required']">Required</div>
+                          <div *ngIf="product.get('quantity')?.errors?.['min']">Min: 1</div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <button 
+                          type="button" 
+                          class="btn btn-outline-danger btn-sm"
+                          (click)="removeProduct(i)"
+                          title="Remove product"
+                        >
+                          <i class="mdi mdi-delete"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Add Product Button -->
+              <div class="mt-2">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="addProduct()"
+                >
+                  <i class="mdi mdi-plus"></i> Add Product
+                </button>
+              </div>
+              
+              <!-- Loading State -->
+              <div *ngIf="loadingProducts" class="alert alert-info" role="status">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Loading products...
+              </div>
+            </div>
+
+            <!-- Items Section -->
+            <!-- <div class="form-group mb-4">
+              <label class="mb-2">Items <span class="text-muted">(optional)</span></label>
+              
+           
+              <div formArrayName="items" class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th width="50%">Item <span class="text-danger">*</span></th>
+                      <th width="25%">Quantity</th>
+                      <th width="15%">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      *ngFor="let item of items.controls; let i = index" 
+                      [formGroupName]="i"
+                    >
+                      <td>
+                        <ng-multiselect-dropdown
+                          *ngIf="itemDropdownSettings"
+                          [placeholder]="'Select an item'"
+                          [settings]="itemDropdownSettings"
+                          [data]="getAvailableItemsForIndex(i)"
+                          formControlName="selectedItem"
+                          (onSelect)="onItemSelect($event, i)"
+                          (onDeSelect)="onItemDeSelect($event, i)"
+                          class="form-control"
+                          [ngClass]="{'is-invalid': item.get('itemId')?.invalid && item.get('itemId')?.touched}"
+                        >
+                        </ng-multiselect-dropdown>
+                        <div 
+                          *ngIf="item.get('itemId')?.invalid && item.get('itemId')?.touched" 
+                          class="invalid-feedback d-block"
+                        >
+                          <div *ngIf="item.get('itemId')?.errors?.['required']">Please select an item</div>
+                          <div *ngIf="item.get('itemId')?.errors?.['duplicate']">This item is already selected</div>
+                        </div>
+                      </td>
+                      <td>
+                        <input 
+                          type="number" 
+                          formControlName="quantity" 
+                          class="form-control"
+                          min="1"
+                          [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched"
+                        >
+                        <div 
+                          *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched" 
+                          class="invalid-feedback d-block"
+                        >
+                          <div *ngIf="item.get('quantity')?.errors?.['required']">Required</div>
+                          <div *ngIf="item.get('quantity')?.errors?.['min']">Min: 1</div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <button 
+                          type="button" 
+                          class="btn btn-outline-danger btn-sm"
+                          (click)="removeItem(i)"
+                          title="Remove item"
+                        >
+                          <i class="mdi mdi-delete"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+       
+              <div class="mt-2">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="addItem()"
+                >
+                  <i class="mdi mdi-plus"></i> Add Item
+                </button>
+              </div>
+              
+          
+              <div *ngIf="loadingItems" class="alert alert-info" role="status">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Loading items...
+              </div>
+            </div> -->
+
+            <div class="d-flex justify-content-end">
+              <a routerLink="/projects" class="btn btn-outline-secondary mr-2">Cancel</a>
+              <button type="submit" class="btn btn-primary" [disabled]="submitting || form.invalid">Create</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+

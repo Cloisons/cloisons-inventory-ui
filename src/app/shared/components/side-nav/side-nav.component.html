@@ -1,0 +1,21 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar" [class.sidebar-expanded]="isExpanded">
+  <div class="text-center sidebar-brand-wrapper d-flex align-items-center">
+    <a class="sidebar-brand brand-logo" href="#">
+      <img src="assets/images/the-cloisons.png" alt="logo" />
+    </a>
+    <a class="sidebar-brand brand-logo-mini" href="#">
+      <img src="assets/images/the-cloisons-sm.jpg" alt="logo" />
+    </a>
+  </div>
+  <ul class="nav">
+    <li class="nav-item" *ngFor="let item of navItems; trackBy: trackByNavItem" 
+        [class.menu-active]="isActiveRoute(item.route)">
+      <a class="nav-link" 
+         [routerLink]="item.route"
+         (click)="onItemClick(item)">
+        <i class="mdi" [class]="item.icon" aria-hidden="true"></i>
+        <span class="menu-title">{{ item.label }}</span>
+      </a>
+    </li>
+  </ul>
+</nav>

@@ -1,0 +1,240 @@
+<div class="content-wrapper pb-0">
+  <header class="page-header flex-wrap">
+    <div class="page-title">
+      <h1 class="mb-0">Project Details</h1>
+      <p class="text-sub">View project information and items</p>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard" aria-label="Go to Dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a routerLink="/projects" aria-label="Go to Projects">Projects</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">View Project</li>
+      </ol>
+    </nav>
+  </header>
+
+  <main class="row">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="col-12 text-center py-5" role="status" aria-live="polite">
+      <div class="spinner-border text-primary" role="status" aria-hidden="true">
+        <span class="visually-hidden">Loading project...</span>
+      </div>
+      <p class="mt-3 text-muted">Loading project details...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading" class="col-12">
+      <div class="alert alert-danger" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="mdi mdi-alert-circle me-2" aria-hidden="true"></i>
+          <div>
+            <h4 class="alert-heading mb-1">Error Loading Project</h4>
+            <p class="mb-0">{{ errorMessage }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Content -->
+    <div *ngIf="project && !isLoading" class="col-12">
+      <!-- Project Header -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h2 class="card-title mb-2">{{ project.projectName }}</h2>
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="badge" [ngClass]="getProjectStatusClass(project.status)">
+                      <i [class]="getProjectStatusIcon(project.status)" aria-hidden="true"></i>
+                      {{ project.status }}
+                    </span>
+                    <span class="text-muted">
+                      <i class="mdi mdi-account" aria-hidden="true"></i>
+                      {{ getContractorName(project.contractorId) }}
+                    </span>
+                  </div>
+                </div>
+                <div class="d-flex gap-2">
+                  <button 
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="downloadReport()"
+                    title="Download Project Report"
+                    aria-label="Download Project Report"
+                  >
+                    <i class="mdi mdi-download" aria-hidden="true"></i>
+                    Download Report
+                  </button>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Project Description</label>
+                    <p class="text-muted">{{ project.projectDescription || 'No description provided' }}</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <label class="form-label fw-bold">Start Date</label>
+                      <p class="text-muted">{{ project.startDate ? (project.startDate | date: 'medium') : 'Not set' }}</p>
+                    </div>
+                    <div class="col-6">
+                      <label class="form-label fw-bold">End Date</label>
+                      <p class="text-muted">{{ project.endDate ? (project.endDate | date: 'medium') : 'Not set' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cost Summary -->
+      <div *ngIf="canViewAnyCosts()" class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="mdi mdi-calculator me-2" aria-hidden="true"></i>
+                Cost Summary
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div *ngIf="canViewUnitCosts()" class="col-md-4">
+                  <div class="text-center">
+                    <h6 class="text-muted mb-1">Total Unit Cost</h6>
+                    <h4 class="text-primary mb-0">AED {{ getTotalUnitCost() | number: '1.2-2' }}</h4>
+                  </div>
+                </div>
+                <div *ngIf="canViewSellingCosts()" class="col-md-4">
+                  <div class="text-center">
+                    <h6 class="text-muted mb-1">Total Selling Cost</h6>
+                    <h4 class="text-success mb-0">AED {{ getTotalSellingCost() | number: '1.2-2' }}</h4>
+                  </div>
+                </div>
+                <div *ngIf="canViewUnitCosts() && canViewSellingCosts()" class="col-md-4">
+                  <div class="text-center">
+                    <h6 class="text-muted mb-1">Profit Margin</h6>
+                    <h4 class="text-info mb-0">
+                      {{ ((getTotalSellingCost() - getTotalUnitCost()) / getTotalUnitCost() * 100) | number: '1.1-1' }}%
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items Used -->
+      <div *ngIf="canViewItemDetails()" class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">
+                <i class="mdi mdi-package-variant me-2" aria-hidden="true"></i>
+                Items Used
+                <span class="badge bg-secondary ms-2">{{ getItemsWithDetails().length }}</span>
+              </h5>
+            </div>
+            <div class="card-body px-0">
+              <div *ngIf="getItemsWithDetails().length === 0" class="text-center py-5">
+                <i class="mdi mdi-package-variant-closed mb-3" style="font-size: 3rem; color: #6c757d;" aria-hidden="true"></i>
+                <h5 class="text-muted">No items used</h5>
+                <p class="text-muted mb-0">This project doesn't have any items assigned.</p>
+              </div>
+              
+              <div *ngIf="getItemsWithDetails().length > 0" class="table-responsive">
+                <table class="table table-common mb-0">
+                  <thead class="bg-light">
+                    <tr>
+                      <th *ngIf="canViewItemNames()">Item Name</th>
+                      <th *ngIf="canViewItemQuantities()">Quantity</th>
+                      <th *ngIf="canViewItemQuantities()">Unit Scale</th>
+                      <th *ngIf="canViewUnitCosts()">Unit Cost</th>
+                      <th *ngIf="canViewSellingCosts()">Selling Price</th>
+                      <th *ngIf="canViewSellingCosts()">Total Cost</th>
+                      <th *ngIf="isSuperAdmin() || isUser1()">Listed Item</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of getItemsWithDetails(); trackBy: trackByItemId">
+                      <td *ngIf="canViewItemNames()">
+                        <div class="d-flex align-items-center">
+                          <div>
+                            <h6 class="mb-0">{{ item.itemId.itemName }}</h6>
+                            <small class="text-muted">ID: {{ item.itemId._id }}</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td *ngIf="canViewItemQuantities()">
+                        <span class="badge bg-info">{{ item.quantity }}</span>
+                      </td>
+                      <td *ngIf="canViewItemQuantities()">
+                        <span class="text-muted">{{ item.itemId.unitScale }}</span>
+                      </td>
+                      <td *ngIf="canViewUnitCosts()">
+                        <span class="text-primary fw-bold">AED {{ getItemUnitCost(item) | number: '1.2-2' }}</span>
+                      </td>
+                      <td *ngIf="canViewSellingCosts()">
+                        <span class="text-success fw-bold">AED {{ getItemSellingCost(item) | number: '1.2-2' }}</span>
+                      </td>
+                      <td *ngIf="canViewSellingCosts()">
+                        <span class="text-success fw-bold">AED {{ getItemTotalCost(item) | number: '1.2-2' }}</span>
+                      </td>
+                      <td *ngIf="isSuperAdmin() || isUser1()">
+                        <span class="badge" [ngClass]="item.listedItem ? 'bg-success' : 'bg-warning'">
+                          {{ item.listedItem ? 'Yes' : 'No' }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Access Message -->
+      <div *ngIf="!canViewItemDetails()" class="row">
+        <div class="col-12">
+          <div class="alert alert-warning" role="alert">
+            <div class="d-flex align-items-center">
+              <i class="mdi mdi-lock me-2" aria-hidden="true"></i>
+              <div>
+                <h4 class="alert-heading mb-1">Access Restricted</h4>
+                <p class="mb-0">You don't have permission to view item details for this project.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cost Access Message for User2 -->
+      <div *ngIf="isUser2()" class="row mb-4">
+        <div class="col-12">
+          <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+              <i class="mdi mdi-information me-2" aria-hidden="true"></i>
+              <div>
+                <h4 class="alert-heading mb-1">Cost Information Restricted</h4>
+                <p class="mb-0">As a User2, you can only view item names and quantities. Cost information is not available for your role.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

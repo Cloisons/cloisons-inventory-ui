@@ -1,0 +1,25 @@
+<button
+  [type]="type"
+  class="btn btn-primary"
+  [class.primary]="variant === 'primary'"
+  [class.secondary]="variant === 'secondary'"
+  [class.outline]="variant === 'outline'"
+  [class.text]="variant === 'text'"
+  [class.raised]="raised"
+  [class.fab]="fab"
+  [class.mini-fab]="miniFab"
+  [class.icon-button]="iconButton"
+  [class.small]="size === 'small'"
+  [class.large]="size === 'large'"
+  [disabled]="disabled || loading"
+  (click)="onClick()"
+>
+  <span class="mat-button-content" *ngIf="!loading">
+    <i class="mdi" [class]="icon" *ngIf="icon"></i>
+    <ng-content></ng-content>
+  </span>
+  <span class="mat-button-loading" *ngIf="loading">
+    <span class="spinner"></span>
+    <span *ngIf="loadingText">{{ loadingText }}</span>
+  </span>
+</button>

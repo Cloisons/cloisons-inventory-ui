@@ -1,0 +1,176 @@
+<div class="content-wrapper pb-0">
+  <header class="page-header flex-wrap">
+    <div class="page-title">
+      <h1 class="mb-0">Add Product</h1>
+      <p class="text-sub">Create a new product</p>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a routerLink="/products">Products</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add Product</li>
+      </ol>
+    </nav>
+  </header>
+
+  <main class="row">
+    <div class="col-xl-12 grid-margin stretch-card">
+      <section class="card" role="region" aria-labelledby="add-product-section-title">
+        <div class="card-body">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="row">
+              <div class="col-xl-6 col-lg-7 col-md-8">
+                <div class="form-group mb-4">
+                  <app-mat-input
+                    label="Product Name"
+                    formControlName="productName"
+                    placeholder="Enter product name"
+                    [required]="true"
+                  ></app-mat-input>
+                </div>
+                <div class="form-group mb-4">
+                  <app-mat-input
+                    label="Description"
+                    formControlName="productDescription"
+                    placeholder="Enter product description"
+                  ></app-mat-input>
+                </div>
+                <div class="form-group mb-4">
+                  <label class="mb-2">Items <span class="text-muted">(optional)</span></label>
+                  
+                  <!-- Items Table -->
+                  <div formArrayName="items" class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead class="table-light">
+                        <tr>
+                          <th width="50%">Item <span class="text-danger">*</span></th>
+                          <th width="25%">Quantity</th>
+                          <th width="15%">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr 
+                          *ngFor="let item of items.controls; let i = index" 
+                          [formGroupName]="i"
+                        >
+                          <td>
+                            <ng-multiselect-dropdown
+                              *ngIf="dropdownSettings"
+                              [placeholder]="'Select an item'"
+                              [settings]="dropdownSettings"
+                              [data]="getAvailableItemsForIndex(i)"
+                              formControlName="selectedItem"
+                              (onSelect)="onItemSelect($event, i)"
+                              (onDeSelect)="onItemDeSelect($event, i)"
+                              class="form-control"
+                              [ngClass]="{'is-invalid': item.get('itemId')?.invalid && item.get('itemId')?.touched}"
+                            >
+                            </ng-multiselect-dropdown>
+                            <div 
+                              *ngIf="item.get('itemId')?.invalid && item.get('itemId')?.touched" 
+                              class="invalid-feedback d-block"
+                            >
+                              <div *ngIf="item.get('itemId')?.errors?.['required']">Please select an item</div>
+                              <div *ngIf="item.get('itemId')?.errors?.['duplicate']">This item is already selected</div>
+                            </div>
+                          </td>
+                          <td>
+                            <input 
+                              type="number" 
+                              formControlName="quantity" 
+                              class="form-control"
+                              min="1"
+                              [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched"
+                            >
+                            <div 
+                              *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched" 
+                              class="invalid-feedback d-block"
+                            >
+                              <div *ngIf="item.get('quantity')?.errors?.['required']">Required</div>
+                              <div *ngIf="item.get('quantity')?.errors?.['min']">Min: 1</div>
+                            </div>
+                          </td>
+                          <td class="text-center">
+                            <button 
+                              type="button" 
+                              class="btn btn-outline-danger btn-sm"
+                              (click)="removeItem(i)"
+                              title="Remove item"
+                            >
+                              <i class="mdi mdi-delete"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <!-- Add Item Button -->
+                  <div class="mt-2">
+                    <button 
+                      type="button" 
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="addItem()"
+                    >
+                      <i class="mdi mdi-plus"></i> Add Item
+                    </button>
+                  </div>
+                  
+                  <!-- Loading State -->
+                  <div *ngIf="loadingItems" class="alert alert-info" role="status">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Loading items...
+                  </div>
+                </div>
+                <div class="form-group mb-4">
+                  <label class="mb-2">Product image <span class="text-muted">(optional)</span></label>
+                  <div
+                    class="upload-card d-flex flex-column align-items-center justify-content-center"
+                    (click)="fileInput.click()"
+                    (dragover)="$event.preventDefault()"
+                    (drop)="onDrop($event)"
+                    style="cursor:pointer; min-height: 160px; border: 1px dashed #bfc9d8; border-radius: 8px; background: #f8f9fa; position: relative;"
+                  >
+                    <ng-container *ngIf="!imagePreviewUrl; else previewTpl">
+                      <div class="upload-icon mb-2" style="font-size:2rem; color:#6c757d;">⬆️</div>
+                      <div class="upload-title fw-semibold mb-1" style="color:#10121F;">Upload image</div>
+                      <div class="upload-subtitle text-muted" style="font-size:0.95rem;">Upload your product image</div>
+                    </ng-container>
+                    <ng-template #previewTpl>
+                      <div class="w-100 d-flex flex-column align-items-center">
+                        <img [src]="imagePreviewUrl" alt="Preview" class="preview-img mb-2" style="max-width: 180px; max-height: 120px; border-radius: 6px; object-fit: contain; border:1px solid #e9ecef; background:#fff;" />
+                        <button type="button" class="btn btn-light btn-sm remove-btn" (click)="removeImage($event)">
+                          <i class="mdi mdi-close"></i> Remove
+                        </button>
+                      </div>
+                    </ng-template>
+                    <div
+                      class="uploading-overlay d-flex align-items-center justify-content-center"
+                      *ngIf="uploading"
+                      style="position:absolute; inset:0; background:rgba(255,255,255,0.7); z-index:2; font-weight:500; color:#1976d2; font-size:1.1rem;"
+                    >
+                      <span>
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Uploading...
+                      </span>
+                    </div>
+                  </div>
+                  <input #fileInput type="file" accept="image/*" class="d-none" (change)="onFileSelected($event)" />
+                  <div class="text-danger mt-2" *ngIf="uploadError">{{ uploadError }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-btns-bottom mt-4">
+              <div class="d-flex justify-content-end gap-2">
+                <a routerLink="/products" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary" [disabled]="form.invalid || submitting">
+                  {{ submitting ? 'Creating...' : 'Create Product' }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

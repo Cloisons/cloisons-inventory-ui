@@ -1,0 +1,118 @@
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title mb-0">Add New User</h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <!-- Error Message -->
+            <div class="alert alert-danger" *ngIf="errorMessage">
+              {{ errorMessage }}
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+              <mat-label for="firstName">First Name *</mat-label>
+              <app-mat-input
+                id="firstName"
+                formControlName="firstName"
+                placeholder="Enter first name"
+                [errorMessage]="form.get('firstName')?.invalid && form.get('firstName')?.touched ? 'First name is required' : ''"
+              ></app-mat-input>
+              <div class="invalid-feedback" *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched">
+                <div *ngIf="form.get('firstName')?.errors?.['required']">First name is required</div>
+                <div *ngIf="form.get('firstName')?.errors?.['maxlength']">First name cannot exceed 50 characters</div>
+              </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+              <mat-label for="lastName">Last Name *</mat-label>
+              <app-mat-input
+                id="lastName"
+                formControlName="lastName"
+                placeholder="Enter last name"
+                [errorMessage]="form.get('lastName')?.invalid && form.get('lastName')?.touched ? 'Last name is required' : ''"
+              ></app-mat-input>
+              <div class="invalid-feedback" *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched">
+                <div *ngIf="form.get('lastName')?.errors?.['required']">Last name is required</div>
+                <div *ngIf="form.get('lastName')?.errors?.['maxlength']">Last name cannot exceed 50 characters</div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <mat-label for="email">Email Address *</mat-label>
+              <app-mat-input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="Enter email address"
+                [errorMessage]="form.get('email')?.invalid && form.get('email')?.touched ? 'Please enter a valid email address' : ''"
+              ></app-mat-input>
+              <div class="invalid-feedback" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+                <div *ngIf="form.get('email')?.errors?.['required']">Email is required</div>
+                <div *ngIf="form.get('email')?.errors?.['email']">Please enter a valid email address</div>
+                <div *ngIf="form.get('email')?.errors?.['maxlength']">Email cannot exceed 200 characters</div>
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <mat-label for="password">Password *</mat-label>
+              <app-mat-input
+                id="password"
+                type="password"
+                formControlName="password"
+                placeholder="Enter password"
+                [errorMessage]="form.get('password')?.invalid && form.get('password')?.touched ? 'Password must be at least 6 characters' : ''"
+              ></app-mat-input>
+              <div class="invalid-feedback" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+                <div *ngIf="form.get('password')?.errors?.['required']">Password is required</div>
+                <div *ngIf="form.get('password')?.errors?.['minlength']">Password must be at least 6 characters</div>
+                <div *ngIf="form.get('password')?.errors?.['maxlength']">Password cannot exceed 128 characters</div>
+              </div>
+            </div>
+
+            <!-- Role -->
+            <div class="mb-4">
+              <mat-label for="role">Role *</mat-label>
+              <app-mat-select
+                id="role"
+                formControlName="role"
+                [options]="roleOptions"
+                placeholder="Select role"
+                [errorMessage]="form.get('role')?.invalid && form.get('role')?.touched ? 'Role is required' : ''"
+              ></app-mat-select>
+              <div class="invalid-feedback" *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
+                <div *ngIf="form.get('role')?.errors?.['required']">Role is required</div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex gap-2 justify-content-end">
+              <mat-button
+                type="button"
+                variant="secondary"
+                (click)="onCancel()"
+                [disabled]="submitting"
+              >
+                Cancel
+              </mat-button>
+              <mat-button
+                type="submit"
+                variant="primary"
+                [loading]="submitting"
+                [disabled]="form.invalid || submitting"
+              >
+                Create User
+              </mat-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

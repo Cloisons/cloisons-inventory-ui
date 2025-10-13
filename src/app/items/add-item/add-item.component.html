@@ -1,0 +1,145 @@
+<div class="content-wrapper pb-0">
+  <div class="page-header flex-wrap">
+    <h3 class="mb-0">
+      Add New Item <br>
+      <span class="pl-0 h6 text-sub d-inline-block">Create a new item in the inventory</span>
+    </h3>
+    <div class="d-flex">
+      <ul class="breadcrumb">
+        <li><a routerLink="/dashboard">Dashboard</a></li>
+        <li><a routerLink="/items">Item management</a></li>
+        <li>Add new item</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Enter item details</h4>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-outer-block">
+              <div class="row">
+                <div class="col-xl-5 col-lg-6 col-md-6">
+                <div class="row">
+                  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                      <app-mat-input
+                        label="Name"
+                        formControlName="itemName"
+                        placeholder="Enter your item name"
+                        [required]="true"
+                      ></app-mat-input>
+                    </div>
+                  </div>
+                  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                      <app-mat-input
+                        label="Item Code"
+                        formControlName="itemCode"
+                        placeholder="Enter item code (optional)"
+                        [required]="false"
+                      ></app-mat-input>
+                    </div>
+                  </div>
+                  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group">
+                      <label>Description <span class="text-danger">*</span></label>
+                      <textarea class="form-control" rows="4" formControlName="itemDescription" placeholder="Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <app-mat-select
+                        label="Supplier"
+                        formControlName="supplierId"
+                        [options]="supplierOptions"
+                        placeholder="Enter your supplier ID"
+                        [required]="true"
+                      ></app-mat-select>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6" *ngIf="isSuperAdmin">
+                    <div class="form-group">
+                      <app-mat-select
+                        label="Unit scale"
+                        formControlName="unitScale"
+                        [options]="unitScaleOptions"
+                        placeholder="Select"
+                        [required]="true"
+                      ></app-mat-select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <app-mat-input
+                        label="Total quantity"
+                        formControlName="totalQty"
+                        placeholder="0"
+                        type="number"
+                        [required]="true"
+                      ></app-mat-input>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6" *ngIf="!isUser2">
+                    <div class="form-group">
+                      <app-mat-input
+                        label="Unit cost (AED)"
+                        formControlName="unitCost"
+                        placeholder="AED 0.00"
+                        type="number"
+                        [required]="true"
+                      ></app-mat-input>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6" *ngIf="isSuperAdmin">
+                    <div class="form-group">
+                      <app-mat-input
+                        label="Selling cost (AED)"
+                        formControlName="sellingCost"
+                        placeholder="AED 0.00"
+                        type="number"
+                      ></app-mat-input>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="col-xl-5 col-lg-6">
+                <div class="form-group">
+                  <label>Item image <span class="text-muted">(optional)</span></label>
+                  <div class="upload-card" (click)="fileInput.click()" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+                    <ng-container *ngIf="!imagePreviewUrl; else previewTpl">
+                      <div class="upload-icon">⬆️</div>
+                      <div class="upload-title">Upload image</div>
+                      <div class="upload-subtitle">upload your item image</div>
+                    </ng-container>
+                    <ng-template #previewTpl>
+                      <img [src]="imagePreviewUrl" alt="Preview" class="preview-img" />
+                      <button type="button" class="btn btn-light remove-btn" (click)="removeImage($event)">Remove</button>
+                    </ng-template>
+                    <div class="uploading-overlay" *ngIf="uploading">Uploading...</div>
+                  </div>
+                  <input #fileInput type="file" accept="image/*" class="d-none" (change)="onFileSelected($event)" />
+                  <div class="text-danger mt-2" *ngIf="uploadError">{{ uploadError }}</div>
+                </div>
+              </div>
+              <div class="col-xl-12 form-btns-bottom">
+                <div class="d-flex justify-content-end gap-2">
+                  <a routerLink="/items" class="btn btn-secondary">Cancel</a>
+                  <button type="submit" class="btn btn-primary" [disabled]="form.invalid || submitting">{{ submitting ? 'Saving...' : 'Save item' }}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
