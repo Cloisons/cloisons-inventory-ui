@@ -1,0 +1,53 @@
+<div class="modal-overlay" *ngIf="isVisible" (click)="onClose()">
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create New Item</h5>
+        <button type="button" class="close" (click)="onClose()">×</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <div class="row">
+            <div class="col-12">
+              <app-mat-input label="Name" formControlName="itemName" placeholder="Item name" [required]="true"></app-mat-input>
+            </div>
+            <div class="col-12">
+              <app-mat-input label="Item Code" formControlName="itemCode" placeholder="Optional"></app-mat-input>
+            </div>
+            <div class="col-12">
+              <label>Description <span class="text-danger">*</span></label>
+              <textarea class="form-control" rows="3" formControlName="itemDescription" placeholder="Description"></textarea>
+            </div>
+            <div class="col-6">
+              <app-mat-select label="Supplier" formControlName="supplierId" [options]="supplierOptions" placeholder="Select" [required]="true"></app-mat-select>
+            </div>
+            <div class="col-6" *ngIf="isSuperAdmin">
+              <app-mat-select label="Unit scale" formControlName="unitScale" [options]="unitScaleOptions" placeholder="Select" [required]="true"></app-mat-select>
+            </div>
+            <div class="col-6">
+              <app-mat-input label="Total quantity" formControlName="totalQty" type="number" placeholder="0" [required]="true"></app-mat-input>
+            </div>
+            <div class="col-6" *ngIf="!isUser2">
+              <app-mat-input label="Unit cost (AED)" formControlName="unitCost" type="number" placeholder="AED 0.00" [required]="true"></app-mat-input>
+            </div>
+            <div class="col-6" *ngIf="isSuperAdmin">
+              <app-mat-input label="Selling cost (AED)" formControlName="sellingCost" type="number" placeholder="AED 0.00"></app-mat-input>
+            </div>
+            <div class="col-12 mt-2">
+              <label class="d-inline-flex align-items-center" style="gap: 8px;">
+                <input type="checkbox" formControlName="listedItem" />
+                <span>Listed item</span>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" (click)="onClose()">Cancel</button>
+        <button class="btn btn-primary" type="button" [disabled]="form.invalid || submitting" (click)="onSubmit()">{{ submitting ? 'Saving...' : 'Create item' }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

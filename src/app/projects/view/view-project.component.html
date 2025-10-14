@@ -137,24 +137,18 @@
       </div>
 
       <!-- Items Used -->
-      <div *ngIf="canViewItemDetails()" class="row">
+      <div *ngIf="canViewItemDetails() && getItemsWithDetails().length > 0" class="row mb-4">
         <div class="col-12">
           <div class="card">
             <div class="card-header">
               <h5 class="card-title mb-0">
                 <i class="mdi mdi-package-variant me-2" aria-hidden="true"></i>
                 Items Used
-                <span class="badge bg-secondary ms-2">{{ getItemsWithDetails().length }}</span>
+                <span class="badge bg-primary ms-2">{{ getItemsWithDetails().length }}</span>
               </h5>
             </div>
             <div class="card-body px-0">
-              <div *ngIf="getItemsWithDetails().length === 0" class="text-center py-5">
-                <i class="mdi mdi-package-variant-closed mb-3" style="font-size: 3rem; color: #6c757d;" aria-hidden="true"></i>
-                <h5 class="text-muted">No items used</h5>
-                <p class="text-muted mb-0">This project doesn't have any items assigned.</p>
-              </div>
-              
-              <div *ngIf="getItemsWithDetails().length > 0" class="table-responsive">
+              <div class="table-responsive">
                 <table class="table table-common mb-0">
                   <thead class="bg-light">
                     <tr>
@@ -178,7 +172,7 @@
                         </div>
                       </td>
                       <td *ngIf="canViewItemQuantities()">
-                        <span class="badge bg-info">{{ item.quantity }}</span>
+                        <span class="badge bg-primary">{{ item.quantity }}</span>
                       </td>
                       <td *ngIf="canViewItemQuantities()">
                         <span class="text-muted">{{ item.itemId.unitScale }}</span>
@@ -201,6 +195,19 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Items Message -->
+      <div *ngIf="canViewItemDetails() && getItemsWithDetails().length === 0" class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body text-center py-5">
+              <i class="mdi mdi-package-variant-closed mb-3" style="font-size: 3rem; color: #6c757d;" aria-hidden="true"></i>
+              <h5 class="text-muted">No items used</h5>
+              <p class="text-muted mb-0">This project doesn't have any items assigned.</p>
             </div>
           </div>
         </div>

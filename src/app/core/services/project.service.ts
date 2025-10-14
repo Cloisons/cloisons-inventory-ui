@@ -34,6 +34,7 @@ export interface Project {
   totalSellingCost: number;
   productsUsed?: ProjectProduct[];
   itemsUsed?: ProjectItem[];
+  directItemsUsed?: ProjectItem[];
   createdAt?: string;
   updatedAt?: string;
 }

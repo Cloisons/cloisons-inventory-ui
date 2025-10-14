@@ -153,6 +153,27 @@ export class ItemService {
     );
   }
 
+  getAllItems(params: ItemsRequestParams = {}): Observable<ItemsResponse> {
+    const queryParams = {
+      page: (params.page || 1).toString(),
+      limit: (params.limit || this.DEFAULT_PAGE_SIZE).toString(),
+      q: params.search || '',
+      sortBy: params.sortBy || 'createdAt',
+      sortOrder: params.sortOrder || 'desc'
+    };
+
+    return this.communicationService.get<ItemsResponse>(
+      '/items/all',
+      'Loading all items...',
+      { params: queryParams }
+    ).pipe(
+      timeout(this.DEFAULT_TIMEOUT),
+      retry(this.MAX_RETRIES),
+      map(response => this.validateItemsResponse(response)),
+      catchError(error => this.handleError('Failed to load all items', error))
+    );
+  }
+
   getItemById(id: string): Observable<{ success: boolean; data: Item }> {
     if (!id || id.trim() === '') {
       return throwError(() => new Error('Item ID is required'));

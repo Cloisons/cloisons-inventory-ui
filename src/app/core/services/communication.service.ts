@@ -233,6 +233,9 @@ export class CommunicationService {
             
             // If it's an HTTP error with a response body, try to extract the message
             if (error?.error && typeof error.error === 'object') {
+              if (!!error?.error?.errors?.details) {
+                errorMessage = error.error.errors.details;
+              } else {
               if (Array.isArray(error.error?.errors)) {
                 errorMessage = error.error.errors.map((error: any) => error.message || error.error || error.errorMessage).join(', ');
               } else {
@@ -241,6 +244,7 @@ export class CommunicationService {
                   errorMessage = customMessage;
                 }
               }
+            }
             }
             
             this.toastService.error(errorMessage || 'Request failed. Please try again.', 'Error');

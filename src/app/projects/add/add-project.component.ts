@@ -7,12 +7,13 @@ import { ContractorService, Contractor } from '../../core/services/contractor.se
 import { ProductService, Product } from '../../core/services/product.service';
 import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent],
   templateUrl: './add-project.component.html',
   styleUrls: ['./add-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,6 +24,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   contractors: Contractor[] = [];
   availableProducts: Product[] = [];
   availableItems: Item[] = [];
+  showCreateItemModal = false;
   loadingProducts = false;
   loadingItems = false;
   productDropdownSettings: any = null;
@@ -47,7 +49,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
       status: ['PLANNING', [Validators.required]],
       startDate: [null],
       products: this.fb.array([]),
-      // items: this.fb.array([])
+      directItems: this.fb.array([])
     });
 
     this.initializeDropdownSettings();
@@ -56,10 +58,10 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadContractors();
     this.loadProducts();
-    // this.loadItems();
-    // Initialize with one empty product and item
+    this.loadItems();
+    // Initialize with one empty product and direct item
     this.addProduct();
-    // this.addItem();
+    this.addDirectItem();
   }
 
   ngOnDestroy(): void {
@@ -105,6 +107,23 @@ export class AddProjectComponent implements OnInit, OnDestroy {
     };
   }
 
+  onOpenCreateItemModal(): void {
+    this.showCreateItemModal = true;
+    this.cdr.markForCheck();
+  }
+
+  onCloseCreateItemModal(): void {
+    this.showCreateItemModal = false;
+    this.cdr.markForCheck();
+  }
+
+  onItemCreatedFromModal(item: Item): void {
+    this.showCreateItemModal = false;
+    // Refresh items to include newly created item (includes listedItem false)
+    this.loadItems();
+    this.cdr.markForCheck();
+  }
+
   private loadContractors(): void {
     this.contractorService.listContractors(1, 100).subscribe({
       next: (items) => (this.contractors = items),
@@ -130,7 +149,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
 
   private loadItems(): void {
     this.loadingItems = true;
-    this.itemService.getItems({ limit: 1000 }).pipe(
+    this.itemService.getAllItems({ limit: 1000 }).pipe(
       takeUntil(this.destroy$)
     ).subscribe({
       next: (response) => {
@@ -147,7 +166,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
 
   // Form array getters
   get products(): FormArray { return this.form.get('products') as FormArray; }
-  get items(): FormArray { return this.form.get('items') as FormArray; }
+  get directItems(): FormArray { return this.form.get('directItems') as FormArray; }
 
 
   // Product methods
@@ -248,102 +267,105 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   }
 
 
-  // Item methods
-  // addItem(): void {
-  //   const itemsArray = this.form.get('items') as FormArray;
-  //   itemsArray.push(this.fb.group({
-  //     selectedItem: [null], // For ng-multiselect-dropdown
-  //     itemId: ['', Validators.required],
-  //     quantity: [1, [Validators.required, Validators.min(1)]]
-  //   }));
-  //   this.cdr.markForCheck();
-  // }
+  // Direct Items methods
+  addDirectItem(): void {
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    directItemsArray.push(this.fb.group({
+      selectedItem: [null], // For ng-multiselect-dropdown
+      itemId: [''],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      sellingPrice: [null] // Default to null
+    }));
+    this.cdr.markForCheck();
+  }
 
-  // removeItem(index: number): void {
-  //   const itemsArray = this.form.get('items') as FormArray;
-  //   if (itemsArray.length > 1) {
-  //     itemsArray.removeAt(index);
-  //   } else {
-  //     // If only one item, clear it instead of removing
-  //     const itemGroup = itemsArray.at(index) as FormGroup;
-  //     itemGroup.patchValue({
-  //       selectedItem: null,
-  //       itemId: '',
-  //       quantity: 1
-  //     });
-  //   }
-  //   this.cdr.markForCheck();
-  // }
+  removeDirectItem(index: number): void {
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    if (directItemsArray.length > 1) {
+      directItemsArray.removeAt(index);
+    } else {
+      // If only one item, clear it instead of removing
+      const itemGroup = directItemsArray.at(index) as FormGroup;
+      itemGroup.patchValue({
+        selectedItem: null,
+        itemId: '',
+        quantity: 1,
+        sellingPrice: null
+      });
+    }
+    this.cdr.markForCheck();
+  }
 
-  // onItemSelect(item: any, index: number): void {
-  //   const itemGroup = this.items.at(index) as FormGroup;
+  onDirectItemSelect(item: any, index: number): void {
+    const itemGroup = this.directItems.at(index) as FormGroup;
     
-  //   // Check if this item is already selected in another row
-  //   const isDuplicate = this.isItemAlreadySelected(item._id, index);
-  //   if (isDuplicate) {
-  //     // Clear the selection and show error
-  //     itemGroup.patchValue({
-  //       selectedItem: null,
-  //       itemId: ''
-  //     });
-  //     // Set a custom error on the form control
-  //     itemGroup.get('itemId')?.setErrors({ duplicate: true });
-  //     return;
-  //   }
+    // Check if this item is already selected in another row
+    const isDuplicate = this.isDirectItemAlreadySelected(item._id, index);
+    if (isDuplicate) {
+      // Clear the selection and show error
+      itemGroup.patchValue({
+        selectedItem: null,
+        itemId: ''
+      });
+      // Set a custom error on the form control
+      itemGroup.get('itemId')?.setErrors({ duplicate: true });
+      return;
+    }
     
-  //   // Clear any previous duplicate error
-  //   itemGroup.get('itemId')?.setErrors(null);
+    // Clear any previous duplicate error
+    itemGroup.get('itemId')?.setErrors(null);
     
-  //   itemGroup.patchValue({
-  //     itemId: item._id
-  //   });
-  // }
+    itemGroup.patchValue({
+      itemId: item._id,
+      sellingPrice: null // Always default to null
+    });
+  }
 
-  // onItemDeSelect(item: any, index: number): void {
-  //   const itemGroup = this.items.at(index) as FormGroup;
-  //   itemGroup.patchValue({
-  //     itemId: ''
-  //   });
-  //   // Clear any duplicate errors when deselecting
-  //   itemGroup.get('itemId')?.setErrors(null);
-  // }
+  onDirectItemDeSelect(item: any, index: number): void {
+    const itemGroup = this.directItems.at(index) as FormGroup;
+    itemGroup.patchValue({
+      itemId: ''
+    });
+    // Clear any duplicate errors when deselecting
+    itemGroup.get('itemId')?.setErrors(null);
+  }
 
-  // private isItemAlreadySelected(itemId: string, currentIndex: number): boolean {
-  //   const itemsArray = this.form.get('items') as FormArray;
-  //   for (let i = 0; i < itemsArray.length; i++) {
-  //     if (i !== currentIndex) {
-  //       const itemGroup = itemsArray.at(i) as FormGroup;
-  //       const existingItemId = itemGroup.get('itemId')?.value;
-  //       if (existingItemId === itemId) {
-  //         return true;
-  //       }
-  //     }
-  //   }
-  //   return false;
-  // }
+  private isDirectItemAlreadySelected(itemId: string, currentIndex: number): boolean {
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    for (let i = 0; i < directItemsArray.length; i++) {
+      if (i !== currentIndex) {
+        const itemGroup = directItemsArray.at(i) as FormGroup;
+        const existingItemId = itemGroup.get('itemId')?.value;
+        if (existingItemId === itemId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
-  // getAvailableItemsForIndex(index: number): Item[] {
-  //   const itemsArray = this.form.get('items') as FormArray;
-  //   const currentItemGroup = itemsArray.at(index) as FormGroup;
-  //   const currentItemId = currentItemGroup.get('itemId')?.value;
+  getAvailableDirectItemsForIndex(index: number): Item[] {
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    const currentItemGroup = directItemsArray.at(index) as FormGroup;
+    const currentItemId = currentItemGroup.get('itemId')?.value;
     
-  //   // Get all selected item IDs except the current one
-  //   const selectedItemIds: string[] = [];
-  //   for (let i = 0; i < itemsArray.length; i++) {
-  //     if (i !== index) {
-  //       const itemGroup = itemsArray.at(i) as FormGroup;
-  //       const itemId = itemGroup.get('itemId')?.value;
-  //       if (itemId && itemId.trim() !== '') {
-  //         selectedItemIds.push(itemId);
-  //       }
-  //     }
-  //   }
+    // Get all selected item IDs except the current one
+    const selectedItemIds: string[] = [];
+    for (let i = 0; i < directItemsArray.length; i++) {
+      if (i !== index) {
+        const itemGroup = directItemsArray.at(i) as FormGroup;
+        const itemId = itemGroup.get('itemId')?.value;
+        if (itemId && itemId.trim() !== '') {
+          selectedItemIds.push(itemId);
+        }
+      }
+    }
     
-  //   // Filter out already selected items, but include the currently selected item
-  //   return this.availableItems.filter(item => 
-  //     !selectedItemIds.includes(item._id) || item._id === currentItemId
-  //   );
-  // }
+    // Filter out already selected items, but include the currently selected item
+    return this.availableItems.filter(item => 
+      !selectedItemIds.includes(item._id) || item._id === currentItemId
+    );
+  }
 
   onSubmit(): void {
     if (this.submitting || this.form.invalid) return;
@@ -359,13 +381,14 @@ export class AddProjectComponent implements OnInit, OnDestroy {
         quantity: parseInt(product.quantity, 10)
       }));
 
-    // Filter out items with empty itemId and format for API
-    // const validItems = formValue.items
-    //   .filter((item: any) => item.itemId && item.itemId.trim() !== '')
-    //   .map((item: any) => ({
-    //     itemId: item.itemId,
-    //     quantity: parseInt(item.quantity, 10)
-    //   }));
+    // Filter out direct items with empty itemId and format for API
+    const validDirectItems = formValue.directItems
+      .filter((item: any) => item.itemId && item.itemId.trim() !== '')
+      .map((item: any) => ({
+        itemId: item.itemId,
+        quantity: parseInt(item.quantity, 10),
+        sellingPrice: item.sellingPrice || null
+      }));
 
     const payload = {
       projectName: formValue.projectName,
@@ -374,7 +397,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
       status: formValue.status,
       startDate: formValue.startDate,
       productsUsed: validProducts,
-      // itemsUsed: validItems
+      directItemsUsed: validDirectItems
     };
 
     this.projectService.createProject(payload).subscribe({

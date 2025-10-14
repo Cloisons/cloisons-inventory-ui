@@ -137,23 +137,26 @@
               </div>
             </div>
 
-            <!-- Items Section -->
-            <!-- <div class="form-group mb-4">
-              <label class="mb-2">Items <span class="text-muted">(optional)</span></label>
+            <!-- Direct Items Section -->
+            <div class="form-group mb-4">
+              <label class="mb-2 d-flex align-items-center justify-content-between">
+                <span>Direct Items <span class="text-muted">(optional)</span></span>
+                <button type="button" class="btn btn-link p-0" (click)="onOpenCreateItemModal()">+ Create new item</button>
+              </label>
               
-           
-              <div formArrayName="items" class="table-responsive">
+              <!-- Direct Items Table -->
+              <div formArrayName="directItems" class="table-responsive">
                 <table class="table table-bordered table-hover">
                   <thead class="table-light">
                     <tr>
-                      <th width="50%">Item <span class="text-danger">*</span></th>
-                      <th width="25%">Quantity</th>
-                      <th width="15%">Actions</th>
+                      <th width="50%">Item</th>
+                      <th width="30%">Quantity</th>
+                      <th width="10%">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr 
-                      *ngFor="let item of items.controls; let i = index" 
+                      *ngFor="let item of directItems.controls; let i = index" 
                       [formGroupName]="i"
                     >
                       <td>
@@ -161,10 +164,10 @@
                           *ngIf="itemDropdownSettings"
                           [placeholder]="'Select an item'"
                           [settings]="itemDropdownSettings"
-                          [data]="getAvailableItemsForIndex(i)"
+                          [data]="getAvailableDirectItemsForIndex(i)"
                           formControlName="selectedItem"
-                          (onSelect)="onItemSelect($event, i)"
-                          (onDeSelect)="onItemDeSelect($event, i)"
+                          (onSelect)="onDirectItemSelect($event, i)"
+                          (onDeSelect)="onDirectItemDeSelect($event, i)"
                           class="form-control"
                           [ngClass]="{'is-invalid': item.get('itemId')?.invalid && item.get('itemId')?.touched}"
                         >
@@ -173,7 +176,6 @@
                           *ngIf="item.get('itemId')?.invalid && item.get('itemId')?.touched" 
                           class="invalid-feedback d-block"
                         >
-                          <div *ngIf="item.get('itemId')?.errors?.['required']">Please select an item</div>
                           <div *ngIf="item.get('itemId')?.errors?.['duplicate']">This item is already selected</div>
                         </div>
                       </td>
@@ -197,8 +199,8 @@
                         <button 
                           type="button" 
                           class="btn btn-outline-danger btn-sm"
-                          (click)="removeItem(i)"
-                          title="Remove item"
+                          (click)="removeDirectItem(i)"
+                          title="Remove direct item"
                         >
                           <i class="mdi mdi-delete"></i>
                         </button>
@@ -208,23 +210,29 @@
                 </table>
               </div>
               
-       
+              <!-- Add Direct Item Button -->
               <div class="mt-2">
                 <button 
                   type="button" 
                   class="btn btn-outline-primary btn-sm"
-                  (click)="addItem()"
+                  (click)="addDirectItem()"
                 >
-                  <i class="mdi mdi-plus"></i> Add Item
+                  <i class="mdi mdi-plus"></i> Add Direct Item
                 </button>
               </div>
               
-          
+              <!-- Loading State -->
               <div *ngIf="loadingItems" class="alert alert-info" role="status">
                 <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                 Loading items...
               </div>
-            </div> -->
+            </div>
+
+            <app-create-item-modal 
+              [isVisible]="showCreateItemModal" 
+              (closed)="onCloseCreateItemModal()"
+              (created)="onItemCreatedFromModal($event)">
+            </app-create-item-modal>
 
             <div class="d-flex justify-content-end">
               <a routerLink="/projects" class="btn btn-outline-secondary mr-2">Cancel</a>

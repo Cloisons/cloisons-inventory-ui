@@ -170,6 +170,117 @@
               </div>
             </div>
 
+            <!-- Direct Items Section -->
+            <div class="form-group mb-4">
+              <label class="mb-2 d-flex align-items-center justify-content-between">
+                <span>Direct Items <span class="text-muted">(optional)</span></span>
+                <button type="button" class="btn btn-link p-0" (click)="onOpenCreateItemModal()" [disabled]="!canEditDirectItems">+ Create new item</button>
+              </label>
+              
+              <!-- Direct Items Table -->
+              <div formArrayName="directItems" class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th width="50%">Item</th>
+                      <th width="30%">Quantity</th>
+                      <th width="10%">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      *ngFor="let item of directItems.controls; let i = index" 
+                      [formGroupName]="i"
+                    >
+                      <td>
+                        <ng-multiselect-dropdown
+                          *ngIf="itemDropdownSettings && canEditDirectItems"
+                          [placeholder]="'Select an item'"
+                          [settings]="itemDropdownSettings"
+                          [data]="getAvailableDirectItemsForIndex(i)"
+                          formControlName="selectedItem"
+                          (onSelect)="onDirectItemSelect($event, i)"
+                          (onDeSelect)="onDirectItemDeSelect($event, i)"
+                          class="form-control"
+                          [ngClass]="{'is-invalid': item.get('itemId')?.invalid && item.get('itemId')?.touched}"
+                        >
+                        </ng-multiselect-dropdown>
+                        <div 
+                          *ngIf="!canEditDirectItems && item.get('itemId')?.value"
+                          class="form-control-plaintext"
+                        >
+                          {{ getItemName(item.get('itemId')?.value) }}
+                        </div>
+                        <div 
+                          *ngIf="item.get('itemId')?.invalid && item.get('itemId')?.touched" 
+                          class="invalid-feedback d-block"
+                        >
+                          <div *ngIf="item.get('itemId')?.errors?.['duplicate']">This item is already selected</div>
+                        </div>
+                      </td>
+                      <td>
+                        <input 
+                          *ngIf="canEditDirectItems"
+                          type="number" 
+                          formControlName="quantity" 
+                          class="form-control"
+                          min="1"
+                          [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched"
+                        >
+                        <div 
+                          *ngIf="!canEditDirectItems"
+                          class="form-control-plaintext"
+                        >
+                          {{ item.get('quantity')?.value }}
+                        </div>
+                        <div 
+                          *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched" 
+                          class="invalid-feedback d-block"
+                        >
+                          <div *ngIf="item.get('quantity')?.errors?.['required']">Required</div>
+                          <div *ngIf="item.get('quantity')?.errors?.['min']">Min: 1</div>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <button 
+                          *ngIf="canEditDirectItems"
+                          type="button" 
+                          class="btn btn-outline-danger btn-sm"
+                          (click)="removeDirectItem(i)"
+                          title="Remove direct item"
+                        >
+                          <i class="mdi mdi-delete"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Add Direct Item Button -->
+              <div class="mt-2">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="addDirectItem()"
+                  [disabled]="!canEditDirectItems"
+                >
+                  <i class="mdi mdi-plus"></i> Add Direct Item
+                </button>
+              </div>
+              
+              <!-- Loading State -->
+              <div *ngIf="loadingItems" class="alert alert-info" role="status">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Loading items...
+              </div>
+            </div>
+
+            <app-create-item-modal 
+              [isVisible]="showCreateItemModal" 
+              (closed)="onCloseCreateItemModal()"
+              (created)="onItemCreatedFromModal($event)">
+            </app-create-item-modal>
 
             <div class="d-flex justify-content-end">
               <a routerLink="/projects" class="btn btn-outline-secondary mr-2">Cancel</a>

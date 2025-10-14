@@ -7,12 +7,13 @@ import { ContractorService, Contractor } from '../../core/services/contractor.se
 import { ProductService, Product } from '../../core/services/product.service';
 import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent],
   templateUrl: './edit-project.component.html',
   styleUrls: ['./edit-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,6 +28,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
   contractors: Contractor[] = [];
   availableProducts: Product[] = [];
   availableItems: Item[] = [];
+  showCreateItemModal = false;
   loadingProducts = false;
   loadingItems = false;
   productDropdownSettings: any = null;
@@ -56,7 +58,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
       status: ['PLANNING', [Validators.required]],
       startDate: [null],
       products: this.fb.array([]),
-      items: this.fb.array([])
+      directItems: this.fb.array([])
     });
 
     this.projectId = this.route.snapshot.paramMap.get('id') || '';
@@ -67,6 +69,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     if (this.projectId) {
       this.loadContractors();
       this.loadProducts();
+      this.loadItems();
       this.loadProject();
     } else {
       this.router.navigate(['/projects']);
@@ -116,6 +119,23 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     };
   }
 
+  onOpenCreateItemModal(): void {
+    this.showCreateItemModal = true;
+    this.cdr.markForCheck();
+  }
+
+  onCloseCreateItemModal(): void {
+    this.showCreateItemModal = false;
+    this.cdr.markForCheck();
+  }
+
+  onItemCreatedFromModal(item: Item): void {
+    this.showCreateItemModal = false;
+    // Refresh items to include newly created item (includes listedItem false)
+    this.loadItems();
+    this.cdr.markForCheck();
+  }
+
   private loadContractors(): void {
     this.contractorService.listContractors(1, 100).subscribe({
       next: (items) => (this.contractors = items),
@@ -140,23 +160,23 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     });
   }
 
-  // private loadItems(): void {
-  //   this.loadingItems = true;
-  //   this.itemService.getItems({ limit: 1000 }).pipe(
-  //     takeUntil(this.destroy$)
-  //   ).subscribe({
-  //     next: (response) => {
-  //       this.availableItems = response.data.items;
-  //       this.loadingItems = false;
-  //       this.setItemsIfReady();
-  //       this.cdr.markForCheck();
-  //     },
-  //     error: () => {
-  //       this.loadingItems = false;
-  //       this.cdr.markForCheck();
-  //     }
-  //   });
-  // }
+  private loadItems(): void {
+    this.loadingItems = true;
+    this.itemService.getAllItems({ limit: 1000 }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (response) => {
+        this.availableItems = response.data.items;
+        this.loadingItems = false;
+        this.setDirectItemsIfReady();
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.loadingItems = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
 
   private loadProject(): void {
     this.projectService.getProject(this.projectId).subscribe({
@@ -174,7 +194,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
           startDate: this.formatDateForInput(project.startDate)
         });
 
-        // Set products and items for existing project
+        // Set products and direct items for existing project
         if (project.productsUsed && project.productsUsed.length > 0) {
           this.pendingProjectProducts = project.productsUsed;
           this.setProductsIfReady();
@@ -182,12 +202,12 @@ export class EditProjectComponent implements OnInit, OnDestroy {
           this.addProduct();
         }
 
-        // if (project.itemsUsed && project.itemsUsed.length > 0) {
-        //   this.pendingProjectItems = project.itemsUsed;
-        //   this.setItemsIfReady();
-        // } else {
-        //   this.addItem();
-        // }
+        if (project.directItemsUsed && project.directItemsUsed.length > 0) {
+          this.pendingProjectItems = project.directItemsUsed;
+          this.setDirectItemsIfReady();
+        } else {
+          this.addDirectItem();
+        }
 
         this.loading = false;
         this.cdr.markForCheck();
@@ -207,12 +227,12 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private setItemsIfReady(): void {
-  //   if (this.pendingProjectItems.length > 0 && this.availableItems.length > 0) {
-  //     this.setItemsFromProject(this.pendingProjectItems);
-  //     this.pendingProjectItems = [];
-  //   }
-  // }
+  private setDirectItemsIfReady(): void {
+    if (this.pendingProjectItems.length > 0 && this.availableItems.length > 0) {
+      this.setDirectItemsFromProject(this.pendingProjectItems);
+      this.pendingProjectItems = [];
+    }
+  }
 
   private setProductsFromProject(projectProducts: any[]): void {
     const productsArray = this.form.get('products') as FormArray;
@@ -250,45 +270,46 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
-  // private setItemsFromProject(projectItems: any[]): void {
-  //   const itemsArray = this.form.get('items') as FormArray;
-  //   itemsArray.clear();
+  private setDirectItemsFromProject(projectItems: any[]): void {
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    directItemsArray.clear();
     
-  //   if (projectItems.length === 0) {
-  //     this.addItem();
-  //   } else {
-  //     projectItems.forEach((projectItem) => {
-  //       const itemId = typeof projectItem.itemId === 'string' 
-  //         ? projectItem.itemId 
-  //         : projectItem.itemId?._id;
+    if (projectItems.length === 0) {
+      this.addDirectItem();
+    } else {
+      projectItems.forEach((projectItem) => {
+        const itemId = typeof projectItem.itemId === 'string' 
+          ? projectItem.itemId 
+          : projectItem.itemId?._id;
         
-  //       const fullItem = this.availableItems.filter(item => item._id === itemId);
+        const fullItem = this.availableItems.filter(item => item._id === itemId);
         
-  //       if (fullItem) {
-  //         const formGroup = this.fb.group({
-  //           selectedItem: [fullItem],
-  //           itemId: [itemId, Validators.required],
-  //           quantity: [projectItem.quantity || 1, [Validators.required, Validators.min(1)]]
-  //         });
+        if (fullItem) {
+          const formGroup = this.fb.group({
+            selectedItem: [fullItem],
+            itemId: [itemId],
+            quantity: [projectItem.quantity || 1, [Validators.required, Validators.min(1)]],
+            sellingPrice: [projectItem.sellingPrice || null]
+          });
           
-  //         itemsArray.push(formGroup);
+          directItemsArray.push(formGroup);
           
-  //         setTimeout(() => {
-  //           formGroup.get('selectedItem')?.updateValueAndValidity();
-  //         }, 100);
-  //       }
-  //     });
-  //   }
+          setTimeout(() => {
+            formGroup.get('selectedItem')?.updateValueAndValidity();
+          }, 100);
+        }
+      });
+    }
     
-  //   this.cdr.detectChanges();
-  //   setTimeout(() => {
-  //     this.cdr.markForCheck();
-  //   }, 200);
-  // }
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.cdr.markForCheck();
+    }, 200);
+  }
 
   // Form array getters
   get products(): FormArray { return this.form.get('products') as FormArray; }
-  // get items(): FormArray { return this.form.get('items') as FormArray; }
+  get directItems(): FormArray { return this.form.get('directItems') as FormArray; }
 
   // Business rule methods
   get canChangeStatusToPlanning(): boolean {
@@ -296,6 +317,11 @@ export class EditProjectComponent implements OnInit, OnDestroy {
   }
 
   get canEditProducts(): boolean {
+    const currentStatus = this.form.get('status')?.value;
+    return currentStatus === 'PLANNING';
+  }
+
+  get canEditDirectItems(): boolean {
     const currentStatus = this.form.get('status')?.value;
     return currentStatus === 'PLANNING';
   }
@@ -420,6 +446,115 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     return product ? product.productName : 'Unknown Product';
   }
 
+  getItemName(itemId: string): string {
+    const item = this.availableItems.find(i => i._id === itemId);
+    return item ? item.itemName : 'Unknown Item';
+  }
+
+  // Direct Items methods
+  addDirectItem(): void {
+    if (!this.canEditDirectItems) {
+      return;
+    }
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    directItemsArray.push(this.fb.group({
+      selectedItem: [null], // For ng-multiselect-dropdown
+      itemId: [''],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      sellingPrice: [null] // Default to null
+    }));
+    this.cdr.markForCheck();
+  }
+
+  removeDirectItem(index: number): void {
+    if (!this.canEditDirectItems) {
+      return;
+    }
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    if (directItemsArray.length > 1) {
+      directItemsArray.removeAt(index);
+    } else {
+      // If only one item, clear it instead of removing
+      const itemGroup = directItemsArray.at(index) as FormGroup;
+      itemGroup.patchValue({
+        selectedItem: null,
+        itemId: '',
+        quantity: 1,
+        sellingPrice: null
+      });
+    }
+    this.cdr.markForCheck();
+  }
+
+  onDirectItemSelect(item: any, index: number): void {
+    if (!this.canEditDirectItems) {
+      return;
+    }
+    const itemGroup = this.directItems.at(index) as FormGroup;
+    
+    const isDuplicate = this.isDirectItemAlreadySelected(item._id, index);
+    if (isDuplicate) {
+      itemGroup.patchValue({
+        selectedItem: null,
+        itemId: ''
+      });
+      itemGroup.get('itemId')?.setErrors({ duplicate: true });
+      return;
+    }
+    
+    itemGroup.get('itemId')?.setErrors(null);
+    itemGroup.patchValue({
+      itemId: item._id,
+      sellingPrice: null // Always default to null
+    });
+  }
+
+  onDirectItemDeSelect(item: any, index: number): void {
+    if (!this.canEditDirectItems) {
+      return;
+    }
+    const itemGroup = this.directItems.at(index) as FormGroup;
+    itemGroup.patchValue({
+      itemId: ''
+    });
+    itemGroup.get('itemId')?.setErrors(null);
+  }
+
+  private isDirectItemAlreadySelected(itemId: string, currentIndex: number): boolean {
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    for (let i = 0; i < directItemsArray.length; i++) {
+      if (i !== currentIndex) {
+        const itemGroup = directItemsArray.at(i) as FormGroup;
+        const existingItemId = itemGroup.get('itemId')?.value;
+        if (existingItemId === itemId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  getAvailableDirectItemsForIndex(index: number): Item[] {
+    const directItemsArray = this.form.get('directItems') as FormArray;
+    const currentItemGroup = directItemsArray.at(index) as FormGroup;
+    const currentItemId = currentItemGroup.get('itemId')?.value;
+    
+    const selectedItemIds: string[] = [];
+    for (let i = 0; i < directItemsArray.length; i++) {
+      if (i !== index) {
+        const itemGroup = directItemsArray.at(i) as FormGroup;
+        const itemId = itemGroup.get('itemId')?.value;
+        if (itemId && itemId.trim() !== '') {
+          selectedItemIds.push(itemId);
+        }
+      }
+    }
+    
+    return this.availableItems.filter(item => 
+      !selectedItemIds.includes(item._id) || item._id === currentItemId
+    );
+  }
+
   private formatDateForInput(dateString: string | null | undefined): string | null {
     if (!dateString) {
       return null;
@@ -472,67 +607,6 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  // onItemSelect(item: any, index: number): void {
-  //   const itemGroup = this.items.at(index) as FormGroup;
-    
-  //   const isDuplicate = this.isItemAlreadySelected(item._id, index);
-  //   if (isDuplicate) {
-  //     itemGroup.patchValue({
-  //       selectedItem: null,
-  //       itemId: ''
-  //     });
-  //     itemGroup.get('itemId')?.setErrors({ duplicate: true });
-  //     return;
-  //   }
-    
-  //   itemGroup.get('itemId')?.setErrors(null);
-  //   itemGroup.patchValue({
-  //     itemId: item._id
-  //   });
-  // }
-
-  // onItemDeSelect(item: any, index: number): void {
-  //   const itemGroup = this.items.at(index) as FormGroup;
-  //   itemGroup.patchValue({
-  //     itemId: ''
-  //   });
-  //   itemGroup.get('itemId')?.setErrors(null);
-  // }
-
-  // private isItemAlreadySelected(itemId: string, currentIndex: number): boolean {
-  //   const itemsArray = this.form.get('items') as FormArray;
-  //   for (let i = 0; i < itemsArray.length; i++) {
-  //     if (i !== currentIndex) {
-  //       const itemGroup = itemsArray.at(i) as FormGroup;
-  //       const existingItemId = itemGroup.get('itemId')?.value;
-  //       if (existingItemId === itemId) {
-  //         return true;
-  //       }
-  //     }
-  //   }
-  //   return false;
-  // }
-
-  // getAvailableItemsForIndex(index: number): Item[] {
-  //   const itemsArray = this.form.get('items') as FormArray;
-  //   const currentItemGroup = itemsArray.at(index) as FormGroup;
-  //   const currentItemId = currentItemGroup.get('itemId')?.value;
-    
-  //   const selectedItemIds: string[] = [];
-  //   for (let i = 0; i < itemsArray.length; i++) {
-  //     if (i !== index) {
-  //       const itemGroup = itemsArray.at(i) as FormGroup;
-  //       const itemId = itemGroup.get('itemId')?.value;
-  //       if (itemId && itemId.trim() !== '') {
-  //         selectedItemIds.push(itemId);
-  //       }
-  //     }
-  //   }
-    
-  //   return this.availableItems.filter(item => 
-  //     !selectedItemIds.includes(item._id) || item._id === currentItemId
-  //   );
-  // }
 
   onSubmit(): void {
     if (this.submitting || this.form.invalid || !this.project) return;
@@ -547,12 +621,14 @@ export class EditProjectComponent implements OnInit, OnDestroy {
         quantity: parseInt(product.quantity, 10)
       }));
 
-    // const validItems = formValue.items
-    //   .filter((item: any) => item.itemId && item.itemId.trim() !== '')
-    //   .map((item: any) => ({
-    //     itemId: item.itemId,
-    //     quantity: parseInt(item.quantity, 10)
-    //   }));
+    // Filter out direct items with empty itemId and format for API
+    const validDirectItems = formValue.directItems
+      .filter((item: any) => item.itemId && item.itemId.trim() !== '')
+      .map((item: any) => ({
+        itemId: item.itemId,
+        quantity: parseInt(item.quantity, 10),
+        sellingPrice: item.sellingPrice || null
+      }));
 
     const payload = {
       projectName: formValue.projectName,
@@ -561,11 +637,12 @@ export class EditProjectComponent implements OnInit, OnDestroy {
       status: formValue.status,
       startDate: formValue.startDate,
       productsUsed: validProducts,
-      // itemsUsed: validItems
+      directItemsUsed: validDirectItems
     };
 
     if(payload.status !== "PLANNING") {
-     delete payload.productsUsed
+     delete payload.productsUsed;
+     delete payload.directItemsUsed;
     }
 
     this.projectService.updateProject(this.projectId, payload).subscribe({
