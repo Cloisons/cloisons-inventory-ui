@@ -148,11 +148,11 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
   }
 
   canViewCosts(): boolean {
-    return this.isSuperAdmin() || this.isUser1();
+    return this.isSuperAdmin();
   }
 
   canViewUnitCosts(): boolean {
-    return this.isSuperAdmin() || this.isUser1();
+    return this.isSuperAdmin() 
   }
 
   canViewSellingCosts(): boolean {
