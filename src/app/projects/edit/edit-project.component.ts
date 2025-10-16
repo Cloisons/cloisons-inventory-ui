@@ -288,8 +288,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
           const formGroup = this.fb.group({
             selectedItem: [fullItem],
             itemId: [itemId],
-            quantity: [projectItem.quantity || 1, [Validators.required, Validators.min(1)]],
-            sellingPrice: [projectItem.sellingPrice || null]
+            quantity: [projectItem.quantity || 1, [Validators.required, Validators.min(1)]]
           });
           
           directItemsArray.push(formGroup);
@@ -460,8 +459,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     directItemsArray.push(this.fb.group({
       selectedItem: [null], // For ng-multiselect-dropdown
       itemId: [''],
-      quantity: [1, [Validators.required, Validators.min(1)]],
-      sellingPrice: [null] // Default to null
+      quantity: [1, [Validators.required, Validators.min(1)]]
     }));
     this.cdr.markForCheck();
   }
@@ -479,8 +477,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
       itemGroup.patchValue({
         selectedItem: null,
         itemId: '',
-        quantity: 1,
-        sellingPrice: null
+        quantity: 1
       });
     }
     this.cdr.markForCheck();
@@ -504,8 +501,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     
     itemGroup.get('itemId')?.setErrors(null);
     itemGroup.patchValue({
-      itemId: item._id,
-      sellingPrice: null // Always default to null
+      itemId: item._id
     });
   }
 
@@ -626,8 +622,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
       .filter((item: any) => item.itemId && item.itemId.trim() !== '')
       .map((item: any) => ({
         itemId: item.itemId,
-        quantity: parseInt(item.quantity, 10),
-        sellingPrice: item.sellingPrice || null
+        quantity: parseInt(item.quantity, 10)
       }));
 
     const payload = {

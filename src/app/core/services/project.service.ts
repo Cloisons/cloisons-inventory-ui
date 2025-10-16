@@ -20,6 +20,7 @@ export interface ProjectItem {
   quantity: number;
   listedItem?: boolean;
   sellingPrice?: number | null;
+  unitPrice?: number | null;
 }
 
 export interface Project {

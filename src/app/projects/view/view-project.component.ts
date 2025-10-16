@@ -18,6 +18,7 @@ interface ProjectItemWithDetails {
   quantity: number;
   listedItem: boolean;
   sellingPrice?: number | null;
+  unitPrice?: number | null;
 }
 
 @Component({
@@ -127,7 +128,7 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
   }
 
   getItemUnitCost(item: ProjectItemWithDetails): number {
-    return item.itemId.unitCost || 0;
+    return item.unitPrice || item.itemId.unitCost || 0;
   }
 
   getItemSellingCost(item: ProjectItemWithDetails): number {
