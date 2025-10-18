@@ -39,7 +39,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
   private originalStatus: ProjectStatus | null = null;
   private hasStatusChangedFromPlanning = false;
 
-  readonly statuses: ProjectStatus[] = ['PLANNING', 'IN_PROGRESS', 'ON_HOLD', 'CANCELLED', 'COMPLETED'];
+  readonly statuses: ProjectStatus[] = ['PLANNING', 'ON_HOLD', 'CANCELLED', 'COMPLETED'];
 
   constructor(
     private fb: FormBuilder,

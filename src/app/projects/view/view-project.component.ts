@@ -90,7 +90,6 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
   getProjectStatusClass(status: string): string {
     const statusMap: { [key: string]: string } = {
       'PLANNING': 'badge-warning',
-      'IN_PROGRESS': 'badge-info',
       'ON_HOLD': 'badge-secondary',
       'CANCELLED': 'badge-danger',
       'COMPLETED': 'badge-success'
@@ -101,7 +100,6 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
   getProjectStatusIcon(status: string): string {
     const iconMap: { [key: string]: string } = {
       'PLANNING': 'mdi-clipboard-text',
-      'IN_PROGRESS': 'mdi-play-circle',
       'ON_HOLD': 'mdi-pause-circle',
       'CANCELLED': 'mdi-cancel',
       'COMPLETED': 'mdi-check-circle'

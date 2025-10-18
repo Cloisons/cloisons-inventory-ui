@@ -31,7 +31,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   itemDropdownSettings: any = null;
   private destroy$ = new Subject<void>();
 
-  readonly statuses: ProjectStatus[] = ['PLANNING', 'IN_PROGRESS', 'ON_HOLD', 'CANCELLED', 'COMPLETED'];
+  readonly statuses: ProjectStatus[] = ['PLANNING', 'ON_HOLD', 'CANCELLED', 'COMPLETED'];
 
   constructor(
     private fb: FormBuilder,

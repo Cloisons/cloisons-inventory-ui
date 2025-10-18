@@ -60,18 +60,9 @@
             <div class="col-md-6">
               <div class="form-group mb-3">
                 <label for="stockItemSelect" class="form-label">Select Item</label>
-                <ng-select
-                  id="stockItemSelect"
-                  class="w-100"
-                  [items]="allStockItems"
-                  bindLabel="itemName"
-                  bindValue="_id"
-                  [searchable]="true"
-                  [clearable]="true"
-                  [virtualScroll]="true"
-                  placeholder="Choose an item..."
-                  [(ngModel)]="selectedStockItem"
-                  (change)="onStockItemChange()">
+                <ng-select id="stockItemSelect" class="w-100" [items]="allStockItems" bindLabel="itemName"
+                  bindValue="_id" [searchable]="true" [clearable]="true" [virtualScroll]="true"
+                  placeholder="Choose an item..." [(ngModel)]="selectedStockItem" (change)="onStockItemChange()">
                   <ng-template ng-option-tmp let-item="item">
                     {{ item.itemName }} - {{ getSupplierName(item.supplierId) }}
                   </ng-template>
@@ -90,37 +81,22 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-group mb-3">
-                <app-user-input
-                  id="stockQuantity"
-                  label="Quantity *"
-                  type="number"
-                  placeholder="Enter quantity"
-                  [required]="true"
-                  [(ngModel)]="stockQuantity">
+                <app-user-input id="stockQuantity" label="Quantity *" type="number" placeholder="Enter quantity"
+                  [required]="true" [(ngModel)]="stockQuantity">
                 </app-user-input>
               </div>
             </div>
             <div class="col-md-4" *ngIf="!isUser2">
               <div class="form-group mb-3">
-                <app-user-input
-                  id="unitCost"
-                  label="Unit Cost (AED) *"
-                  type="number"
-                  placeholder="Enter unit cost"
-                  [required]="true"
-                  [(ngModel)]="unitCost">
+                <app-user-input id="unitCost" label="Unit Cost (AED) *" type="number" placeholder="Enter unit cost"
+                  [required]="true" [(ngModel)]="unitCost">
                 </app-user-input>
               </div>
             </div>
             <div class="col-md-4" *ngIf="isSuperAdmin">
               <div class="form-group mb-3">
-                <app-user-input
-                  id="sellingCost"
-                  label="Selling Cost (AED) *"
-                  type="number"
-                  placeholder="Enter selling cost"
-                  [required]="true"
-                  [(ngModel)]="sellingCost">
+                <app-user-input id="sellingCost" label="Selling Cost (AED) *" type="number"
+                  placeholder="Enter selling cost" [required]="true" [(ngModel)]="sellingCost">
                 </app-user-input>
               </div>
             </div>
@@ -132,13 +108,15 @@
               placeholder="Enter notes for stock addition (optional)"></textarea>
           </div>
 
-          <div *ngIf="selectedStockItem && stockQuantity && (!isUser2 ? unitCost : true) && (!isSuperAdmin || sellingCost)" class="alert alert-info">
+          <div
+            *ngIf="selectedStockItem && stockQuantity && (!isUser2 ? unitCost : true) && (!isSuperAdmin || sellingCost)"
+            class="alert alert-info">
             <strong>Stock Addition Summary:</strong>
             <ul class="mb-0 mt-2">
               <li><strong>Item:</strong> {{ getSelectedItemName() }}</li>
               <li><strong>Quantity:</strong> {{ stockQuantity }} units</li>
               <li *ngIf="!isUser2"><strong>Unit Cost:</strong> AED {{ unitCost | number:'1.2-2' }}</li>
-              <li  *ngIf="isSuperAdmin"><strong>Selling Cost:</strong> AED {{ sellingCost | number:'1.2-2' }}</li>
+              <li *ngIf="isSuperAdmin"><strong>Selling Cost:</strong> AED {{ sellingCost | number:'1.2-2' }}</li>
               <li><strong>New Available Stock:</strong> {{ availableStock + stockQuantity }} units</li>
             </ul>
           </div>
@@ -148,7 +126,8 @@
             Cancel
           </button>
           <button type="button" class="btn btn-primary"
-            [disabled]="!selectedStockItem || !stockQuantity || (!isUser2 ? !unitCost : false) || (isSuperAdmin && !sellingCost)" (click)="addStock()">
+            [disabled]="!selectedStockItem || !stockQuantity || (!isUser2 ? !unitCost : false) || (isSuperAdmin && !sellingCost)"
+            (click)="addStock()">
             <i class="mdi mdi-plus mr-2"></i>
             Add Stock
           </button>
@@ -172,12 +151,12 @@
                 <i class="mdi mdi-close search-clear" *ngIf="searchQuery && !isSearching" (click)="clearSearch()"
                   title="Clear search"></i>
               </div>
-              <button *ngIf="!isUser2" class="btn btn-primary btn-primary-md btn-with-icon me-2" (click)="openStockManagementModal()"
-                title="Manage stock levels" aria-label="Open stock management">
+              <button *ngIf="!isUser2" class="btn btn-primary btn-primary-md btn-with-icon me-2"
+                (click)="openStockManagementModal()" title="Manage stock levels" aria-label="Open stock management">
                 <i class="mdi mdi-warehouse mr-2"></i>
                 Stock Management
               </button>
-              <a  routerLink="/items/add" class="btn btn btn-primary btn-primary-md btn-with-icon">
+              <a routerLink="/items/add" class="btn btn btn-primary btn-primary-md btn-with-icon">
                 <i class="mdi mdi-plus mr-2"></i>
                 Add new item
               </a>
@@ -257,7 +236,8 @@
                   <td>{{ getSupplierName(item.supplierId) }}</td>
                   <td>{{ item.unitScale }}</td>
                   <td>{{ item.availableQty | number:'1.0-0' }}</td>
-                  <td *ngIf="!isUser2">AED {{ item.sellingCost | number:'1.0-0' }}</td>
+                  <td *ngIf="!isUser2"><span *ngIf="item.sellingCost !== undefined">AED {{ item.sellingCost |
+                      number:'1.0-0' }}</span><span *ngIf="item.sellingCost === undefined">—</span></td>
                   <td>
                     <div class="table-actions">
                       <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"

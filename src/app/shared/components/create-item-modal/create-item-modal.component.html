@@ -12,7 +12,7 @@
               <app-mat-input label="Name" formControlName="itemName" placeholder="Item name" [required]="true"></app-mat-input>
             </div>
             <div class="col-12">
-              <app-mat-input label="Item Code" formControlName="itemCode" placeholder="Optional"></app-mat-input>
+              <app-mat-input label="Item Code" formControlName="itemCode" placeholder="Item Code" [required]="true"></app-mat-input>
             </div>
             <div class="col-12">
               <label>Description <span class="text-danger">*</span></label>
@@ -21,13 +21,13 @@
             <div class="col-6">
               <app-mat-select label="Supplier" formControlName="supplierId" [options]="supplierOptions" placeholder="Select" [required]="true"></app-mat-select>
             </div>
-            <div class="col-6" *ngIf="isSuperAdmin">
+            <div class="col-6">
               <app-mat-select label="Unit scale" formControlName="unitScale" [options]="unitScaleOptions" placeholder="Select" [required]="true"></app-mat-select>
             </div>
             <div class="col-6">
               <app-mat-input label="Total quantity" formControlName="totalQty" type="number" placeholder="0" [required]="true"></app-mat-input>
             </div>
-            <div class="col-6" *ngIf="!isUser2">
+            <div class="col-6" >
               <app-mat-input label="Unit cost (AED)" formControlName="unitCost" type="number" placeholder="AED 0.00" [required]="true"></app-mat-input>
             </div>
             <div class="col-6" *ngIf="isSuperAdmin">

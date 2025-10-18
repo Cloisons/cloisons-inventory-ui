@@ -5,7 +5,6 @@ import { CommunicationService } from './communication.service';
 
 export type ProjectStatus =
   | 'PLANNING'
-  | 'IN_PROGRESS'
   | 'ON_HOLD'
   | 'CANCELLED'
   | 'COMPLETED';

@@ -53,7 +53,7 @@ export class CreateItemModalComponent {
       supplierId: ['', Validators.required],
       unitScale: [this.isSuperAdmin ? '' : 'numbers', this.isSuperAdmin ? [Validators.required] : []],
       totalQty: [0, [Validators.required, Validators.min(0)]],
-      unitCost: [this.isUser2 ? 0 : 0, this.isUser2 ? [] : [Validators.required, Validators.min(0)]],
+      unitCost: [0, [Validators.required, Validators.min(0)]],
       sellingCost: [undefined as number | undefined, [Validators.min(0)]],
       listedItem: [true]
     });
@@ -85,7 +85,7 @@ export class CreateItemModalComponent {
       supplierId: raw.supplierId,
       unitScale: raw.unitScale,
       totalQty: Number(raw.totalQty),
-      unitCost: this.isUser2 ? 0 : Number(raw.unitCost),
+      unitCost: Number(raw.unitCost),
       sellingCost: raw.sellingCost === undefined || raw.sellingCost === null || raw.sellingCost === ''
         ? undefined
         : Number(raw.sellingCost),
