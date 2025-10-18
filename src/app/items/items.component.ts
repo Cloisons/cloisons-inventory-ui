@@ -80,8 +80,20 @@ export class ItemsComponent implements OnInit, OnDestroy {
     
     // Load items
     this.loadItems();
+    this.loadAllItems();
     
     // Using Ng Select built-in search; no manual filter init needed
+  }
+
+  loadAllItems(): void {
+    this.itemService.getItems({
+      page: 1,
+      limit: 1000,
+      search: ''
+    }).subscribe((response) => {
+      this.allStockItems = response.data.items || [];
+      this.cdr.markForCheck();
+    });
   }
 
   ngOnDestroy(): void {
@@ -95,9 +107,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
 
 
   loadItems(): void {
-    console.log('🔍 ItemsComponent: loadItems() called');
-    console.log('🔍 Auth status:', this.authService.isAuthenticated());
-    console.log('🔍 Current user:', this.authService.getCurrentUser());
     
     // Check if user is authenticated before making the API call
     if (!this.authService.isAuthenticated()) {
@@ -109,12 +118,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = '';
     this.cdr.markForCheck(); // Trigger change detection for loading state
-    
-    console.log('🔍 Making API call with params:', {
-      page: this.currentPage,
-      limit: this.itemsPerPage,
-      search: this.searchQuery
-    });
     
     this.itemService.getItems({
       page: this.currentPage,
@@ -130,10 +133,9 @@ export class ItemsComponent implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: (response) => {
-        console.log('🔍 API response received:', response);
         if (response.success && response.data) {
           this.items = response.data.items || [];
-          this.allStockItems = response.data.items || []; // Populate stock items for autocomplete
+          // this.allStockItems = response.data.items || []; // Populate stock items for autocomplete
           this.totalItems = response.meta?.total || 0;
           this.totalPages = response.meta?.totalPages || 0;
           console.log('🔍 Items loaded successfully:', this.items.length, 'items');

@@ -37,6 +37,13 @@ export interface Project {
   directItemsUsed?: ProjectItem[];
   createdAt?: string;
   updatedAt?: string;
+  returnEligibility?: {
+    isEligible: boolean;
+    reason: string;
+    submissionCount: number;
+    maxSubmissions: number;
+    daysRemaining?: number;
+  };
 }
 
 export interface ProjectsResponse {
@@ -49,6 +56,40 @@ export interface ProjectsResponse {
     limit: number;
     total: number;
     totalPages: number;
+  };
+}
+
+// Return-related interfaces
+export interface ReturnItem {
+  itemId: string;
+  quantity: number;
+}
+
+export interface ReturnItemResponse {
+  itemId: string;
+  quantity: number;
+  unitCost: number;
+  sellingPrice: number;
+  totalUnitCost: number;
+  totalSellingCost: number;
+}
+
+export interface ProjectReturnEligibility {
+  isEligible: boolean;
+  reason: string;
+  submissionCount: number;
+  maxSubmissions: number;
+  daysRemaining?: number;
+}
+
+export interface ProjectReturnResponse {
+  success: boolean;
+  message: string;
+  data: {
+    returnItems: ReturnItemResponse[];
+    totalReturnUnitCost: number;
+    totalReturnSellingCost: number;
+    updatedProject: Project;
   };
 }
 
@@ -175,6 +216,66 @@ export class ProjectService {
           return void 0;
         }),
         catchError((err) => throwError(() => err))
+      );
+  }
+
+  // Return-related methods
+  /**
+   * Check return eligibility for a project
+   */
+  checkReturnEligibility(projectId: string): Observable<ProjectReturnEligibility> {
+    return this.communicationService
+      .get<{ data: { eligibility: ProjectReturnEligibility } }>(`/projects/${projectId}/return-eligibility`, 'Checking return eligibility...')
+      .pipe(
+        timeout(this.DEFAULT_TIMEOUT),
+        map(response => {
+          if (!response?.data?.eligibility) {
+            throw new Error('Invalid eligibility response');
+          }
+          return response.data.eligibility;
+        }),
+        catchError(error => {
+          console.error('Error checking return eligibility:', error);
+          return throwError(() => new Error('Failed to check return eligibility'));
+        })
+      );
+  }
+
+
+  /**
+   * Submit item return
+   */
+  submitReturn(projectId: string, returnItems: ReturnItem[]): Observable<ProjectReturnResponse> {
+    return this.communicationService
+      .post<ProjectReturnResponse>(`/projects/${projectId}/return-items`, { returnItems }, 'Submitting return...')
+      .pipe(
+        timeout(this.DEFAULT_TIMEOUT),
+        map(response => {
+          // Communication service already handles success/failure logic
+          return response;
+        }),
+        catchError(error => {
+          console.error('Error submitting return:', error);
+          return throwError(() => new Error('Failed to submit return'));
+        })
+      );
+  }
+
+  /**
+   * Get return history for a project
+   */
+  getReturnHistory(projectId: string): Observable<any[]> {
+    return this.communicationService
+      .get<{ data: { returnHistory: any[] } }>(`/projects/${projectId}/return-history`, 'Loading return history...')
+      .pipe(
+        timeout(this.DEFAULT_TIMEOUT),
+        map(response => {
+          return response?.data?.returnHistory || [];
+        }),
+        catchError(error => {
+          console.error('Error fetching return history:', error);
+          return throwError(() => new Error('Failed to fetch return history'));
+        })
       );
   }
 }

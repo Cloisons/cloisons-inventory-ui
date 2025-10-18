@@ -2,8 +2,9 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ProjectService, Project } from '../../core/services/project.service';
+import { ProjectService, Project, ProjectReturnEligibility } from '../../core/services/project.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ProjectUiService, ProjectWithReturnInfo } from '../../core/services/project-ui.service';
 
 @Component({
   selector: 'app-projects',
@@ -14,7 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectsComponent {
-  projects: Project[] = [];
+  projects: ProjectWithReturnInfo[] = [];
   page = 1;
   limit = 10;
   total = 0;
@@ -28,6 +29,7 @@ export class ProjectsComponent {
   constructor(
     private projectService: ProjectService, 
     private authService: AuthService,
+    private projectUiService: ProjectUiService,
     private cdr: ChangeDetectorRef
   ) {
     this.load();
@@ -38,12 +40,30 @@ export class ProjectsComponent {
     this.errorMessage = '';
     this.projectService.listProjectsPaged(this.page, this.limit, this.query).subscribe({
       next: (resp) => {
-        this.projects = resp.items;
-        this.totalPages = Math.max((resp as any).meta?.totalPages || 1, 1);
-        this.total = (resp as any).meta?.total || this.projects.length;
-        this.pageRange = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-        this.isLoading = false;
-        this.cdr.markForCheck();
+        // Enhance projects with return button information
+        this.projectUiService.enhanceProjectsWithReturnInfo(resp.items).subscribe({
+          next: (enhancedProjects) => {
+            this.projects = enhancedProjects;
+            this.totalPages = Math.max((resp as any).meta?.totalPages || 1, 1);
+            this.total = (resp as any).meta?.total || this.projects.length;
+            this.pageRange = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+            this.isLoading = false;
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            console.error('Error enhancing projects with return info:', err);
+            // Fallback to original projects if enhancement fails
+            this.projects = resp.items.map(p => ({
+              ...p,
+              showReturnButton: p.returnEligibility?.isEligible || false
+            } as ProjectWithReturnInfo));
+            this.totalPages = Math.max((resp as any).meta?.totalPages || 1, 1);
+            this.total = (resp as any).meta?.total || this.projects.length;
+            this.pageRange = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+            this.isLoading = false;
+            this.cdr.markForCheck();
+          }
+        });
       },
       error: (err) => {
         this.projects = [];
@@ -78,20 +98,81 @@ export class ProjectsComponent {
     this.load();
   }
 
-  onDelete(p: Project): void {
+  onDelete(p: ProjectWithReturnInfo): void {
     if (!confirm(`Delete project "${p.projectName}"?`)) return;
     this.projectService.deleteProject(p._id).subscribe({
       next: () => this.load(),
     });
   }
 
-  trackById(_: number, p: Project): string { return p._id; }
+  onReturnClick(projectId: string): void {
+    // Navigate to return page
+    window.location.href = `/projects/return/${projectId}`;
+  }
+
+  // Return button helper methods
+  canReturn(project: ProjectWithReturnInfo): boolean {
+    return project.returnEligibility?.isEligible === true && !!project._id;
+  }
+
+  getReturnButtonText(project: ProjectWithReturnInfo): string {
+    if (!project.returnEligibility) {
+      return 'Loading...';
+    }
+
+    if (!project.returnEligibility.isEligible) {
+      if (project.returnEligibility.submissionCount >= project.returnEligibility.maxSubmissions) {
+        return 'Max Returns';
+      }
+      if (project.returnEligibility.reason?.includes('30 days')) {
+        return 'Expired';
+      }
+      return 'Not Eligible';
+    }
+
+    return 'Return Items';
+  }
+
+  getReturnButtonClasses(project: ProjectWithReturnInfo): string {
+    const baseClasses = 'btn btn-sm';
+    
+    if (!this.canReturn(project)) {
+      return `${baseClasses} btn-outline-secondary disabled`;
+    }
+
+    return `${baseClasses} btn-warning`;
+  }
+
+  getReturnTooltipText(project: ProjectWithReturnInfo): string {
+    if (!project.returnEligibility) {
+      return 'Checking eligibility...';
+    }
+
+    if (project.returnEligibility.isEligible) {
+      const daysRemaining = project.returnEligibility.daysRemaining;
+      const submissionsLeft = project.returnEligibility.maxSubmissions - project.returnEligibility.submissionCount;
+      
+      let tooltip = `Return items (${submissionsLeft} submissions left)`;
+      if (daysRemaining !== undefined) {
+        tooltip += ` - ${daysRemaining} days remaining`;
+      }
+      return tooltip;
+    }
+
+    return project.returnEligibility.reason || 'Not eligible for returns';
+  }
+
+  trackById(_: number, p: ProjectWithReturnInfo): string { return p._id; }
   trackByPageNumber(_: number, n: number): number { return n; }
 
-  getContractorName(contractor: Project['contractorId']): string {
+  getContractorName(contractor: any): string {
     if (!contractor) return '';
-    if (typeof contractor === 'string') return contractor;
-    return contractor.contractorName;
+    // Handle populated contractor object
+    if (typeof contractor === 'object' && contractor.contractorName) {
+      return contractor.contractorName;
+    }
+    // Fallback for string or other types
+    return String(contractor);
   }
 
   getMin(a: number, b: number): number { return a < b ? a : b; }

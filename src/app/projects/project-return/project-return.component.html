@@ -1,0 +1,219 @@
+<!-- Loading State -->
+<div class="loading-container" *ngIf="isLoading">
+  <div class="loading-spinner"></div>
+  <p>Loading project details...</p>
+  <p style="color: red; font-size: 12px;">Debug: isLoading = {{ isLoading }}</p>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="errorMessage && !isLoading">
+  <div class="error-message">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ errorMessage }}</p>
+    <button class="btn btn-primary" (click)="goBack()">Back to Projects</button>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="project-return-container" *ngIf="!isLoading && !errorMessage">
+  <!-- Header -->
+  <div class="return-header">
+    <div class="header-content">
+      <h1>
+        <i class="fas fa-undo"></i>
+        Project Item Return
+      </h1>
+      <p>Return items from completed projects within 30 days</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Back to Projects
+      </button>
+    </div>
+  </div>
+
+  <!-- Project Information -->
+  <div class="project-info" *ngIf="project">
+    <div class="info-header">
+      <h3>
+        <i class="fas fa-info-circle"></i>
+        Project Details
+      </h3>
+    </div>
+    <div class="project-details">
+      <div class="detail-row">
+        <div class="detail-item">
+          <span class="detail-label">Project Name:</span>
+          <span class="detail-value">{{ project.projectName || '-' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value">
+            <span class="status-badge status-completed">
+              <i class="fas fa-check-circle"></i>
+              COMPLETED
+            </span>
+          </span>
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-item">
+          <span class="detail-label">Completion Date:</span>
+          <span class="detail-value">{{ formatDate(project.endDate) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Contractor:</span>
+          <span class="detail-value">{{ project.contractorId?.contractorName || '-' }}</span>
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-item">
+          <span class="detail-label">Total Items:</span>
+          <span class="detail-value">{{ projectItems.length }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Return Submissions:</span>
+          <span class="detail-value">
+            <span class="submission-count">
+              {{ eligibility?.submissionCount || 0 }} / {{ eligibility?.maxSubmissions || 3 }}
+            </span>
+          </span>
+        </div>
+      </div>
+      <div class="detail-row" *ngIf="eligibility?.daysRemaining !== undefined">
+        <div class="detail-item">
+          <span class="detail-label">Days Remaining:</span>
+          <span class="detail-value">
+            <span class="days-remaining" [class.warning]="(eligibility?.daysRemaining ?? 0) <= 7">
+              <i class="fas fa-clock"></i>
+              {{ eligibility?.daysRemaining }} days left
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Eligibility Info -->
+  <div class="submission-info" *ngIf="eligibility && eligibility.submissionCount > 0">
+    <h4>Return Submission Information</h4>
+    <p>You have made {{ eligibility.submissionCount }} out of {{ eligibility.maxSubmissions }} allowed return submissions.</p>
+    <p *ngIf="eligibility.daysRemaining !== undefined">
+      <strong>{{ eligibility.daysRemaining }} days remaining</strong> for returns.
+    </p>
+  </div>
+
+  <!-- Error Alert -->
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Success Alert -->
+  <div class="alert alert-success" *ngIf="successMessage">
+    <i class="fas fa-check-circle"></i>
+    {{ successMessage }}
+  </div>
+
+  <!-- Return Form -->
+  <div class="return-form" *ngIf="eligibility?.isEligible">
+    <h3>Select Items to Return</h3>
+    <p>Select the items you want to return and specify the quantities. Prices will be calculated automatically based on the original stock history.</p>
+    
+    <div class="table-responsive">
+      <table class="table table-striped items-table">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Available Quantity</th>
+            <th>Unit Cost</th>
+            <th>Selling Price</th>
+            <th>Return Quantity</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of projectItems; let i = index">
+            <td>{{ getItemName(item) }}</td>
+            <td>{{ item.quantity || 0 }}</td>
+            <td>{{ formatCurrency(item.unitCost || 0) }}</td>
+            <td>{{ formatCurrency(item.sellingPrice || 0) }}</td>
+            <td>
+              <input 
+                type="number" 
+                class="form-control quantity-input" 
+                [min]="0" 
+                [max]="item.quantity || 0" 
+                [value]="getSelectedQuantity(typeof item.itemId === 'object' ? item.itemId._id : item.itemId)"
+                (input)="onQuantityChange(item, +$event.target.value)"
+                [disabled]="isSubmitting">
+            </td>
+            <td>
+              <button 
+                class="btn btn-sm btn-primary" 
+                (click)="selectAllItems(item)"
+                [disabled]="isSubmitting || (item.quantity || 0) === 0">
+                Select All
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Selected Items Summary -->
+    <div class="selected-items-summary" *ngIf="selectedItems.length > 0">
+      <h4>Selected Items ({{ getSelectedItemsCount() }})</h4>
+      <div class="summary-items">
+        <div class="summary-item" *ngFor="let item of selectedItems">
+          <span class="item-name">{{ getItemName(item) }}</span>
+          <span class="item-quantity">{{ item.quantity }} units</span>
+          <span class="item-value">{{ formatCurrency(item.sellingPrice * item.quantity) }}</span>
+        </div>
+      </div>
+      <div class="summary-total">
+        <strong>Total Return Value: {{ formatCurrency(getTotalReturnValue()) }}</strong>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="return-actions">
+      <button 
+        class="btn btn-secondary" 
+        (click)="goBack()"
+        [disabled]="isSubmitting">
+        <i class="fas fa-arrow-left"></i> Back to Projects
+      </button>
+      <!-- <button 
+        class="btn btn-primary" 
+        (click)="loadProjectDetails()"
+        [disabled]="isSubmitting">
+        <i class="fas fa-sync-alt"></i> Refresh Items
+      </button> -->
+      <button 
+        class="btn btn-success" 
+        (click)="submitReturn()"
+        [disabled]="!canSubmitReturn()">
+        <i class="fas fa-check" *ngIf="!isSubmitting"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+        {{ isSubmitting ? 'Submitting...' : 'Submit Return' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Not Eligible Message -->
+  <div class="alert alert-warning" *ngIf="eligibility && !eligibility.isEligible">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Not Eligible for Returns</strong><br>
+    {{ eligibility.reason }}
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-container" *ngIf="isLoading">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+  <p>Loading project details...</p>
+</div>

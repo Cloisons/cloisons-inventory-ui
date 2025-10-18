@@ -40,6 +40,10 @@ export const routes: Routes = [
         path: 'projects/:id/edit',
         loadComponent: () => import('./projects/edit/edit-project.component').then(m => m.EditProjectComponent)
       },
+      {
+        path: 'projects/return/:id',
+        loadComponent: () => import('./projects/project-return/project-return.component').then(m => m.ProjectReturnComponent)
+      },
       { 
         path: 'items', 
         component: ItemsComponent

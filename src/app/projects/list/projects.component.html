@@ -95,16 +95,29 @@
                         [routerLink]="['/projects', p._id, 'edit']"
                         title="Edit"
                         aria-label="Edit project"
+                        [style.display]="p.status === 'COMPLETED' ? 'none' : 'inline-block'"
                       >
                         <i class="mdi mdi-pencil"></i>
                       </a>
+                      
                       <button
                         class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
                         (click)="onDelete(p)"
                         title="Delete"
                         aria-label="Delete project"
+                        [style.display]="p.status === 'COMPLETED' ? 'none' : 'inline-block'"
                       >
                         <i class="mdi mdi-delete"></i>
+                      </button>
+                     
+                      <!-- Return Items Button -->
+                      <button
+                      *ngIf="p.returnEligibility?.isEligible === true"
+                      class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                        title="Return Items"
+                        (click)="onReturnClick(p._id)"
+                        type="button">
+                        <i class="mdi mdi-keyboard-return"></i>
                       </button>
                     </div>
                   </td>
