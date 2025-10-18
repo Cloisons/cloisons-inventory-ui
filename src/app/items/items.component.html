@@ -71,9 +71,14 @@
             </div>
             <div class="col-md-6">
               <div class="form-group mb-3">
-                <label for="availableStock" class="form-label">Available Stock</label>
-                <input type="number" class="form-control" id="availableStock" [(ngModel)]="availableStock" readonly
-                  placeholder="Select an item to view available stock">
+                <app-mat-input 
+                  id="availableStock" 
+                  label="Available Stock" 
+                  type="number" 
+                  placeholder="Select an item to view available stock"
+                  [disabled]="true"
+                  [(ngModel)]="availableStock">
+                </app-mat-input>
               </div>
             </div>
           </div>
