@@ -9,12 +9,15 @@ import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
+import { MatTextareaComponent } from '../../shared/components/mat-textarea/mat-textarea.component';
+import { MatSelectComponent, MatSelectOption } from '../../shared/components/mat-select/mat-select.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, MatTextareaComponent, MatSelectComponent, NgSelectModule],
   templateUrl: './add-project.component.html',
   styleUrls: ['./add-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,6 +26,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   form: FormGroup;
   submitting = false;
   contractors: Contractor[] = [];
+  contractorOptions: any[] = [];
   availableProducts: Product[] = [];
   availableItems: Item[] = [];
   showCreateItemModal = false;
@@ -32,7 +36,9 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   itemDropdownSettings: any = null;
   private destroy$ = new Subject<void>();
 
-  readonly statuses: ProjectStatus[] = ['PLANNING', 'ON_HOLD', 'CANCELLED', 'COMPLETED'];
+  readonly statuses: MatSelectOption[] = [
+    { value: 'PLANNING', label: 'Planning' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -127,7 +133,13 @@ export class AddProjectComponent implements OnInit, OnDestroy {
 
   private loadContractors(): void {
     this.contractorService.listContractors(1, 100).subscribe({
-      next: (items) => (this.contractors = items),
+      next: (items) => {
+        this.contractors = items;
+        this.contractorOptions = items.map(contractor => ({
+          value: contractor._id,
+          label: contractor.contractorName
+        }));
+      },
     });
   }
 

@@ -15,8 +15,13 @@
               <app-mat-input label="Item Code" formControlName="itemCode" placeholder="Item Code" [required]="true"></app-mat-input>
             </div>
             <div class="col-12">
-              <label>Description <span class="text-danger">*</span></label>
-              <textarea class="form-control" rows="3" formControlName="itemDescription" placeholder="Description"></textarea>
+              <app-mat-textarea
+                label="Description"
+                placeholder="Enter item description..."
+                formControlName="itemDescription"
+                [required]="true"
+                [rows]="3">
+              </app-mat-textarea>
             </div>
             <div class="col-6">
               <app-mat-select label="Supplier" formControlName="supplierId" [options]="supplierOptions" placeholder="Select" [required]="true"></app-mat-select>

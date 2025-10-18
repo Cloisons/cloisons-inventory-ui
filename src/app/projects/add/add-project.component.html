@@ -29,18 +29,28 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="projectDescription">Description</label>
-              <textarea id="projectDescription" class="form-control" rows="3" formControlName="projectDescription"></textarea>
-            </div>
+            <app-mat-textarea
+              label="Description"
+              placeholder="Enter project description..."
+              formControlName="projectDescription"
+              [rows]="3">
+            </app-mat-textarea>
 
             <div class="form-group">
               <label for="contractorId">Contractor <span class="text-danger">*</span></label>
-              <select id="contractorId" class="form-control" formControlName="contractorId" 
-                      [class.is-invalid]="form.get('contractorId')?.invalid && form.get('contractorId')?.touched">
-                <option value="" disabled>Select contractor</option>
-                <option *ngFor="let c of contractors" [value]="c._id">{{ c.contractorName }}</option>
-              </select>
+              <ng-select
+                id="contractorId"
+                formControlName="contractorId"
+                [items]="contractorOptions"
+                bindLabel="label"
+                bindValue="value"
+                placeholder="Select contractor"
+                [searchable]="true"
+                [clearable]="true"
+                [loading]="contractorOptions.length === 0"
+                [class.is-invalid]="form.get('contractorId')?.invalid && form.get('contractorId')?.touched"
+                class="form-control">
+              </ng-select>
               <div class="invalid-feedback" *ngIf="form.get('contractorId')?.invalid && form.get('contractorId')?.touched">
                 <span *ngIf="form.get('contractorId')?.errors?.['required']">Contractor is required</span>
               </div>
@@ -48,9 +58,13 @@
 
             <div class="form-group">
               <label for="status">Status</label>
-              <select id="status" class="form-control" formControlName="status">
-                <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
-              </select>
+              <app-mat-select
+              label="Status"
+              formControlName="status"
+              [options]="statuses"
+              placeholder="Select status"
+              [required]="true"
+            ></app-mat-select>
             </div>
 
             <div class="form-group">

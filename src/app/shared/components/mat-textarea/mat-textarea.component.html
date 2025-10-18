@@ -1,0 +1,43 @@
+<div class="mat-textarea-container" 
+     [class.focused]="isFocused" 
+     [class.has-value]="hasValue" 
+     [class.disabled]="disabled" 
+     [class.has-error]="errorMessage">
+  <div class="mat-textarea-wrapper">
+    <div class="mat-textarea-field">
+      <textarea
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [value]="value"
+        [rows]="rows"
+        [maxLength]="maxLength > 0 ? maxLength : null"
+        [minLength]="minLength > 0 ? minLength : null"
+        [style.resize]="resize"
+        (input)="onInput($event)"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        class="mat-textarea-element"
+      ></textarea>
+      
+      <label class="mat-textarea-label" 
+             [class.floating]="isFloating" 
+             *ngIf="showLabel && label">
+        {{ label }}
+        <span class="required-indicator" *ngIf="required">*</span>
+      </label>
+    </div>
+    
+    <div class="mat-textarea-underline" [class.active]="isFocused"></div>
+  </div>
+  
+  <div class="mat-textarea-footer">
+    <div class="mat-textarea-hint" *ngIf="hint && !errorMessage">{{ hint }}</div>
+    <div class="mat-textarea-error error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
+    
+    <div class="mat-textarea-character-count" 
+         *ngIf="maxLength > 0" 
+         [class.over-limit]="isOverLimit">
+      {{ characterCount }}/{{ maxLength }}
+    </div>
+  </div>
+</div>

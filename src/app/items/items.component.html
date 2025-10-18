@@ -107,11 +107,12 @@
             </div>
           </div>
 
-          <div class="form-group mb-3">
-            <label for="stockNotes" class="form-label">Notes</label>
-            <textarea class="form-control" id="stockNotes" rows="3" [(ngModel)]="stockNotes"
-              placeholder="Enter notes for stock addition (optional)"></textarea>
-          </div>
+          <app-mat-textarea
+            label="Notes"
+            placeholder="Enter notes for stock addition (optional)"
+            [(ngModel)]="stockNotes"
+            [rows]="3">
+          </app-mat-textarea>
 
           <div
             *ngIf="selectedStockItem && stockQuantity && (!isUser2 ? unitCost : true) && (!isSuperAdmin || sellingCost)"

@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { ItemService, ItemCreateRequest, Item } from '../../../core/services/item.service';
 import { SupplierService, Supplier } from '../../../core/services/supplier.service';
 import { MatInputComponent } from '../mat-input/mat-input.component';
+import { MatTextareaComponent } from '../mat-textarea/mat-textarea.component';
 import { MatSelectComponent } from '../mat-select/mat-select.component';
 import { MatSelectOption } from '../mat-select/mat-select.component';
 import { AuthService } from '../../../core/services/auth.service';
@@ -11,7 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-create-item-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatInputComponent, MatSelectComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatInputComponent, MatTextareaComponent, MatSelectComponent],
   templateUrl: './create-item-modal.component.html',
   styleUrls: ['./create-item-modal.component.scss']
 })

@@ -7,13 +7,15 @@ import { ItemService, ItemUpdateRequest, Item } from '../../core/services/item.s
 import { SupplierService, Supplier } from '../../core/services/supplier.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
+import { MatTextareaComponent } from '../../shared/components/mat-textarea/mat-textarea.component';
 import { MatSelectComponent } from '../../shared/components/mat-select/mat-select.component';
 import { MatSelectOption } from '../../shared/components/mat-select/mat-select.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-edit-item',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatSelectComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatTextareaComponent, MatSelectComponent, NgSelectModule],
   templateUrl: './edit-item.component.html',
   styleUrls: ['./edit-item.component.scss']
 })

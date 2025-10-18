@@ -40,20 +40,26 @@
           </div>
           <div class="col-xl-6 col-lg-6 col-md-6">
             <div class="form-group">
-              <app-mat-select
-                label="Supplier"
+              <label class="form-label">Supplier <span class="text-danger">*</span></label>
+              <ng-select
                 formControlName="supplierId"
-                [options]="supplierOptions"
-                placeholder="Select"
-                [required]="true"
-              ></app-mat-select>
+                [items]="supplierOptions"
+                placeholder="Select supplier"
+                bindLabel="label"
+                bindValue="value"
+                [clearable]="false"
+                [searchable]="true">
+              </ng-select>
             </div>
           </div>
           <div class="col-xl-12">
-            <div class="form-group">
-              <label>Description <span class="text-danger">*</span></label>
-              <textarea class="form-control" rows="4" formControlName="itemDescription" placeholder="Description"></textarea>
-            </div>
+            <app-mat-textarea
+              label="Description"
+              placeholder="Enter item description..."
+              formControlName="itemDescription"
+              [required]="true"
+              [rows]="4">
+            </app-mat-textarea>
           </div>
           <div class="col-xl-6 col-lg-6 col-md-6">
             <div class="form-group">

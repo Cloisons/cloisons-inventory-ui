@@ -44,22 +44,29 @@
                     </div>
                   </div>
                   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                    <div class="form-group">
-                      <label>Description <span class="text-danger">*</span></label>
-                      <textarea class="form-control" rows="4" formControlName="itemDescription" placeholder="Description"></textarea>
-                    </div>
+                    <app-mat-textarea
+                      label="Description"
+                      placeholder="Enter item description..."
+                      formControlName="itemDescription"
+                      [required]="true"
+                      [rows]="4">
+                    </app-mat-textarea>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                     <div class="form-group">
-                      <app-mat-select
-                        label="Supplier"
+                      <label for="supplierId">Supplier <span class="text-danger">*</span></label>
+                      <ng-select
+                        id="supplierId"
                         formControlName="supplierId"
-                        [options]="supplierOptions"
-                        placeholder="Enter your supplier ID"
-                        [required]="true"
-                      ></app-mat-select>
+                        [items]="supplierOptions"
+                        bindLabel="label"
+                        bindValue="value"
+                        placeholder="Select supplier"
+                        [clearable]="false"
+                        [searchable]="true">
+                      </ng-select>
                     </div>
                   </div>
                   <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6" *ngIf="isSuperAdmin">

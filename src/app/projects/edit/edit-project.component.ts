@@ -9,12 +9,15 @@ import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
+import { MatTextareaComponent } from '../../shared/components/mat-textarea/mat-textarea.component';
+import { MatSelectComponent, MatSelectOption } from '../../shared/components/mat-select/mat-select.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, MatTextareaComponent, MatSelectComponent, NgSelectModule],
   templateUrl: './edit-project.component.html',
   styleUrls: ['./edit-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,6 +30,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
   project: Project | null = null;
   errorMessage = '';
   contractors: Contractor[] = [];
+  contractorOptions: any[] = [];
   availableProducts: Product[] = [];
   availableItems: Item[] = [];
   showCreateItemModal = false;
@@ -40,7 +44,12 @@ export class EditProjectComponent implements OnInit, OnDestroy {
   private originalStatus: ProjectStatus | null = null;
   private hasStatusChangedFromPlanning = false;
 
-  readonly statuses: ProjectStatus[] = ['PLANNING', 'ON_HOLD', 'CANCELLED', 'COMPLETED'];
+  readonly statuses: MatSelectOption[] = [
+    { value: 'PLANNING', label: 'Planning' },
+    { value: 'ON_HOLD', label: 'On Hold' },
+    { value: 'CANCELLED', label: 'Cancelled' },
+    { value: 'COMPLETED', label: 'Completed' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -139,7 +148,13 @@ export class EditProjectComponent implements OnInit, OnDestroy {
 
   private loadContractors(): void {
     this.contractorService.listContractors(1, 100).subscribe({
-      next: (items) => (this.contractors = items),
+      next: (items) => {
+        this.contractors = items;
+        this.contractorOptions = items.map(contractor => ({
+          value: contractor._id,
+          label: contractor.contractorName
+        }));
+      },
     });
   }
 
@@ -326,9 +341,9 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     return currentStatus === 'PLANNING';
   }
 
-  get availableStatuses(): ProjectStatus[] {
+  get availableStatuses(): MatSelectOption[] {
     if (this.hasStatusChangedFromPlanning) {
-      return this.statuses.filter(status => status !== 'PLANNING');
+      return this.statuses.filter(status => status.value !== 'PLANNING');
     }
     return this.statuses;
   }
