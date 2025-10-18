@@ -5,11 +5,12 @@ import { ProfileService, UserProfile, UpdateProfileRequest, ChangePasswordReques
 import { AuthService } from '../core/services/auth.service';
 import { ToastService } from '../core/services/toast.service';
 import { UiLoaderService } from '../core/services/ui-loader.service';
+import { MatInputComponent } from '../shared/components/mat-input/mat-input.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatInputComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })

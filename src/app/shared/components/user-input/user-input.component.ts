@@ -1,24 +1,24 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { MatInputComponent } from '../mat-input/mat-input.component';
 
 @Component({
   selector: 'app-user-input',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatInputComponent],
   template: `
-<label *ngIf="label" [attr.for]="id">{{ label }}</label>
-<input
-  class="form-control"
-  [attr.id]="id"
-  [attr.type]="type"
+<app-mat-input
+  [label]="label"
+  [type]="type"
   [placeholder]="placeholder"
   [required]="required"
   [disabled]="disabled"
   [ngModel]="value"
   (ngModelChange)="handleInput($event)"
-  (blur)="handleBlur()"
-/>
+  (inputBlur)="handleBlur()"
+>
+</app-mat-input>
   `,
   providers: [
     {

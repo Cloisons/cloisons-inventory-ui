@@ -1,37 +1,294 @@
-.mat-select-container {
-  display: flex;
-  flex-direction: column;
-}
+// Import Angular Material theme variables
+@use '@angular/material' as mat;
 
-.mat-select-label {
-  font-size: 14px;
-  color: #10121F;
-  margin-bottom: 8px;
+// Component styles
+.mat-select-field {
+  width: 100%;
   font-family: 'Rubik', sans-serif;
+
+  // Size variations
+  &.small-size {
+    .mat-mdc-form-field {
+      font-size: 12px;
+    }
+    
+    .mat-mdc-select {
+      font-size: 12px;
+    }
+  }
+
+  &.medium-size {
+    .mat-mdc-form-field {
+      font-size: 14px;
+    }
+    
+    .mat-mdc-select {
+      font-size: 14px;
+    }
+  }
+
+  &.large-size {
+    .mat-mdc-form-field {
+      font-size: 16px;
+    }
+    
+    .mat-mdc-select {
+      font-size: 16px;
+    }
+  }
+
+  // Error state
+  &.has-error {
+    .mat-mdc-form-field {
+      .mat-mdc-form-field-focus-overlay {
+        background-color: rgba(220, 38, 38, 0.1);
+      }
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    .mat-mdc-form-field {
+      .mat-mdc-form-field-focus-overlay {
+        background-color: transparent;
+      }
+    }
+  }
 }
 
-.required-indicator { color: #dc2626; margin-left: 2px; }
-
-.mat-select-wrapper {
-  position: relative;
+// Required indicator
+.required-indicator {
+  color: #dc2626;
+  margin-left: 2px;
+  font-weight: 500;
 }
 
+// Select element styling
 .mat-select-element {
   width: 100%;
-  height: 44px;
-  padding: 0 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #fff;
-  color: #111827;
-  font-size: 14px;
-  outline: none;
+  
+  .mat-mdc-select-trigger {
+    min-height: 44px;
+    padding: 0 12px;
+  }
 }
 
-.mat-select-element:focus { border-color: #182996; box-shadow: 0 0 0 3px rgba(24,41,150,0.1); }
+// Search option styling
+.search-option {
+  padding: 8px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fafafa;
+  
+  .search-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    padding: 4px 0;
+    
+    &::placeholder {
+      color: #666;
+      font-style: italic;
+    }
+  }
+}
 
-.error-message { color: #dc2626; font-size: 12px; margin-top: 6px; }
+// Clear option styling
+.clear-option {
+  color: #666;
+  font-style: italic;
+  
+  .mat-icon {
+    font-size: 18px;
+    margin-right: 8px;
+  }
+}
 
-.disabled .mat-select-element { background: #f9fafb; cursor: not-allowed; }
+// Option content styling
+.option-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.option-icon {
+  margin-right: 12px;
+  font-size: 20px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.option-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.option-label {
+  font-size: 14px;
+  color: #333;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.option-description {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// No options message
+.no-options {
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  padding: 16px;
+}
+
+// Selected chips styling
+.selected-chips {
+  margin-top: 8px;
+  
+  .mat-mdc-chip-listbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .selected-chip {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+    
+    .mat-icon {
+      font-size: 16px;
+      color: #1976d2;
+    }
+  }
+}
+
+// Clear button styling
+.clear-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  
+  .mat-icon {
+    font-size: 18px;
+    color: #666;
+  }
+  
+  &:hover .mat-icon {
+    color: #333;
+  }
+}
+
+// Custom panel styling
+::ng-deep .mat-mdc-select-panel {
+  &.custom-panel {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+
+// Form field appearance customizations
+::ng-deep .mat-mdc-form-field {
+  &.mat-form-field-appearance-outline {
+    .mat-mdc-form-field-outline {
+      color: #e0e0e0;
+    }
+    
+    &.mat-focused .mat-mdc-form-field-outline-thick {
+      color: #1976d2;
+    }
+    
+    &.mat-form-field-invalid .mat-mdc-form-field-outline-thick {
+      color: #f44336;
+    }
+  }
+  
+  &.mat-form-field-appearance-fill {
+    .mat-mdc-form-field-fill {
+      background-color: #f5f5f5;
+    }
+    
+    &.mat-focused .mat-mdc-form-field-fill {
+      background-color: #e3f2fd;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .mat-select-field {
+    .option-content {
+      padding: 8px 0;
+    }
+    
+    .option-label {
+      font-size: 16px; // Prevent zoom on iOS
+    }
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .mat-select-field {
+    .search-option {
+      background-color: #2a2a2a;
+      border-bottom-color: #404040;
+    }
+    
+    .option-label {
+      color: #e0e0e0;
+    }
+    
+    .option-description {
+      color: #999;
+    }
+    
+    .selected-chip {
+      background-color: #1e3a5f;
+      color: #64b5f6;
+      border-color: #2d4a6b;
+      
+      .mat-icon {
+        color: #64b5f6;
+      }
+    }
+  }
+}
+
+// Animation for smooth transitions
+.mat-select-field {
+  .mat-mdc-form-field {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .mat-mdc-select {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+// Focus states
+.mat-select-field {
+  .mat-mdc-form-field:focus-within {
+    .mat-mdc-form-field-outline-thick {
+      transform: scale(1.02);
+    }
+  }
+}
 
 

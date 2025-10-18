@@ -37,7 +37,18 @@
                   <app-mat-input label="Address" formControlName="address" [required]="true"></app-mat-input>
                 </div>
                 <div class="col-md-6">
-                  <app-mat-input label="Country of Origin" formControlName="countryOfOrigin" [required]="true"></app-mat-input>
+                  <label class="form-label">Country of Origin <span class="text-danger">*</span></label>
+                  <ng-select
+                    formControlName="countryOfOrigin"
+                    [items]="countryOptions"
+                    bindLabel="label"
+                    bindValue="value"
+                    placeholder="Select a country"
+                    [searchable]="true"
+                    [clearable]="true"
+                    [loading]="countryOptions.length === 0"
+                    class="form-control">
+                  </ng-select>
                 </div>
                 
                 <div class="col-xl-12 form-btns-bottom">

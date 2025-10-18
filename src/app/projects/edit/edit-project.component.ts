@@ -8,12 +8,13 @@ import { ProductService, Product } from '../../core/services/product.service';
 import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
+import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent],
   templateUrl: './edit-project.component.html',
   styleUrls: ['./edit-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -59,27 +59,27 @@
         <form *ngIf="isEditingProfile" [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="profile-edit">
           <div class="form-row">
             <div class="form-group">
-              <label for="firstName">First Name *</label>
-              <input
+              <app-mat-input label="First Name"
                 type="text"
                 id="firstName"
                 formControlName="firstName"
                 class="form-control"
                 [class.is-invalid]="hasFieldError(profileForm, 'firstName')"
                 placeholder="Enter first name">
+              </app-mat-input>
               <div *ngIf="hasFieldError(profileForm, 'firstName')" class="invalid-feedback">
                 {{ getFieldError(profileForm, 'firstName') }}
               </div>
             </div>
             <div class="form-group">
-              <label for="lastName">Last Name *</label>
-              <input
+              <app-mat-input label="Last Name"
                 type="text"
                 id="lastName"
                 formControlName="lastName"
                 class="form-control"
                 [class.is-invalid]="hasFieldError(profileForm, 'lastName')"
                 placeholder="Enter last name">
+              </app-mat-input>
               <div *ngIf="hasFieldError(profileForm, 'lastName')" class="invalid-feedback">
                 {{ getFieldError(profileForm, 'lastName') }}
               </div>
@@ -87,14 +87,14 @@
           </div>
           
           <div class="form-group">
-            <label for="email">Email Address *</label>
-            <input
+            <app-mat-input label="Email Address"
               type="email"
               id="email"
               formControlName="email"
               class="form-control"
               [class.is-invalid]="hasFieldError(profileForm, 'email')"
               placeholder="Enter email address">
+            </app-mat-input>
             <div *ngIf="hasFieldError(profileForm, 'email')" class="invalid-feedback">
               {{ getFieldError(profileForm, 'email') }}
             </div>
@@ -129,28 +129,28 @@
         <!-- Password Change Form -->
         <form *ngIf="isChangingPassword" [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="password-change">
           <div class="form-group">
-            <label for="currentPassword">Current Password *</label>
-            <input
+            <app-mat-input label="Current Password"
               type="password"
               id="currentPassword"
               formControlName="currentPassword"
               class="form-control"
               [class.is-invalid]="hasFieldError(passwordForm, 'currentPassword')"
               placeholder="Enter current password">
+            </app-mat-input>
             <div *ngIf="hasFieldError(passwordForm, 'currentPassword')" class="invalid-feedback">
               {{ getFieldError(passwordForm, 'currentPassword') }}
             </div>
           </div>
 
           <div class="form-group">
-            <label for="newPassword">New Password *</label>
-            <input
+            <app-mat-input label="New Password"
               type="password"
               id="newPassword"
               formControlName="newPassword"
               class="form-control"
               [class.is-invalid]="hasFieldError(passwordForm, 'newPassword')"
               placeholder="Enter new password">
+            </app-mat-input>
             <div *ngIf="hasFieldError(passwordForm, 'newPassword')" class="invalid-feedback">
               {{ getFieldError(passwordForm, 'newPassword') }}
             </div>
@@ -160,14 +160,14 @@
           </div>
 
           <div class="form-group">
-            <label for="confirmPassword">Confirm New Password *</label>
-            <input
+            <app-mat-input label="Confirm New Password"
               type="password"
               id="confirmPassword"
               formControlName="confirmPassword"
               class="form-control"
               [class.is-invalid]="hasFieldError(passwordForm, 'confirmPassword')"
               placeholder="Confirm new password">
+            </app-mat-input>
             <div *ngIf="hasFieldError(passwordForm, 'confirmPassword')" class="invalid-feedback">
               {{ getFieldError(passwordForm, 'confirmPassword') }}
             </div>

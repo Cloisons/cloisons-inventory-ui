@@ -1,23 +1,26 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { SupplierService } from '../../core/services/supplier.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { MatButtonComponent } from '../../shared/components/mat-button/mat-button.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-supplier',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent, NgSelectModule, FormsModule],
   templateUrl: './edit-supplier.component.html',
   styleUrls: ['./edit-supplier.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EditSupplierComponent {
+export class EditSupplierComponent implements OnInit {
   form: FormGroup;
   submitting = false;
   supplierId = '';
+  countryOptions: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -38,6 +41,24 @@ export class EditSupplierComponent {
     if (this.supplierId) {
       this.load();
     }
+  }
+
+  ngOnInit(): void {
+    this.loadCountries();
+  }
+
+  private loadCountries(): void {
+    this.supplierService.getCountries().subscribe({
+      next: (countries: string[]) => {
+        this.countryOptions = countries.map(country => ({
+          value: country,
+          label: country
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to load countries:', error);
+      }
+    });
   }
 
   load(): void {

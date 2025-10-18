@@ -2,7 +2,6 @@
 <div class="loading-container" *ngIf="isLoading">
   <div class="loading-spinner"></div>
   <p>Loading project details...</p>
-  <p style="color: red; font-size: 12px;">Debug: isLoading = {{ isLoading }}</p>
 </div>
 
 <!-- Error State -->
@@ -146,7 +145,7 @@
                 [min]="0" 
                 [max]="item.quantity || 0" 
                 [value]="getSelectedQuantity(typeof item.itemId === 'object' ? item.itemId._id : item.itemId)"
-                (input)="onQuantityChange(item, +$event.target.value)"
+                (input)="onQuantityChange(item, +$any($event.target).value)"
                 [disabled]="isSubmitting">
             </td>
             <td>

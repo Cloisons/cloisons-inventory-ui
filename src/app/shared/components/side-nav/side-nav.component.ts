@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnChanges, SimpleChanges, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -26,7 +26,10 @@ export class SideNavComponent implements OnChanges, OnInit, OnDestroy {
   currentRoute: string = '';
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     // Get current route on component initialization
@@ -40,6 +43,7 @@ export class SideNavComponent implements OnChanges, OnInit, OnDestroy {
       )
       .subscribe((event: NavigationEnd) => {
         this.currentRoute = event.url;
+        this.cdr.markForCheck(); // Trigger change detection for OnPush strategy
       });
   }
 
@@ -63,13 +67,18 @@ export class SideNavComponent implements OnChanges, OnInit, OnDestroy {
   isActiveRoute(route: string | undefined): boolean {
     if (!route) return false;
     
+    // Normalize routes by removing trailing slashes for consistent comparison
+    const normalizedCurrentRoute = this.currentRoute.replace(/\/$/, '') || '/';
+    const normalizedRoute = route.replace(/\/$/, '') || '/';
+    
     // Handle exact matches
-    if (this.currentRoute === route) {
+    if (normalizedCurrentRoute === normalizedRoute) {
       return true;
     }
     
     // Handle parent routes (e.g., if current route is '/items/add' and nav item is '/items')
-    if (this.currentRoute.startsWith(route + '/')) {
+    // Only match if the route is not the root and current route starts with route + '/'
+    if (normalizedRoute !== '/' && normalizedCurrentRoute.startsWith(normalizedRoute + '/')) {
       return true;
     }
     

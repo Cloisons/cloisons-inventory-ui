@@ -20,7 +20,8 @@
           <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
             <div class="form-group">
               <label for="projectName">Project Name</label>
-              <input id="projectName" class="form-control" type="text" formControlName="projectName" />
+              <app-mat-input label="Project Name" id="projectName" class="form-control" type="text" formControlName="projectName">
+              </app-mat-input>
             </div>
 
             <div class="form-group">
@@ -54,7 +55,8 @@
 
             <div class="form-group">
               <label for="startDate">Start Date</label>
-              <input id="startDate" type="date" class="form-control" formControlName="startDate" />
+              <app-mat-input label="Start Date" id="startDate" type="date" class="form-control" formControlName="startDate">
+              </app-mat-input>
             </div>
 
             <!-- Products Section -->
@@ -110,14 +112,14 @@
                         </div>
                       </td>
                       <td>
-                        <input 
+                        <app-mat-input label="Quantity" 
                           *ngIf="canEditProducts"
                           type="number" 
                           formControlName="quantity" 
                           class="form-control"
                           min="1"
-                          [class.is-invalid]="product.get('quantity')?.invalid && product.get('quantity')?.touched"
-                        >
+                          [class.is-invalid]="product.get('quantity')?.invalid && product.get('quantity')?.touched">
+                        </app-mat-input>
                         <div 
                           *ngIf="!canEditProducts"
                           class="form-control-plaintext"
@@ -219,14 +221,14 @@
                         </div>
                       </td>
                       <td>
-                        <input 
+                        <app-mat-input label="Quantity" 
                           *ngIf="canEditDirectItems"
                           type="number" 
                           formControlName="quantity" 
                           class="form-control"
                           min="1"
-                          [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched"
-                        >
+                          [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched">
+                        </app-mat-input>
                         <div 
                           *ngIf="!canEditDirectItems"
                           class="form-control-plaintext"

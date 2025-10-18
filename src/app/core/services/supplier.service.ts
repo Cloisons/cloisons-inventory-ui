@@ -33,6 +33,13 @@ export interface SupplierResponse {
   };
 }
 
+export interface CountriesResponse {
+  success: boolean;
+  data: {
+    countries: string[];
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class SupplierService {
   private readonly DEFAULT_TIMEOUT = 30000;
@@ -181,6 +188,29 @@ export class SupplierService {
           return void 0;
         }
         return void 0;
+      }),
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  getCountries(): Observable<string[]> {
+    return this.communicationService.get<CountriesResponse>(
+      '/suppliers/countries',
+      'Loading countries...'
+    ).pipe(
+      timeout(this.DEFAULT_TIMEOUT),
+      retry(this.MAX_RETRIES),
+      map((resp: any) => {
+        const isWrapped = resp && typeof resp === 'object' && Object.prototype.hasOwnProperty.call(resp, 'success');
+        if (isWrapped && resp.success === false) {
+          throw new Error(resp.message || 'Failed to load countries');
+        }
+        const payload = isWrapped ? resp.data : resp;
+        const countries = payload?.countries;
+        if (!Array.isArray(countries)) {
+          throw new Error('Invalid countries response');
+        }
+        return countries as string[];
       }),
       catchError(err => throwError(() => err))
     );

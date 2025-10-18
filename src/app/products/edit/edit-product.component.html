@@ -95,13 +95,13 @@
                             </div>
                           </td>
                           <td>
-                            <input 
+                            <app-mat-input label="Quantity" 
                               type="number" 
                               formControlName="quantity" 
                               class="form-control"
                               min="1"
-                              [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched"
-                            >
+                              [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched">
+                            </app-mat-input>
                             <div 
                               *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched" 
                               class="invalid-feedback d-block"

@@ -19,8 +19,14 @@
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
             <div class="form-group">
-              <label for="projectName">Project Name</label>
-              <input id="projectName" class="form-control" type="text" formControlName="projectName" />
+              <label for="projectName">Project Name <span class="text-danger">*</span></label>
+              <app-mat-input label="Project Name" id="projectName" class="form-control" type="text" formControlName="projectName" 
+                     [class.is-invalid]="form.get('projectName')?.invalid && form.get('projectName')?.touched">
+              </app-mat-input>
+              <div class="invalid-feedback" *ngIf="form.get('projectName')?.invalid && form.get('projectName')?.touched">
+                <span *ngIf="form.get('projectName')?.errors?.['required']">Project name is required</span>
+                <span *ngIf="form.get('projectName')?.errors?.['maxlength']">Project name must be 100 characters or less</span>
+              </div>
             </div>
 
             <div class="form-group">
@@ -29,11 +35,15 @@
             </div>
 
             <div class="form-group">
-              <label for="contractorId">Contractor</label>
-              <select id="contractorId" class="form-control" formControlName="contractorId">
+              <label for="contractorId">Contractor <span class="text-danger">*</span></label>
+              <select id="contractorId" class="form-control" formControlName="contractorId" 
+                      [class.is-invalid]="form.get('contractorId')?.invalid && form.get('contractorId')?.touched">
                 <option value="" disabled>Select contractor</option>
                 <option *ngFor="let c of contractors" [value]="c._id">{{ c.contractorName }}</option>
               </select>
+              <div class="invalid-feedback" *ngIf="form.get('contractorId')?.invalid && form.get('contractorId')?.touched">
+                <span *ngIf="form.get('contractorId')?.errors?.['required']">Contractor is required</span>
+              </div>
             </div>
 
             <div class="form-group">
@@ -45,7 +55,8 @@
 
             <div class="form-group">
               <label for="startDate">Start Date</label>
-              <input id="startDate" type="date" class="form-control" formControlName="startDate" />
+              <app-mat-input label="Start Date" id="startDate" type="date" class="form-control" formControlName="startDate">
+              </app-mat-input>
             </div>
 
             <!-- Products Section -->
@@ -89,13 +100,13 @@
                         </div>
                       </td>
                       <td>
-                        <input 
+                        <app-mat-input label="Quantity" 
                           type="number" 
                           formControlName="quantity" 
                           class="form-control"
                           min="1"
-                          [class.is-invalid]="product.get('quantity')?.invalid && product.get('quantity')?.touched"
-                        >
+                          [class.is-invalid]="product.get('quantity')?.invalid && product.get('quantity')?.touched">
+                        </app-mat-input>
                         <div 
                           *ngIf="product.get('quantity')?.invalid && product.get('quantity')?.touched" 
                           class="invalid-feedback d-block"
@@ -180,13 +191,13 @@
                         </div>
                       </td>
                       <td>
-                        <input 
+                        <app-mat-input label="Quantity" 
                           type="number" 
                           formControlName="quantity" 
                           class="form-control"
                           min="1"
-                          [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched"
-                        >
+                          [class.is-invalid]="item.get('quantity')?.invalid && item.get('quantity')?.touched">
+                        </app-mat-input>
                         <div 
                           *ngIf="item.get('quantity')?.invalid && item.get('quantity')?.touched" 
                           class="invalid-feedback d-block"
