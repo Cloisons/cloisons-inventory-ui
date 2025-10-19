@@ -42,12 +42,10 @@
             <div class="remember-forgot">
               <div class="remember-pass">
                 <label class="check-container">
-                  <app-mat-input label="Remember password" 
+                  <input 
                     type="checkbox" 
-                    [(ngModel)]="rememberPassword" 
-                    [ngModelOptions]="{standalone: true}"
-                    aria-describedby="remember-help">
-                  </app-mat-input>
+                    formControlName="rememberPassword"
+                    id="rememberPassword">
                   <span class="checkmark"></span>
                   Remember password
                 </label>

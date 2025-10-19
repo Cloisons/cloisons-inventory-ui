@@ -17,7 +17,6 @@ import { ToastService } from '../core/services/toast.service';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  rememberPassword: boolean = false;
 
   constructor(
     private router: Router, 
@@ -29,7 +28,8 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rememberPassword: [false]
     });
   }
 
