@@ -29,10 +29,22 @@ export class S3UploadService {
       )
       .pipe(
         switchMap((res) => {
+          console.log('S3UploadService: Full response:', res);
+          console.log('S3UploadService: Response type:', typeof res);
+          console.log('S3UploadService: Response keys:', Object.keys(res || {}));
+          
+          // Handle both wrapped and unwrapped responses
+          const data = res.data || res;
+          console.log('S3UploadService: Data:', data);
+          
+          if (!data || !data.url) {
+            throw new Error('Invalid response from presigned URL endpoint');
+          }
+          
           const headers = new HttpHeaders({ 'Content-Type': file.type });
           return this.rawHttp
-            .put(res.data.url, file, { headers, responseType: 'text' })
-            .pipe(map(() => res.data.cloudFrontUrl));
+            .put(data.url, file, { headers, responseType: 'text' })
+            .pipe(map(() => data.cloudFrontUrl));
         })
       );
   }
