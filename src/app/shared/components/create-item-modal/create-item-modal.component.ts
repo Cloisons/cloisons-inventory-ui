@@ -4,14 +4,13 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { ItemService, ItemCreateRequest, Item } from '../../../core/services/item.service';
 import { SupplierService, Supplier } from '../../../core/services/supplier.service';
 import { MatInputComponent } from '../mat-input/mat-input.component';
-import { MatSelectComponent } from '../mat-select/mat-select.component';
-import { MatSelectOption } from '../mat-select/mat-select.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-create-item-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatInputComponent, MatSelectComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatInputComponent, NgSelectModule],
   templateUrl: './create-item-modal.component.html',
   styleUrls: ['./create-item-modal.component.scss']
 })
@@ -22,12 +21,12 @@ export class CreateItemModalComponent {
 
   form!: FormGroup;
   suppliers: Supplier[] = [];
-  supplierOptions: MatSelectOption[] = [];
+  supplierOptions: { value: string; label: string }[] = [];
   submitting = false;
   isSuperAdmin = false;
   isUser2 = false;
 
-  unitScaleOptions: MatSelectOption[] = [
+  unitScaleOptions: { value: string; label: string }[] = [
     { value: 'numbers', label: 'Numbers' },
     { value: 'meters', label: 'Meters' },
     { value: 'length', label: 'Length' }

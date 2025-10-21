@@ -60,14 +60,17 @@
             </div>
 
             <div class="form-group">
-              <label for="status">Status</label>
-              <app-mat-select
-              label="Status"
-              formControlName="status"
-              [options]="statuses"
-              placeholder="Select status"
-              [required]="true"
-            ></app-mat-select>
+              <label for="status">Status <span class="text-danger">*</span></label>
+              <ng-select
+                id="status"
+                formControlName="status"
+                [items]="statuses"
+                bindLabel="label"
+                bindValue="value"
+                placeholder="Select status"
+                [clearable]="false"
+                [searchable]="true">
+              </ng-select>
             </div>
 
             <div class="form-group">

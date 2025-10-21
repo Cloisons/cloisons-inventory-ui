@@ -9,14 +9,13 @@ import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
-import { MatSelectComponent, MatSelectOption } from '../../shared/components/mat-select/mat-select.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, MatSelectComponent, NgSelectModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, NgSelectModule],
   templateUrl: './add-project.component.html',
   styleUrls: ['./add-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -35,7 +34,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   itemDropdownSettings: any = null;
   private destroy$ = new Subject<void>();
 
-  readonly statuses: MatSelectOption[] = [
+  readonly statuses: { value: string; label: string }[] = [
     { value: 'PLANNING', label: 'Planning' }
   ];
 

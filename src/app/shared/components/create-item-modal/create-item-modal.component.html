@@ -22,10 +22,34 @@
               </div>
             </div>
             <div class="col-lg-6 col-md-6">
-              <app-mat-select label="Supplier" formControlName="supplierId" [options]="supplierOptions" placeholder="Select" [required]="true"></app-mat-select>
+              <div class="form-group">
+                <label for="supplierId">Supplier <span class="text-danger">*</span></label>
+                <ng-select
+                  id="supplierId"
+                  formControlName="supplierId"
+                  [items]="supplierOptions"
+                  bindLabel="label"
+                  bindValue="value"
+                  placeholder="Select"
+                  [clearable]="false"
+                  [searchable]="true">
+                </ng-select>
+              </div>
             </div>
             <div class="col-lg-6 col-md-6">
-              <app-mat-select label="Unit scale" formControlName="unitScale" [options]="unitScaleOptions" placeholder="Select" [required]="true"></app-mat-select>
+              <div class="form-group">
+                <label for="unitScale">Unit scale <span class="text-danger">*</span></label>
+                <ng-select
+                  id="unitScale"
+                  formControlName="unitScale"
+                  [items]="unitScaleOptions"
+                  bindLabel="label"
+                  bindValue="value"
+                  placeholder="Select"
+                  [clearable]="false"
+                  [searchable]="true">
+                </ng-select>
+              </div>
             </div>
             <div class="col-lg-6 col-md-6">
               <app-mat-input label="Total quantity" formControlName="totalQty" type="number" placeholder="0" [required]="true"></app-mat-input>

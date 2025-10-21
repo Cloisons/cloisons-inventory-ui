@@ -9,14 +9,13 @@ import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
-import { MatSelectComponent, MatSelectOption } from '../../shared/components/mat-select/mat-select.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, MatSelectComponent, NgSelectModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, NgSelectModule],
   templateUrl: './edit-project.component.html',
   styleUrls: ['./edit-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -43,7 +42,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
   private originalStatus: ProjectStatus | null = null;
   private hasStatusChangedFromPlanning = false;
 
-  readonly statuses: MatSelectOption[] = [
+  readonly statuses: { value: string; label: string }[] = [
     { value: 'PLANNING', label: 'Planning' },
     { value: 'ON_HOLD', label: 'On Hold' },
     { value: 'CANCELLED', label: 'Cancelled' },
@@ -340,7 +339,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     return currentStatus === 'PLANNING';
   }
 
-  get availableStatuses(): MatSelectOption[] {
+  get availableStatuses(): { value: string; label: string }[] {
     if (this.hasStatusChangedFromPlanning) {
       return this.statuses.filter(status => status.value !== 'PLANNING');
     }

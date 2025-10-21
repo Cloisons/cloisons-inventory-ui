@@ -65,13 +65,17 @@
           </div>
           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
-              <app-mat-select
-                label="Unit scale"
+              <label for="unitScale">Unit scale <span class="text-danger">*</span></label>
+              <ng-select
+                id="unitScale"
                 formControlName="unitScale"
-                [options]="unitScaleOptions"
+                [items]="unitScaleOptions"
+                bindLabel="label"
+                bindValue="value"
                 placeholder="Select"
-                [required]="true"
-              ></app-mat-select>
+                [clearable]="false"
+                [searchable]="true">
+              </ng-select>
             </div>
           </div>
 

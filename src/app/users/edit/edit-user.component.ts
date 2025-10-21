@@ -5,13 +5,13 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { UserService, UpdateUserRequest, UpdateUserPasswordRequest } from '../../core/services/user.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { MatButtonComponent } from '../../shared/components/mat-button/mat-button.component';
-import { MatSelectComponent } from '../../shared/components/mat-select/mat-select.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { MatLabelComponent } from '../../shared/components/mat-label/mat-label.component';
 
 @Component({
   selector: 'app-edit-user',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent, MatSelectComponent, MatLabelComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent, NgSelectModule, MatLabelComponent],
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

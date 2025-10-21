@@ -68,14 +68,17 @@
 
             <!-- Role -->
             <div class="mb-4">
-              <mat-label for="role">Role *</mat-label>
-              <app-mat-select
+              <label for="role">Role <span class="text-danger">*</span></label>
+              <ng-select
                 id="role"
                 formControlName="role"
-                [options]="roleOptions"
+                [items]="roleOptions"
+                bindLabel="label"
+                bindValue="value"
                 placeholder="Select role"
-                [errorMessage]="form.get('role')?.invalid && form.get('role')?.touched ? 'Role is required' : ''"
-              ></app-mat-select>
+                [clearable]="false"
+                [searchable]="true">
+              </ng-select>
               <div class="invalid-feedback" *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
                 <div *ngIf="form.get('role')?.errors?.['required']">Role is required</div>
               </div>

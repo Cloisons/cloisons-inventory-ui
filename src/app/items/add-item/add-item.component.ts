@@ -6,15 +6,13 @@ import { ItemService, ItemCreateRequest } from '../../core/services/item.service
 import { SupplierService, Supplier } from '../../core/services/supplier.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
-import { MatSelectComponent } from '../../shared/components/mat-select/mat-select.component';
-import { MatSelectOption } from '../../shared/components/mat-select/mat-select.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-add-item',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatSelectComponent, NgSelectModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, NgSelectModule],
   templateUrl: './add-item.component.html',
   styleUrls: ['./add-item.component.scss']
 })
@@ -25,8 +23,8 @@ export class AddItemComponent {
   submitting = false;
   uploading = false;
   imagePreviewUrl: string | null = null;
-  supplierOptions: MatSelectOption[] = [];
-  unitScaleOptions: MatSelectOption[] = [
+  supplierOptions: { value: string; label: string }[] = [];
+  unitScaleOptions: { value: string; label: string }[] = [
     { value: 'numbers', label: 'Numbers' },
     { value: 'meters', label: 'Meters' },
     { value: 'length', label: 'Length' }
