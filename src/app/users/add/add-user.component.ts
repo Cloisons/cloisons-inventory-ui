@@ -6,12 +6,11 @@ import { UserService, CreateUserRequest } from '../../core/services/user.service
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { MatButtonComponent } from '../../shared/components/mat-button/mat-button.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { MatLabelComponent } from '../../shared/components/mat-label/mat-label.component';
 
 @Component({
   selector: 'app-add-user',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent, NgSelectModule, MatLabelComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent, NgSelectModule],
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

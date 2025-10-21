@@ -6,12 +6,11 @@ import { UserService, UpdateUserRequest, UpdateUserPasswordRequest } from '../..
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { MatButtonComponent } from '../../shared/components/mat-button/mat-button.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { MatLabelComponent } from '../../shared/components/mat-label/mat-label.component';
 
 @Component({
   selector: 'app-edit-user',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent, NgSelectModule, MatLabelComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MatInputComponent, MatButtonComponent, NgSelectModule],
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

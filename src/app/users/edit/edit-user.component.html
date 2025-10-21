@@ -21,49 +21,36 @@
 
             <!-- First Name -->
             <div class="mb-3">
-              <mat-label for="firstName">First Name *</mat-label>
               <app-mat-input
                 id="firstName"
+                label="First Name"
                 formControlName="firstName"
                 placeholder="Enter first name"
                 [errorMessage]="form.get('firstName')?.invalid && form.get('firstName')?.touched ? 'First name is required' : ''"
               ></app-mat-input>
-              <div class="invalid-feedback" *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched">
-                <div *ngIf="form.get('firstName')?.errors?.['required']">First name is required</div>
-                <div *ngIf="form.get('firstName')?.errors?.['maxlength']">First name cannot exceed 50 characters</div>
-              </div>
             </div>
 
             <!-- Last Name -->
             <div class="mb-3">
-              <mat-label for="lastName">Last Name *</mat-label>
               <app-mat-input
                 id="lastName"
+                label="Last Name"
                 formControlName="lastName"
                 placeholder="Enter last name"
                 [errorMessage]="form.get('lastName')?.invalid && form.get('lastName')?.touched ? 'Last name is required' : ''"
               ></app-mat-input>
-              <div class="invalid-feedback" *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched">
-                <div *ngIf="form.get('lastName')?.errors?.['required']">Last name is required</div>
-                <div *ngIf="form.get('lastName')?.errors?.['maxlength']">Last name cannot exceed 50 characters</div>
-              </div>
             </div>
 
             <!-- Email -->
             <div class="mb-3">
-              <mat-label for="email">Email Address *</mat-label>
               <app-mat-input
                 id="email"
+                label="Email Address"
                 type="email"
                 formControlName="email"
                 placeholder="Enter email address"
                 [errorMessage]="form.get('email')?.invalid && form.get('email')?.touched ? 'Please enter a valid email address' : ''"
               ></app-mat-input>
-              <div class="invalid-feedback" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
-                <div *ngIf="form.get('email')?.errors?.['required']">Email is required</div>
-                <div *ngIf="form.get('email')?.errors?.['email']">Please enter a valid email address</div>
-                <div *ngIf="form.get('email')?.errors?.['maxlength']">Email cannot exceed 200 characters</div>
-              </div>
             </div>
 
             <!-- Role -->
@@ -109,35 +96,26 @@
                 <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()">
                   <!-- New Password -->
                   <div class="mb-3">
-                    <mat-label for="newPassword">New Password *</mat-label>
                     <app-mat-input
                       id="newPassword"
+                      label="New Password"
                       type="password"
                       formControlName="newPassword"
                       placeholder="Enter new password"
                       [errorMessage]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched ? 'Password is required' : ''"
                     ></app-mat-input>
-                    <div class="invalid-feedback" *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
-                      <div *ngIf="passwordForm.get('newPassword')?.errors?.['required']">Password is required</div>
-                      <div *ngIf="passwordForm.get('newPassword')?.errors?.['minlength']">Password must be at least 6 characters</div>
-                      <div *ngIf="passwordForm.get('newPassword')?.errors?.['maxlength']">Password cannot exceed 128 characters</div>
-                    </div>
                   </div>
 
                   <!-- Confirm Password -->
                   <div class="mb-3">
-                    <mat-label for="confirmPassword">Confirm Password *</mat-label>
                     <app-mat-input
                       id="confirmPassword"
+                      label="Confirm Password"
                       type="password"
                       formControlName="confirmPassword"
                       placeholder="Confirm new password"
                       [errorMessage]="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched ? 'Please confirm password' : ''"
                     ></app-mat-input>
-                    <div class="invalid-feedback" *ngIf="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched">
-                      <div *ngIf="passwordForm.get('confirmPassword')?.errors?.['required']">Please confirm password</div>
-                      <div *ngIf="passwordForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords do not match</div>
-                    </div>
                   </div>
 
                   <!-- Password Form Actions -->
