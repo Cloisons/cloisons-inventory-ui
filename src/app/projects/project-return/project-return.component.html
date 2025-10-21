@@ -19,14 +19,14 @@
   <div class="return-header">
     <div class="header-content">
       <h1>
-        <i class="fas fa-undo"></i>
+
         Project Item Return
       </h1>
       <p>Return items from completed projects within 30 days</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-outline-secondary" (click)="goBack()">
-        <i class="fas fa-arrow-left"></i>
+        <i class="mdi mdi-arrow-left"></i>
         Back to Projects
       </button>
     </div>
@@ -117,7 +117,7 @@
 
   <!-- Return Form -->
   <div class="return-form" *ngIf="eligibility?.isEligible">
-    <h3>Select Items to Return</h3>
+    <h4>Select Items to Return</h4>
     <p>Select the items you want to return and specify the quantities. Prices will be calculated automatically based on the original stock history.</p>
     
     <div class="table-responsive">
@@ -179,7 +179,7 @@
     <!-- Action Buttons -->
     <div class="return-actions">
       <button 
-        class="btn btn-secondary" 
+        class="btn btn-primary secondary-line-btn" 
         (click)="goBack()"
         [disabled]="isSubmitting">
         <i class="fas fa-arrow-left"></i> Back to Projects
@@ -191,7 +191,7 @@
         <i class="fas fa-sync-alt"></i> Refresh Items
       </button> -->
       <button 
-        class="btn btn-success" 
+        class="btn btn-primary" 
         (click)="submitReturn()"
         [disabled]="!canSubmitReturn()">
         <i class="fas fa-check" *ngIf="!isSubmitting"></i>

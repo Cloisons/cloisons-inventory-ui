@@ -1,8 +1,8 @@
 <div class="content-wrapper">
-  <header class="page-header flex-wrap">
+  <header class="page-header flex-wrap pb-0">
     <div class="page-title">
-      <h1 class="mb-0">Add Project</h1>
-      <p class="text-sub">Create a new project</p>
+      <h3 class="mb-0">Add Project</h3>
+     <span class="pl-0 h6 text-sub d-inline-block">Create a new project</span>
     </div>
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
       <ol class="breadcrumb">
@@ -17,10 +17,14 @@
     <div class="col-xl-12 grid-margin stretch-card">
       <section class="card">
         <div class="card-body">
-          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+      
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="row">
+            <div class="col-xl-5 col-lg-6 col-md-8 left-forms-block left-forms-project-block">
             <div class="form-group">
               <label for="projectName">Project Name <span class="text-danger">*</span></label>
-              <app-mat-input label="Project Name" id="projectName" class="form-control" type="text" formControlName="projectName" 
+              <app-mat-input label="Project Name" id="projectName" class="" type="text" formControlName="projectName" 
                      [class.is-invalid]="form.get('projectName')?.invalid && form.get('projectName')?.touched">
               </app-mat-input>
               <div class="invalid-feedback" *ngIf="form.get('projectName')?.invalid && form.get('projectName')?.touched">
@@ -49,7 +53,7 @@
                 [clearable]="true"
                 [loading]="contractorOptions.length === 0"
                 [class.is-invalid]="form.get('contractorId')?.invalid && form.get('contractorId')?.touched"
-                class="form-control">
+                class="">
               </ng-select>
               <div class="invalid-feedback" *ngIf="form.get('contractorId')?.invalid && form.get('contractorId')?.touched">
                 <span *ngIf="form.get('contractorId')?.errors?.['required']">Contractor is required</span>
@@ -69,16 +73,16 @@
 
             <div class="form-group">
               <label for="startDate">Start Date</label>
-              <app-mat-input label="Start Date" id="startDate" type="date" class="form-control" formControlName="startDate">
+              <app-mat-input label="Start Date" id="startDate" type="date" class="" formControlName="startDate">
               </app-mat-input>
             </div>
 
             <!-- Products Section -->
-            <div class="form-group mb-4">
+            <div class="form-group mb-4 file-upload-block">
               <label class="mb-2">Products <span class="text-muted">(optional)</span></label>
               
               <!-- Products Table -->
-              <div formArrayName="products" class="table-responsive">
+              <div formArrayName="products" class="table-responsive add-product-item-add mt-2">
                 <table class="table table-bordered table-hover">
                   <thead class="table-light">
                     <tr>
@@ -129,7 +133,7 @@
                           <div *ngIf="product.get('quantity')?.errors?.['min']">Min: 1</div>
                         </div>
                       </td>
-                      <td class="text-center">
+                      <td class="text-left product-delete">
                         <button 
                           type="button" 
                           class="btn btn-outline-danger btn-sm"
@@ -163,20 +167,20 @@
             </div>
 
             <!-- Direct Items Section -->
-            <div class="form-group mb-4">
+            <div class="form-group mb-4 file-upload-block">
               <label class="mb-2 d-flex align-items-center justify-content-between">
                 <span>Direct Items <span class="text-muted">(optional)</span></span>
-                <button type="button" class="btn btn-link p-0" (click)="onOpenCreateItemModal()">+ Create new item</button>
+                <button type="button" class=" btn-link p-0" (click)="onOpenCreateItemModal()">+ Create new item</button>
               </label>
               
               <!-- Direct Items Table -->
-              <div formArrayName="directItems" class="table-responsive">
+              <div formArrayName="directItems" class="table-responsive add-product-item-add mt-2">
                 <table class="table table-bordered table-hover">
                   <thead class="table-light">
                     <tr>
                       <th width="50%">Item</th>
-                      <th width="30%">Quantity</th>
-                      <th width="10%">Actions</th>
+                      <th width="25%">Quantity</th>
+                      <th width="15%">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -220,7 +224,7 @@
                           <div *ngIf="item.get('quantity')?.errors?.['min']">Min: 1</div>
                         </div>
                       </td>
-                      <td class="text-center">
+                      <td class="text-left product-delete">
                         <button 
                           type="button" 
                           class="btn btn-outline-danger btn-sm"
@@ -259,11 +263,21 @@
               (created)="onItemCreatedFromModal($event)">
             </app-create-item-modal>
 
+    </div>
+
+          </div>
+
+
+
             <div class="d-flex justify-content-end">
-              <a routerLink="/projects" class="btn btn-outline-secondary mr-2">Cancel</a>
-              <button type="submit" class="btn btn-primary" [disabled]="submitting || form.invalid">Create</button>
+              <a routerLink="/projects" class="btn btn-primary secondary-line-btn-cancel">Cancel</a>
+              <button type="submit" class="btn btn-primary ms-2" [disabled]="submitting || form.invalid">Create</button>
             </div>
           </form>
+        
+        
+
+
         </div>
       </section>
     </div>

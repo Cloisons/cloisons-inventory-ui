@@ -1,7 +1,7 @@
 .mat-textarea-container {
   position: relative;
   margin-bottom: 1rem;
-  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: 'Barlow';
 }
 
 .mat-textarea-wrapper {
@@ -19,7 +19,7 @@
 .mat-textarea-element {
   width: 100%;
   padding: 1.5rem 0.75rem 0.5rem 0.75rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #BEC0D3;
   border-radius: 4px;
   font-size: 1rem;
   line-height: 1.5;
@@ -27,7 +27,7 @@
   transition: all 0.2s ease;
   outline: none;
   box-sizing: border-box;
-  font-family: inherit;
+  font-family: 'Barlow';
   resize: vertical;
   min-height: 80px;
 

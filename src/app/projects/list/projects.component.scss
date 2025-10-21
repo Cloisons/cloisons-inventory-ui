@@ -15,26 +15,26 @@
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid #e9ecef;
+
+  margin-bottom: 30px;
+  padding: 0 0 0 0;
+  /*border-bottom: 1px solid #e9ecef;*/
 
   .page-title h1 {
-    font-size: 2rem;
+    font-size: 28px;
     font-weight: 700;
     color: #10121F;
     margin: 0 0 0.5rem 0;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
     line-height: 1.2;
   }
 
   .text-sub {
-    font-size: 1rem;
-    color: #6c757d;
+    font-size: 18px;
+    color: #464255;
     font-weight: 400;
     margin: 0;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   }
 
   .breadcrumb-nav .breadcrumb {
@@ -42,14 +42,14 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    font-size: 0.875rem;
-    font-family: 'Rubik', sans-serif;
+    font-size: 16px;
+  font-family: 'Barlow';
 
     .breadcrumb-item {
       color: #6c757d;
       
       a {
-        color: #007bff;
+        color: #182996;
         text-decoration: none;
         transition: color 0.2s ease;
         
@@ -79,11 +79,11 @@
   }
 
   .card-title {
-    font-size: 1.25rem;
+
     font-weight: 600;
     color: #10121F;
     margin-bottom: 1rem;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   }
 }
 
@@ -109,10 +109,11 @@
 
   .search-input {
     padding: 0.5rem 2.5rem 0.5rem 1rem;
-    border: 1px solid #ced4da;
+    border: 1px solid #BEC0D3;
     border-radius: 0.375rem;
-    font-size: 0.875rem;
+    font-size: 16px;
     width: 250px;
+    height: 50px;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
     &:focus {
@@ -148,7 +149,7 @@
   justify-content: center;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.5;
   text-align: center;
   text-decoration: none;
@@ -160,12 +161,10 @@
 
   &.btn-primary {
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+
 
     &:hover {
-      background-color: #0056b3;
-      border-color: #004085;
+ 
     }
   }
 
@@ -192,21 +191,24 @@
   border-collapse: collapse;
 
   thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    padding: 0.75rem;
-    font-weight: 600;
-    text-align: left;
-    font-size: 0.875rem;
-    color: #495057;
-    font-family: 'Rubik', sans-serif;
+ padding: 1rem 1.25rem;
+
+  font-weight: 700;
+  color: #0f172a;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+  font-family: "Barlow";
+  white-space: nowrap;
+
+  letter-spacing: 0.5px;
+  position: relative;
   }
 
   tbody td {
     padding: 0.75rem;
     border-bottom: 1px solid #dee2e6;
     vertical-align: middle;
-    font-size: 0.875rem;
+
     color: #212529;
   }
 
@@ -232,18 +234,20 @@
     padding: 0;
     border: none;
     background: transparent;
-    color: #6c757d;
+    color: #666;
     cursor: pointer;
     border-radius: 0.25rem;
     transition: all 0.15s ease-in-out;
+    border-radius: 100px;
+    text-align: center; line-height: 32px;
 
     &:hover {
-      background-color: #e9ecef;
+      /*background-color: #e9ecef;*/
       color: #495057;
     }
 
     i {
-      font-size: 16px;
+      font-size: 20px;
     }
   }
 
@@ -258,6 +262,7 @@
     justify-content: center;
     border-radius: 4px;
     margin-left: 4px;
+    border-radius: 100px;
     
     &.btn-warning {
       background-color: #ffc107;
@@ -282,7 +287,7 @@
     }
 
     i {
-      font-size: 12px;
+      font-size: 20px;
       margin-right: 4px;
     }
 
@@ -315,7 +320,7 @@ tr[class*="project-completed"] {
   .pagecount {
     font-size: 0.875rem;
     color: #6c757d;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   }
 
   .pagination {
@@ -385,7 +390,7 @@ tr[class*="project-completed"] {
   h5 {
     color: #6c757d;
     margin-bottom: 0.5rem;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   }
 
   p {
@@ -399,7 +404,7 @@ tr[class*="project-completed"] {
   padding: 0.75rem 1.25rem;
   margin-bottom: 1rem;
   border: 1px solid transparent;
-  border-radius: 0.375rem;
+  border-radius: 6px;
 
   &.alert-danger {
     color: #721c24;
@@ -418,9 +423,7 @@ tr[class*="project-completed"] {
 // Responsive design
 @media (max-width: 768px) {
   .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+
   }
 
   .title-and-button {
@@ -440,7 +443,7 @@ tr[class*="project-completed"] {
   }
 
   .pagination-block {
-    flex-direction: column;
+
     gap: 1rem;
     text-align: center;
   }

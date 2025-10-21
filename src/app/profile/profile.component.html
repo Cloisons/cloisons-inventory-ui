@@ -8,7 +8,7 @@
     <!-- Profile Information Section -->
     <div class="profile-section">
       <div class="section-header">
-        <h3>Profile Information</h3>
+        <h4>Profile Information</h4>
         <button 
           type="button" 
           class="btn btn-outline-primary"
@@ -63,7 +63,7 @@
                 type="text"
                 id="firstName"
                 formControlName="firstName"
-                class="form-control"
+                class=""
                 [class.is-invalid]="hasFieldError(profileForm, 'firstName')"
                 placeholder="Enter first name">
               </app-mat-input>
@@ -76,7 +76,7 @@
                 type="text"
                 id="lastName"
                 formControlName="lastName"
-                class="form-control"
+                class=""
                 [class.is-invalid]="hasFieldError(profileForm, 'lastName')"
                 placeholder="Enter last name">
               </app-mat-input>
@@ -91,7 +91,7 @@
               type="email"
               id="email"
               formControlName="email"
-              class="form-control"
+              class=""
               [class.is-invalid]="hasFieldError(profileForm, 'email')"
               placeholder="Enter email address">
             </app-mat-input>
@@ -101,7 +101,7 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-secondary" (click)="toggleEditProfile()">
+            <button type="button" class="btn btn-primary secondary-line-btn-cancel" (click)="toggleEditProfile()">
               Cancel
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isLoading">
@@ -115,7 +115,7 @@
     <!-- Change Password Section -->
     <div class="profile-section">
       <div class="section-header">
-        <h3>Security Settings</h3>
+        <h4>Security Settings</h4>
         <button 
           type="button" 
           class="btn btn-outline-warning"
@@ -133,7 +133,7 @@
               type="password"
               id="currentPassword"
               formControlName="currentPassword"
-              class="form-control"
+              class=""
               [class.is-invalid]="hasFieldError(passwordForm, 'currentPassword')"
               placeholder="Enter current password">
             </app-mat-input>
@@ -147,7 +147,7 @@
               type="password"
               id="newPassword"
               formControlName="newPassword"
-              class="form-control"
+              class=""
               [class.is-invalid]="hasFieldError(passwordForm, 'newPassword')"
               placeholder="Enter new password">
             </app-mat-input>
@@ -164,7 +164,7 @@
               type="password"
               id="confirmPassword"
               formControlName="confirmPassword"
-              class="form-control"
+              class=""
               [class.is-invalid]="hasFieldError(passwordForm, 'confirmPassword')"
               placeholder="Confirm new password">
             </app-mat-input>
@@ -174,7 +174,7 @@
           </div>
 
           <div class="form-actions">
-            <button type="button" class="btn btn-secondary" (click)="toggleChangePassword()">
+            <button type="button" class="btn btn-primary secondary-line-btn-cancel" (click)="toggleChangePassword()">
               Cancel
             </button>
             <button type="submit" class="btn btn-warning" [disabled]="passwordForm.invalid || isLoading">
@@ -188,7 +188,7 @@
           <div class="info-card">
             <i class="fas fa-shield-alt"></i>
             <div>
-              <h4>Password Security</h4>
+              <h6>Password Security</h6>
               <p>Keep your account secure by using a strong password. Click "Change Password" to update your current password.</p>
             </div>
           </div>

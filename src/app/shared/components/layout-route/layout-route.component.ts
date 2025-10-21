@@ -52,7 +52,7 @@ export class LayoutRouteComponent implements OnInit, OnDestroy {
     },
     {
       label: 'All Suppliers',
-      icon: 'mdi-account-supervisor',
+      icon: 'mdi-account-settings-outline',
       route: '/suppliers'
     },
     {

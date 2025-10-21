@@ -1,5 +1,5 @@
 <div class="content-wrapper pb-0">
-  <div class="page-header flex-wrap">
+  <div class="page-header flex-wrap pb-0">
     <h3 class="mb-0">
       Add Contractor <br>
       <span class="pl-0 h6 text-sub d-inline-block">Create a new contractor</span>
@@ -19,27 +19,27 @@
         <div class="card-body">
           <h4 class="card-title">Enter contractor details</h4>
           <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-            <div class="form-outer-block">
+            <div class="form-outer-block mt-4 col-margin-bottom">
               <div class="row">
-                <div class="col-md-6">
+                <div class="col-xl-4 col-md-6">
                   <app-mat-input label="Contractor Name" formControlName="contractorName" [required]="true"></app-mat-input>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xl-4  col-md-6">
                   <app-mat-input label="Contact Person" formControlName="contactPerson" [required]="true"></app-mat-input>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xl-4  col-md-6">
                   <app-mat-input label="Email" formControlName="email" [required]="true" type="email"></app-mat-input>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xl-4  col-md-6">
                   <app-mat-input label="Phone Number" formControlName="phoneNumber" [required]="true"></app-mat-input>
                 </div>
                 <div class="col-md-12">
                   <app-mat-input label="Address" formControlName="address" [required]="true"></app-mat-input>
                 </div>
-                <div class="col-xl-12 form-btns-bottom">
+                <div class="col-xl-12 form-btns-bottom mt-3">
                   <div class="d-flex justify-content-end gap-2">
-                    <a class="btn btn-light" [routerLink]="['/contractors']">Cancel</a>
-                    <mat-button [type]="'submit'" [loading]="submitting" [disabled]="form.invalid">Save</mat-button>
+                    <a class="btn btn-primary secondary-line-btn-cancel" [routerLink]="['/contractors']">Cancel</a>
+                    <mat-button class="savebtn-supplier ms-2" [type]="'submit'" [loading]="submitting" [disabled]="form.invalid">Save</mat-button>
                   </div>
                 </div>
               </div>

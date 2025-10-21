@@ -3,26 +3,26 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 2rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 30px;
+  padding: 0 0 0 0;
+  /*border-bottom: 1px solid #e9ecef;*/
 
   .page-title {
     h1 {
-      font-size: 2rem;
+      font-size: 28px;
       font-weight: 700;
       color: #10121F;
       margin: 0 0 0.5rem 0;
-      font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
       line-height: 1.2;
     }
 
     .text-sub {
-      font-size: 1rem;
-      color: #6c757d;
+      font-size: 18px;
+      color: #464255;
       font-weight: 400;
       margin: 0;
-      font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
     }
   }
 }
@@ -47,11 +47,11 @@
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 
   .card-title {
-    font-size: 1.25rem;
+
     font-weight: 600;
     color: #10121F;
     margin: 0;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   }
 
   .header-actions {
@@ -66,13 +66,13 @@
 
       .search-input {
         width: 250px;
-        height: 36px;
+        height: 50px;
         padding: 0.5rem 2.5rem 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        border: 1px solid #e9ecef;
+        font-size: 16px;
+        border: 1px solid #BEC0D3;
         border-radius: 6px;
         background-color: #ffffff;
-        font-family: 'Rubik', sans-serif;
+     font-family: 'Barlow';
         transition: all 0.2s ease;
 
         &:focus {
@@ -86,7 +86,7 @@
         position: absolute;
         right: 0.75rem;
         color: #9e9e9e;
-        font-size: 16px;
+        font-size: 24px;
         pointer-events: none;
         transition: all 0.2s ease;
       }
@@ -117,7 +117,7 @@
       border-radius: 8px;
       text-decoration: none;
       transition: all 0.3s ease;
-      font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
       color: white !important;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -132,7 +132,7 @@
 
 .table-responsive {
   overflow-x: auto;
-  border-radius: 8px;
+
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -151,14 +151,13 @@
 
     th {
       padding: 1rem 1.25rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #495057;
+      font-weight: 700;
+      color: #0f172a;
       text-align: left;
       border-bottom: 2px solid #dee2e6;
-      font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
       white-space: nowrap;
-      text-transform: uppercase;
+
       letter-spacing: 0.5px;
     }
   }
@@ -176,10 +175,10 @@
 
       td {
         padding: 1rem 1.25rem;
-        font-size: 0.875rem;
-        color: #495057;
+
+    color: #212529;
         vertical-align: middle;
-        font-family: 'Rubik', sans-serif;
+      font-family: 'Barlow';
         border-bottom: 1px solid #f1f3f4;
       }
     }
@@ -190,7 +189,7 @@
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
 
   .mdl-button {
     min-width: 32px;
@@ -201,7 +200,7 @@
     border: none;
     border-radius: 50%;
     background-color: transparent;
-    color: #6c757d;
+    color: #666;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
@@ -209,14 +208,14 @@
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
+      /*background-color: rgba(0, 0, 0, 0.1);*/
       color: #000000;
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     i {
-      font-size: 16px;
+      font-size: 20px;
       line-height: 1;
     }
   }
@@ -233,7 +232,7 @@
   .pagecount {
     font-size: 0.875rem;
     color: #6c757d;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
     font-weight: 500;
   }
 
@@ -275,7 +274,7 @@
         border: 1px solid #e9ecef;
         border-radius: 6px;
         transition: all 0.2s ease;
-        font-family: 'Rubik', sans-serif;
+      font-family: 'Barlow';
         background-color: white;
         cursor: pointer;
 
@@ -313,7 +312,7 @@
 }
 
 .alert {
-  border-radius: 8px;
+  border-radius: 6px;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 

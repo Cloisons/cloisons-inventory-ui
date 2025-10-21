@@ -57,13 +57,13 @@
 }
 
 .project-return-container {
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
 .return-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+background: linear-gradient( 135deg, #1331b9 0%, #8d41da 100%);
   color: white;
   padding: 30px;
   border-radius: 10px;
@@ -90,6 +90,7 @@
       margin: 10px 0 0 0;
       opacity: 0.9;
       font-size: 1.1rem;
+      color: #fff !important;
     }
   }
 
@@ -100,15 +101,17 @@
       color: white;
       
       &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 1);
+        border-color: rgba(255, 255, 255, 1);
+        color: #000 !important;
       }
 
       i {
-        margin-right: 8px;
+        margin-right: 0px;
       }
     }
   }
+   .header-actions .btn:hover i{  color: #000 !important; }
 }
 
 .project-info {
@@ -137,12 +140,13 @@
   border-bottom: 1px solid #e9ecef;
 
   .detail-label {
-    font-weight: 600;
-    color: #666;
+  
+    color: #444;
   }
 
   .detail-value {
-    color: #333;
+    color: #000;
+      font-weight: 600;
   }
 }
 
@@ -154,8 +158,8 @@
   text-transform: uppercase;
 
   &.status-completed {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #28a745;
+    color: #fff;
   }
 }
 
@@ -168,7 +172,7 @@
 
   h4 {
     margin: 0 0 10px 0;
-    color: #1976d2;
+    color: #182996;
   }
 
   p {
@@ -210,9 +214,9 @@
   }
 
   th {
-    background-color: #f8f9fa;
+    background-color: #ECF0F8;
     font-weight: 600;
-    color: #333;
+    color: #0f172a;
   }
 
   tr:hover {
@@ -272,7 +276,7 @@
 .return-actions {
   display: flex;
   gap: 15px;
-  justify-content: center;
+  justify-content: end;
   margin-top: 30px;
   flex-wrap: wrap;
 }
@@ -296,7 +300,7 @@
   }
 
   &.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
     color: white;
 
     &:hover:not(:disabled) {
@@ -325,7 +329,7 @@
 
   &.btn-sm {
     padding: 6px 12px;
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
@@ -513,7 +517,7 @@
       .item-id {
         color: #666;
         font-size: 0.8rem;
-        font-family: monospace;
+        font-family: 'Barlow';
       }
     }
   }

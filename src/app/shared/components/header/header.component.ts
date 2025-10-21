@@ -15,6 +15,9 @@ import { Message } from '../../../core/services/message.service';
     <nav class="navbar">
       <div class="navbar-menu-wrapper">
         <div class="navbar-brand-wrapper">
+        <div class="logo-sm-view">
+          <img src="assets/images/login-logo.png" alt="logo" />
+        </div>
           <button 
             class="navbar-toggler navbar-toggler align-self-center mr-2" 
             type="button" 

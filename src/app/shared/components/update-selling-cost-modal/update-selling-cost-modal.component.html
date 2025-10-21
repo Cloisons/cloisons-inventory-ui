@@ -3,19 +3,38 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Update Selling Cost</h5>
-        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="close" (click)="onClose()" aria-label="Close">
+               <span aria-hidden="true">
+              <i class="mdi mdi-close" aria-hidden="true"></i>
+            </span>
         </button>
       </div>
       
       <div class="modal-body">
         <div *ngIf="stockHistoryItem" class="mb-3">
-          <small class="text-muted">
+
+<div class="label-result-row">
+  <strong>Date :</strong> <span>{{ stockHistoryItem.createdAt | date:'medium' }}</span>
+</div>
+<div class="label-result-row">
+  <strong>Change :</strong> <span>{{ stockHistoryItem.change > 0 ? '+' : '' }}{{ stockHistoryItem.change }}</span>
+</div>
+<div class="label-result-row">
+  <strong>Previous Qty :</strong> <span>{{ stockHistoryItem.previousAvailableQty }} → </span>
+</div>
+<div class="label-result-row">
+  <strong>New Qty :</strong> <span>{{ stockHistoryItem.newAvailableQty }}</span>
+</div>
+
+
+
+          <!-- <small class="text-muted">
             <strong>Date:</strong> {{ stockHistoryItem.createdAt | date:'medium' }}<br>
             <strong>Change:</strong> {{ stockHistoryItem.change > 0 ? '+' : '' }}{{ stockHistoryItem.change }}<br>
             <strong>Previous Qty:</strong> {{ stockHistoryItem.previousAvailableQty }} → 
             <strong>New Qty:</strong> {{ stockHistoryItem.newAvailableQty }}
-          </small>
+          </small> -->
+
         </div>
 
         <form (ngSubmit)="onUpdate()">
@@ -44,7 +63,7 @@
       <div class="modal-footer">
         <button 
           type="button" 
-          class="btn btn-secondary" 
+          class="btn btn-primary secondary-line-btn-cancel" 
           (click)="onClose()"
           [disabled]="isUpdating"
         >

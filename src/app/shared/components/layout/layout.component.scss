@@ -1,7 +1,7 @@
 .layout-container {
   display: flex;
   height: 100vh;
-  background-color: #f8f9fa;
+
   position: relative;
   margin: 0;
   padding: 0;
@@ -33,7 +33,7 @@
 // Responsive design
 @media (max-width: 768px) {
   .main-content {
-    margin-left: 0;
+    /*margin-left: 0;*/
     height: 100vh;
 
     &.side-nav-expanded {

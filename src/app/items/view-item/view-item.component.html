@@ -1,5 +1,5 @@
 <div class="content-wrapper pb-0" *ngIf="item; else loadingTpl">
-  <div class="page-header flex-wrap">
+  <div class="page-header flex-wrap pb-0">
     <h3 class="mb-0">
       View Item <br>
       <span class="pl-0 h6 text-sub d-inline-block">Item in the inventory</span>
@@ -17,23 +17,26 @@
   <section class="card">
     <div class="card-body">
       <div class="row">
-        <div class="col-lg-5">
+        <div class="col-xl-4">
           <img
             [src]="item.itemImage || '/assets/images/no-image-placeholder.svg'"
             alt="Item image"
             class="item-image"
           />
         </div>
-        <div class="col-lg-7">
-          <div class="mb-3"><strong>Description:</strong><br />{{ item.itemDescription || '—' }}</div>
-          <div class="mb-2"><strong>Supplier:</strong> {{ getSupplierName(item) }}</div>
-          <div class="mb-2"><strong>Unit Scale:</strong> {{ item.unitScale }}</div>
-          <div class="mb-2"><strong>Available Qty:</strong> {{ item.availableQty }}</div>
-          <div class="mb-2" *ngIf="!isUser2">
-            <strong>Selling Cost:</strong>
+        <div class="col-xl-8 label-and-result text-lg">
+          <div class="label-result-row"><strong>Description :</strong>
+         <span>{{ item.itemDescription || '—' }} </span>   </div>
+          <div class="label-result-row"><strong>Supplier :</strong> <span>{{ getSupplierName(item) }}</span> </div>
+          <div class="label-result-row"><strong>Unit Scale :</strong> <span>{{ item.unitScale }} </span> </div>
+          <div class="label-result-row"><strong>Available Qty :</strong> <span>{{ item.availableQty }} </span> </div>
+          <div class="label-result-row" *ngIf="!isUser2">
+            <strong>Selling Cost :</strong>
             <span *ngIf="item.sellingCost !== undefined">AED {{ item.sellingCost }}</span>
             <span *ngIf="item.sellingCost === undefined">—</span>
           </div>
+
+
         </div>
       </div>
     </div>

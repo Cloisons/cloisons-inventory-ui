@@ -26,7 +26,7 @@
   color: #fff;
   font-weight: 500;
   margin-bottom: 0;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
 }
 
 .login-left h1 {
@@ -35,7 +35,7 @@
   font-weight: 700;
   margin: 0;
   line-height: 1.2;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
 }
 
 .login-logo {
@@ -51,7 +51,7 @@
   font-size: 30px;
   margin-bottom: 10px;
   color: #10121F;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-weight: 600;
 }
 
@@ -60,9 +60,9 @@
   padding: 12px 16px;
   margin-bottom: 20px;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
 }
 
 .alert-danger {
@@ -85,7 +85,7 @@
   color: #464255;
   margin-bottom: 30px;
   font-size: 15px;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-weight: 400;
 }
 
@@ -124,7 +124,7 @@ mat-label {
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: #10121F;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-size: 14px;
 }
 
@@ -146,7 +146,7 @@ mat-label {
   text-decoration: underline;
   color: #464255;
   transition: color 0.2s ease;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-weight: 400;
 }
 
@@ -164,7 +164,7 @@ mat-label {
   cursor: pointer;
   font-size: 16px;
   user-select: none;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-weight: 400;
 }
 
@@ -224,7 +224,7 @@ mat-label {
 
 .btn {
   display: inline-block;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
@@ -238,7 +238,7 @@ mat-label {
   cursor: pointer;
   text-decoration: none;
   min-height: 48px;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
 }
 
 .btn-primary {
@@ -273,7 +273,7 @@ mat-label {
   margin-top: 30px;
   font-size: 16px;
   color: #464255;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-weight: 400;
 }
 
@@ -282,7 +282,7 @@ mat-label {
   font-weight: 600;
   color: #10121F;
   transition: color 0.2s ease;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
 }
 
 .create-account-link a:hover {
@@ -325,7 +325,7 @@ mat-label {
   font-size: 14px;
   margin-top: 4px;
   display: block;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-weight: 400;
 }
 
@@ -338,7 +338,7 @@ mat-label {
   font-size: 16px;
   padding: 0;
   transition: color 0.2s ease;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-weight: 400;
 
   &:hover {
@@ -347,8 +347,9 @@ mat-label {
   }
 
   &:focus {
-    outline: 2px solid rgba(24, 41, 150, 0.3);
+    /*outline: 2px solid rgba(24, 41, 150, 0.3);*/
     outline-offset: 2px;
+        outline: none;
     border-radius: 4px;
   }
 }

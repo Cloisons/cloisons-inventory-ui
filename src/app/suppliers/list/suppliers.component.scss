@@ -16,27 +16,27 @@
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid #e9ecef;
+
+  
+  padding: 0 0 0 ;
+  /*border-bottom: 1px solid #e9ecef;*/
 
   .page-title {
     h1 {
-      font-size: 2rem;
+      font-size: 28px;
       font-weight: 700;
       color: #10121F;
       margin: 0 0 0.5rem 0;
-      font-family: 'Rubik', sans-serif;
+     font-family: 'Barlow';
       line-height: 1.2;
     }
 
     .text-sub {
-      font-size: 1rem;
-      color: #6c757d;
+      font-size: 18px;
+      color: #464255;
       font-weight: 400;
       margin: 0;
-      font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
     }
   }
 
@@ -46,8 +46,8 @@
       list-style: none;
       padding: 0;
       margin: 0;
-      font-size: 0.875rem;
-      font-family: 'Rubik', sans-serif;
+      font-size: 16px;
+  font-family: 'Barlow';
       background: none;
       border-radius: 0;
 
@@ -77,13 +77,14 @@
 
           &:hover {
             color: #0f1f7a;
-            background-color: rgba(24, 41, 150, 0.1);
+            background-color: none;
             text-decoration: none;
           }
 
           &:focus {
-            outline: 2px solid rgba(24, 41, 150, 0.3);
+           /* outline: 2px solid rgba(24, 41, 150, 0.3);*/
             outline-offset: 2px;
+                outline: none;
           }
         }
       }
@@ -170,49 +171,7 @@
     z-index: 1;
   }
 
-  .modal-header {
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 
-    .modal-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #10121F;
-      font-family: 'Rubik', sans-serif;
-      margin: 0;
-      flex: 1;
-    }
-
-    .close {
-      background: none;
-      border: none;
-      font-size: 24px;
-      color: #6c757d;
-      cursor: pointer;
-      padding: 0;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: auto;
-      order: 2;
-
-      &:hover {
-        color: #495057;
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: 50%;
-      }
-
-      &:focus {
-        outline: 2px solid rgba(0, 0, 0, 0.3);
-        outline-offset: 2px;
-      }
-    }
-  }
 
   .modal-body {
     padding: 1.5rem;
@@ -245,7 +204,7 @@
         font-weight: 600;
         color: #495057;
         margin-bottom: 0.5rem;
-        font-family: 'Rubik', sans-serif;
+     font-family: 'Barlow';
         font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -257,7 +216,7 @@
         border-radius: 6px;
         padding: 0.75rem 1rem;
         font-size: 0.875rem;
-        font-family: 'Rubik', sans-serif;
+    font-family: 'Barlow';
         transition: all 0.2s ease;
         background-color: #ffffff;
 
@@ -290,7 +249,7 @@
       border: none;
       padding: 1rem;
       margin-bottom: 1rem;
-      font-family: 'Rubik', sans-serif;
+   font-family: 'Barlow';
 
       &.alert-info {
         background-color: #d1ecf1;
@@ -311,9 +270,9 @@
     .btn {
       padding: 0.75rem 1.5rem;
       font-size: 0.875rem;
-      font-weight: 500;
+      font-weight: 600;
       border-radius: 6px;
-      font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
       transition: all 0.2s ease;
       border: none;
       cursor: pointer;
@@ -387,11 +346,11 @@
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 
   .card-title {
-    font-size: 1.25rem;
+
     font-weight: 600;
     color: #10121F;
     margin: 0;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   }
 
   .header-actions {
@@ -406,13 +365,13 @@
 
       .search-input {
         width: 250px;
-        height: 36px;
+        height: 50px;
         padding: 0.5rem 2.5rem 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        border: 1px solid #e9ecef;
+        font-size:16px;
+        border: 1px solid #BEC0D3;
         border-radius: 6px;
         background-color: #ffffff;
-        font-family: 'Rubik', sans-serif;
+     font-family: 'Barlow';
         transition: all 0.2s ease;
 
         &:focus {
@@ -437,7 +396,7 @@
         position: absolute;
         right: 0.75rem;
         color: #9e9e9e;
-        font-size: 16px;
+        font-size: 24px;
         pointer-events: none;
         transition: all 0.2s ease;
 
@@ -472,11 +431,11 @@
       gap: 0.5rem;
       padding: 0.75rem 1.5rem;
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 600;
       border-radius: 8px;
       text-decoration: none;
       transition: all 0.3s ease;
-      font-family: 'Rubik', sans-serif;
+   font-family: 'Barlow';
       color: white !important;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -487,7 +446,7 @@
       }
 
       &:focus {
-        outline: 2px solid rgba(24, 41, 150, 0.3);
+        outline: none;
         outline-offset: 2px;
       }
 
@@ -508,7 +467,7 @@
 // Table styles
 .table-responsive {
   overflow-x: auto;
-  border-radius: 8px;
+
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -527,16 +486,13 @@
 
     th {
       padding: 1rem 1.25rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #495057;
       text-align: left;
       border-bottom: 2px solid #dee2e6;
-      font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
       white-space: nowrap;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
       position: relative;
+      color: #0f172a;
+  font-weight: 600;
 
       &:first-child {
         border-top-left-radius: 8px;
@@ -574,10 +530,10 @@
 
       td {
         padding: 1rem 1.25rem;
-        font-size: 0.875rem;
-        color: #495057;
+
+    color: #212529;
         vertical-align: middle;
-        font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
         border-bottom: 1px solid #f1f3f4;
 
         &[data-label] {
@@ -595,8 +551,8 @@
 
 // Table image styles
 .table-img {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   object-fit: cover;
   border-radius: 8px;
   border: 2px solid #e9ecef;
@@ -635,7 +591,7 @@
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
 
   .mdl-button {
     min-width: 32px;
@@ -646,7 +602,7 @@
     border: none;
     border-radius: 50%;
     background-color: transparent;
-    color: #6c757d;
+    color: #666;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
@@ -656,25 +612,27 @@
     overflow: hidden;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
+      /*background-color: rgba(0, 0, 0, 0.1);*/
       color: #000000;
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     &:active {
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: rgba(0, 0, 0, 0.1);
       transform: translateY(0);
     }
 
     &:focus {
-      outline: 2px solid rgba(0, 0, 0, 0.3);
+        /*outline: 2px solid rgba(24, 41, 150, 0.3);*/
+      outline: none;
       outline-offset: 2px;
     }
 
     i {
-      font-size: 16px;
+      font-size: 20px;
       line-height: 1;
+      color: #666;
     }
 
     // Ripple effect
@@ -700,7 +658,7 @@
     color: #000000;
     
     &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
+     /* background-color: rgba(0, 0, 0, 0.1);*/
       color: #000000;
     }
   }
@@ -718,7 +676,7 @@
   .pagecount {
     font-size: 0.875rem;
     color: #6c757d;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
     font-weight: 500;
   }
 
@@ -751,8 +709,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 2.5rem;
-        height: 2.5rem;
+        min-width: 1.5rem;
+        height: 2rem;
         padding: 0 0.75rem;
         font-size: 0.875rem;
         color: #495057;
@@ -760,7 +718,7 @@
         border: 1px solid #e9ecef;
         border-radius: 6px;
         transition: all 0.2s ease;
-        font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
         background-color: white;
         cursor: pointer;
 
@@ -773,8 +731,9 @@
         }
 
         &:focus {
-          outline: 2px solid rgba(24, 41, 150, 0.3);
+         /* outline: 2px solid rgba(24, 41, 150, 0.3);*/
           outline-offset: 2px;
+              outline: none;
         }
 
         &.disabled {
@@ -799,7 +758,7 @@
 .text-center {
   .mb-0 {
     color: #6c757d;
-    font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   }
 }
 
@@ -888,16 +847,7 @@
 
 // Responsive design
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem 0;
 
-    .breadcrumb-nav {
-      margin-top: 0.5rem;
-    }
-  }
 
   // Modal responsive adjustments
   .modal {
@@ -946,7 +896,7 @@
 
   .table-responsive {
     font-size: 0.75rem;
-    border-radius: 6px;
+
   }
 
   .table {
@@ -966,7 +916,7 @@
   }
 
   .pagination-block {
-    flex-direction: column;
+
     gap: 1rem;
     text-align: center;
     padding: 1rem;
@@ -987,7 +937,7 @@
       min-width: 28px;
 
       i {
-        font-size: 14px;
+        font-size: 16px;
       }
     }
   }
@@ -996,7 +946,7 @@
 @media (max-width: 576px) {
   .page-header {
     .page-title h1 {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
   }
 
@@ -1027,7 +977,7 @@
       min-width: 24px;
 
       i {
-        font-size: 12px;
+        font-size: 14px;
       }
     }
   }

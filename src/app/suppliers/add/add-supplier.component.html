@@ -1,5 +1,5 @@
 <div class="content-wrapper pb-0">
-  <div class="page-header flex-wrap">
+  <div class="page-header flex-wrap pb-0">
     <h3 class="mb-0">
       Add Supplier <br>
       <span class="pl-0 h6 text-sub d-inline-block">Create a new supplier</span>
@@ -19,24 +19,24 @@
         <div class="card-body">
           <h4 class="card-title">Enter supplier details</h4>
           <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-            <div class="form-outer-block">
-              <div class="row">
-                <div class="col-md-6">
+            <div class="form-outer-block mt-4">
+              <div class="row col-margin-bottom">
+                <div class="col-xl-4 col-md-6">
                   <app-mat-input label="Supplier Name" formControlName="supplierName" [required]="true"></app-mat-input>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xl-4 col-md-6">
                   <app-mat-input label="Contact Person" formControlName="contactPerson" [required]="true"></app-mat-input>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xl-4 col-md-6">
                   <app-mat-input label="Email" formControlName="email" [required]="true" type="email"></app-mat-input>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xl-4 col-md-6">
                   <app-mat-input label="Phone Number" formControlName="phoneNumber" [required]="true"></app-mat-input>
                 </div>
                 <div class="col-md-12">
                   <app-mat-input label="Address" formControlName="address" [required]="true"></app-mat-input>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xl-4 col-md-6">
                   <label class="form-label">Country of Origin <span class="text-danger">*</span></label>
                   <ng-select
                     formControlName="countryOfOrigin"
@@ -47,14 +47,14 @@
                     [searchable]="true"
                     [clearable]="true"
                     [loading]="countryOptions.length === 0"
-                    class="form-control">
+                    class="">
                   </ng-select>
                 </div>
                 
-                <div class="col-xl-12 form-btns-bottom">
+                <div class="col-xl-12 form-btns-bottom mt-3">
                   <div class="d-flex justify-content-end gap-2">
-                    <a class="btn btn-secondary" [routerLink]="['/suppliers']">Cancel</a>
-                    <mat-button [type]="'submit'" [loading]="submitting" [disabled]="form.invalid">Save</mat-button>
+                    <a class="btn btn-primary secondary-line-btn-cancel" [routerLink]="['/suppliers']">Cancel</a>
+                    <mat-button class="savebtn-supplier ms-2" [type]="'submit'" [loading]="submitting" [disabled]="form.invalid">Save</mat-button>
                   </div>
                 </div>
               </div>

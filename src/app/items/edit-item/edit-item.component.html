@@ -1,5 +1,5 @@
 <div class="content-wrapper pb-0" *ngIf="form">
-  <div class="page-header flex-wrap">
+  <div class="page-header flex-wrap pb-0">
     <h3 class="mb-0">
       Edit Item <br>
       <span class="pl-0 h6 text-sub d-inline-block">Update item details</span>
@@ -18,7 +18,11 @@
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
         <div class="form-outer-block">
         <div class="row">
-          <div class="col-xl-6 col-lg-6 col-md-6">
+
+        <div class="col-xl-5 col-lg-6 col-md-8 left-forms-block">
+   <div class="row">
+       
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
               <app-mat-input
                 label="Item Name"
@@ -28,7 +32,7 @@
               ></app-mat-input>
             </div>
           </div>
-          <div class="col-xl-6 col-lg-6 col-md-6">
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
               <app-mat-input
                 label="Item Code"
@@ -38,7 +42,7 @@
               ></app-mat-input>
             </div>
           </div>
-          <div class="col-xl-6 col-lg-6 col-md-6">
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
               <label class="form-label">Supplier <span class="text-danger">*</span></label>
               <ng-select
@@ -52,7 +56,7 @@
               </ng-select>
             </div>
           </div>
-          <div class="col-xl-12">
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <app-mat-textarea
               label="Description"
               placeholder="Enter item description..."
@@ -61,7 +65,7 @@
               [rows]="4">
             </app-mat-textarea>
           </div>
-          <div class="col-xl-6 col-lg-6 col-md-6">
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
               <app-mat-select
                 label="Unit scale"
@@ -73,10 +77,13 @@
             </div>
           </div>
 
-          <div class="col-xl-6 col-lg-6">
-            <div class="form-group">
+</div>
+ </div>
+
+          <div class="col-xl-5 col-lg-6">
+            <div class="form-group item-image-upload pl-4">
               <label>Item image <span class="text-muted">(optional)</span></label>
-              <div class="upload-card" (click)="fileInput.click()" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+              <div class="upload-card mt-3" (click)="fileInput.click()" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
                 <ng-container *ngIf="!imagePreviewUrl; else previewTpl">
                   <div class="upload-icon">⬆️</div>
                   <div class="upload-title">Upload image</div>
@@ -92,10 +99,13 @@
               <div class="text-danger mt-2" *ngIf="uploadError">{{ uploadError }}</div>
             </div>
           </div>
+
+
+
           <div class="col-xl-12 form-btns-bottom">
             <div class="d-flex justify-content-end gap-2">
-              <a routerLink="/items" class="btn btn-secondary">Cancel</a>
-              <button type="submit" class="btn btn-primary" [disabled]="form.invalid || submitting">{{ submitting ? 'Saving...' : 'Save changes' }}</button>
+              <a routerLink="/items" class="btn btn-primary secondary-line-btn-cancel">Cancel</a>
+              <button type="submit" class="btn btn-primary ms-2" [disabled]="form.invalid || submitting">{{ submitting ? 'Saving...' : 'Save changes' }}</button>
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
 <div class="content-wrapper pb-0">
-  <header class="page-header flex-wrap">
+  <header class="page-header flex-wrap pb-0">
     <div class="page-title">
-      <h1 class="mb-0">Project Details</h1>
-      <p class="text-sub">View project information and items</p>
+      <h3 class="mb-0">Project Details</h3>
+       <span class="pl-0 h6 text-sub d-inline-block">View project information and items</span>
     </div>
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
       <ol class="breadcrumb">
@@ -46,15 +46,15 @@
         <div class="col-12">
           <div class="card">
             <div class="card-body">
-              <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex justify-content-between align-items-start mb-3 project-detail-top">
                 <div>
-                  <h2 class="card-title mb-2">{{ project.projectName }}</h2>
+                  <h4 class="card-title mb-2">{{ project.projectName }}</h4>
                   <div class="d-flex align-items-center gap-3">
                     <span class="badge" [ngClass]="getProjectStatusClass(project.status)">
                       <i [class]="getProjectStatusIcon(project.status)" aria-hidden="true"></i>
                       {{ project.status }}
                     </span>
-                    <span class="text-muted">
+                    <span class="text-muted ms-2">
                       <i class="mdi mdi-account" aria-hidden="true"></i>
                       {{ getContractorName(project.contractorId) }}
                     </span>
@@ -77,18 +77,18 @@
                 <div class="col-md-6">
                   <div class="mb-3">
                     <label class="form-label fw-bold">Project Description</label>
-                    <p class="text-muted">{{ project.projectDescription || 'No description provided' }}</p>
+                    <p class="">{{ project.projectDescription || 'No description provided' }}</p>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <div class="row">
-                    <div class="col-6">
+                  <div class="row viewproject-dates">
+                    <div class="col-xl-5">
                       <label class="form-label fw-bold">Start Date</label>
-                      <p class="text-muted">{{ project.startDate ? (project.startDate | date: 'medium') : 'Not set' }}</p>
+                      <p>{{ project.startDate ? (project.startDate | date: 'medium') : 'Not set' }}</p>
                     </div>
-                    <div class="col-6">
+                    <div class="col-xl-5">
                       <label class="form-label fw-bold">End Date</label>
-                      <p class="text-muted">{{ project.endDate ? (project.endDate | date: 'medium') : 'Not set' }}</p>
+                      <p >{{ project.endDate ? (project.endDate | date: 'medium') : 'Not set' }}</p>
                     </div>
                   </div>
                 </div>
@@ -109,22 +109,22 @@
               </h5>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div *ngIf="canViewUnitCosts()" class="col-md-4">
-                  <div class="text-center">
-                    <h6 class="text-muted mb-1">Total Unit Cost</h6>
+              <div class="row cost-summary-values">
+                <div *ngIf="canViewUnitCosts()" class="col-xl-4">
+                  <div class="text-center total-unitcost">
+                    <h6 class="text-color-md mb-1">Total Unit Cost</h6>
                     <h4 class="text-primary mb-0">AED {{ getTotalUnitCost() | number: '1.2-2' }}</h4>
                   </div>
                 </div>
-                <div *ngIf="canViewSellingCosts()" class="col-md-4">
-                  <div class="text-center">
-                    <h6 class="text-muted mb-1">Total Selling Cost</h6>
+                <div *ngIf="canViewSellingCosts()" class="col-xl-4">
+                  <div class="text-center total-sellingcost">
+                    <h6 class="text-color-md mb-1">Total Selling Cost</h6>
                     <h4 class="text-success mb-0">AED {{ getTotalSellingCost() | number: '1.2-2' }}</h4>
                   </div>
                 </div>
-                <div *ngIf="canViewUnitCosts() && canViewSellingCosts()" class="col-md-4">
-                  <div class="text-center">
-                    <h6 class="text-muted mb-1">Profit Margin</h6>
+                <div *ngIf="canViewUnitCosts() && canViewSellingCosts()" class="col-xl-4">
+                  <div class="text-center profit-margin">
+                    <h6 class="text-color-md mb-1">Profit Margin</h6>
                     <h4 class="text-info mb-0">
                       {{ ((getTotalSellingCost() - getTotalUnitCost()) / getTotalUnitCost() * 100) | number: '1.1-1' }}%
                     </h4>

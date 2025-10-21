@@ -10,7 +10,7 @@ import { AuthService, User } from '../../services/auth.service';
   template: `
     <div class="user-info nav-profile dropdown border-0" *ngIf="currentUser">
       <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" (click)="toggleProfileDropdown($event)">
-        <img class="nav-profile-img mr-2" alt="" src="assets/images/profile-icon.svg" width="48" height="48" />
+        <img class="nav-profile-img" alt="" src="assets/images/profile-icon.svg" width="48" height="48" />
         <span class="profile-name">Hello <b>{{ currentUser.firstName || 'User' }}</b></span>
       </a>
       <div 
@@ -52,15 +52,15 @@ import { AuthService, User } from '../../services/auth.service';
     }
 
     .nav-profile-img {
-      width: 32px;
-      height: 32px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       object-fit: cover;
       background: #fff;
     }
 
     .profile-name {
-      font-size: 14px;
+      font-size: 16px;
       color: #333;
     }
 

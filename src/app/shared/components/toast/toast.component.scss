@@ -114,7 +114,8 @@
   }
 
   &:focus {
-    outline: 2px solid rgba(24, 41, 150, 0.3);
+    /*outline: 2px solid rgba(24, 41, 150, 0.3);*/
+        outline: none;
     outline-offset: 2px;
   }
 }

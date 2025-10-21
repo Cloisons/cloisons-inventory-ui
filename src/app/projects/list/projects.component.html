@@ -1,5 +1,5 @@
 <div class="content-wrapper pb-0">
-  <header class="page-header flex-wrap">
+  <header class="page-header flex-wrap pb-0">
     <div class="page-title">
       <h1 class="mb-0">Project Management</h1>
       <p class="text-sub">Manage your projects</p>
@@ -19,7 +19,7 @@
       <section class="card" role="region" aria-labelledby="projects-section-title">
         <div class="card-body px-0 overflow-auto">
           <div class="title-and-button mb-3">
-            <h4 class="card-title pl-4">Projects list</h4>
+            <h4 class="card-title pl-0">Projects list</h4>
             <div class="header-actions">
               <div class="search-box">
                 <input
@@ -35,7 +35,7 @@
                 <i class="mdi mdi-close search-clear" *ngIf="query && !isLoading" (click)="clearSearch()" title="Clear search"></i>
               </div>
               <a routerLink="/projects/add" class="btn btn btn-primary btn-primary-md btn-with-icon">
-                <i class="mdi mdi-folder-plus mr-2"></i>
+                <i class="mdi mdi-folder-plus mr-0"></i>
                 Add Project
               </a>
             </div>

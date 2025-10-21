@@ -6,7 +6,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
@@ -19,7 +19,7 @@
   transition: all 0.2s ease;
   cursor: pointer;
   text-decoration: none;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
 
   i {
     font-size: 16px;
@@ -75,7 +75,7 @@
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
 
   .mdl-button {
     min-width: 32px;
@@ -86,7 +86,7 @@
     border: none;
     border-radius: 50%;
     background-color: transparent;
-    color: #6c757d;
+    color: #666;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
@@ -96,24 +96,25 @@
     overflow: hidden;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
+      /*/background-color: rgba(0, 0, 0, 0.1);*/
       color: #000000;
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     &:active {
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: rgba(0, 0, 0, 0.1);
       transform: translateY(0);
     }
 
     &:focus {
-      outline: 2px solid rgba(0, 0, 0, 0.3);
+       /*outline: 2px solid rgba(24, 41, 150, 0.3);*/
+      outline: none;
       outline-offset: 2px;
     }
 
     i {
-      font-size: 16px;
+      font-size: 20px;
       line-height: 1;
     }
 

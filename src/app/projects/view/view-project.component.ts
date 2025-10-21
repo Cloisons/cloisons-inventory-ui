@@ -99,7 +99,7 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
 
   getProjectStatusIcon(status: string): string {
     const iconMap: { [key: string]: string } = {
-      'PLANNING': 'mdi-clipboard-text',
+      'PLANNING': 'mdi mdi-clipboard-text',
       'ON_HOLD': 'mdi-pause-circle',
       'CANCELLED': 'mdi-cancel',
       'COMPLETED': 'mdi-check-circle'

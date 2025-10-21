@@ -271,7 +271,7 @@ The component supports extensive CSS customization through CSS variables and cla
 .mat-select-field {
   --primary-color: #1976d2;
   --error-color: #f44336;
-  --border-color: #e0e0e0;
+  --border-color: #BEC0D3;
 }
 
 // Custom panel styling

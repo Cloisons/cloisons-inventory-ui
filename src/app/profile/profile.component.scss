@@ -14,7 +14,7 @@
   border-bottom: 2px solid #f8f9fa;
 
   h2 {
-    color: #2c3e50;
+
     margin-bottom: 0.5rem;
     font-weight: 600;
   }
@@ -33,10 +33,10 @@
 }
 
 .profile-section {
-  background: #f8f9fa;
+  background: #f6f7ff;
   border-radius: 8px;
   padding: 1.5rem;
-  border: 1px solid #e9ecef;
+
 
   .section-header {
     display: flex;
@@ -47,16 +47,16 @@
     border-bottom: 1px solid #dee2e6;
 
     h3 {
-      color: #495057;
+
       margin: 0;
       font-weight: 600;
-      font-size: 1.25rem;
+
     }
 
     .btn {
       padding: 0.5rem 1rem;
       border-radius: 6px;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.2s ease;
 
       &:hover:not(:disabled) {
@@ -99,7 +99,7 @@
 
         &.role-badge {
           display: inline-block;
-          background: #007bff;
+          background: #182996;
           color: white;
           padding: 0.25rem 0.75rem;
           border-radius: 20px;
@@ -171,7 +171,7 @@
 
   .form-actions {
     display: flex;
-    gap: 1rem;
+    gap: 10px;
     justify-content: flex-end;
     margin-top: 2rem;
     padding-top: 1rem;
@@ -180,7 +180,7 @@
     .btn {
       padding: 0.75rem 1.5rem;
       border-radius: 6px;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.2s ease;
 
       &:hover:not(:disabled) {
@@ -226,63 +226,7 @@
 }
 
 // Button styles
-.btn {
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  text-decoration: none;
-  display: inline-block;
-  text-align: center;
 
-  &.btn-primary {
-    background: #007bff;
-    color: white;
-
-    &:hover:not(:disabled) {
-      background: #0056b3;
-    }
-  }
-
-  &.btn-secondary {
-    background: #6c757d;
-    color: white;
-
-    &:hover:not(:disabled) {
-      background: #545b62;
-    }
-  }
-
-  &.btn-warning {
-    background: #ffc107;
-    color: #212529;
-
-    &:hover:not(:disabled) {
-      background: #e0a800;
-    }
-  }
-
-  &.btn-outline-primary {
-    background: transparent;
-    color: #007bff;
-    border: 2px solid #007bff;
-
-    &:hover:not(:disabled) {
-      background: #007bff;
-      color: white;
-    }
-  }
-
-  &.btn-outline-warning {
-    background: transparent;
-    color: #ffc107;
-    border: 2px solid #ffc107;
-
-    &:hover:not(:disabled) {
-      background: #ffc107;
-      color: #212529;
-    }
-  }
-}
 
 // Loading state
 .loading {

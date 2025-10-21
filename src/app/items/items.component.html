@@ -57,7 +57,9 @@
         </header>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-6">
+
+
+            <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="stockItemSelect" class="form-label">Select Item</label>
                 <ng-select id="stockItemSelect" class="w-100" [items]="allStockItems" bindLabel="itemName"
@@ -69,7 +71,8 @@
                 </ng-select>
               </div>
             </div>
-            <div class="col-md-6">
+
+            <div class="col-md-6 col-sm-6">
               <div class="form-group mb-3">
                 <app-mat-input 
                   id="availableStock" 
@@ -81,24 +84,23 @@
                 </app-mat-input>
               </div>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="col-md-4">
+        
+            <div class="col-md-6 col-sm-6">
               <div class="form-group mb-3">
                 <app-user-input id="stockQuantity" label="Quantity *" type="number" placeholder="Enter quantity"
                   [required]="true" [(ngModel)]="stockQuantity">
                 </app-user-input>
               </div>
             </div>
-            <div class="col-md-4" *ngIf="!isUser2">
+            <div class="col-md-6 col-sm-6" *ngIf="!isUser2">
               <div class="form-group mb-3">
                 <app-user-input id="unitCost" label="Unit Cost (AED) *" type="number" placeholder="Enter unit cost"
                   [required]="true" [(ngModel)]="unitCost">
                 </app-user-input>
               </div>
             </div>
-            <div class="col-md-4" *ngIf="isSuperAdmin">
+            <div class="col-md-6 col-sm-6" *ngIf="isSuperAdmin">
               <div class="form-group mb-3">
                 <app-user-input id="sellingCost" label="Selling Cost (AED) *" type="number"
                   placeholder="Enter selling cost" [required]="true" [(ngModel)]="sellingCost">
@@ -128,13 +130,13 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeStockModal()">
+          <button type="button" class="btn btn-primary secondary-line-btn-cancel" (click)="closeStockModal()">
             Cancel
           </button>
-          <button type="button" class="btn btn-primary"
+          <button type="button" class="btn btn-primary ms-2"
             [disabled]="!selectedStockItem || !stockQuantity || (!isUser2 ? !unitCost : false) || (isSuperAdmin && !sellingCost)"
             (click)="addStock()">
-            <i class="mdi mdi-plus mr-2"></i>
+            <i class="mdi mdi-plus mr-0"></i>
             Add Stock
           </button>
         </div>
@@ -146,8 +148,8 @@
     <div class="col-xl-12 grid-margin stretch-card">
       <section class="card" role="region" aria-labelledby="items-section-title">
         <div class="card-body px-0 overflow-auto">
-          <div class="title-and-button mb-3">
-            <h4 class="card-title pl-4">Items list</h4>
+          <div class="title-and-button">
+            <h4 class="card-title pl-0">Items list</h4>
             <div class="header-actions">
               <div class="search-box">
                 <input type="text" class="form-control search-input" placeholder="Search items..."
@@ -157,13 +159,13 @@
                 <i class="mdi mdi-close search-clear" *ngIf="searchQuery && !isSearching" (click)="clearSearch()"
                   title="Clear search"></i>
               </div>
-              <button *ngIf="!isUser2" class="btn btn-primary btn-primary-md btn-with-icon me-2"
+              <button *ngIf="!isUser2" class="btn btn-primary btn-primary-md btn-with-icon me-2 secondary-btn"
                 (click)="openStockManagementModal()" title="Manage stock levels" aria-label="Open stock management">
-                <i class="mdi mdi-warehouse mr-2"></i>
+                <i class="mdi mdi-warehouse mr-0"></i>
                 Stock Management
               </button>
-              <a routerLink="/items/add" class="btn btn btn-primary btn-primary-md btn-with-icon">
-                <i class="mdi mdi-plus mr-2"></i>
+              <a routerLink="/items/add" class="btn btn-primary btn-primary-md btn-with-icon">
+                <i class="mdi mdi-plus mr-0"></i>
                 Add new item
               </a>
             </div>

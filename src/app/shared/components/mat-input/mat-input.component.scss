@@ -1,7 +1,7 @@
 .mat-input-container {
   position: relative;
   margin-bottom: 1rem;
-  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: 'Barlow';
 }
 
 .mat-input-wrapper {
@@ -18,15 +18,16 @@
 
 .mat-input-element {
   width: 100%;
-  padding: 1.5rem 0.75rem 0.5rem 0.75rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-size: 1rem;
+  padding: 1rem 0.75rem 1rem 0.75rem;
+  border: 1px solid #BEC0D3;
+  border-radius: 6px;
+  font-size: 17px;
   line-height: 1.5;
   background-color: transparent;
   transition: all 0.2s ease;
   outline: none;
   box-sizing: border-box;
+  font-family: "Barlow";
 
   &:focus {
     border-color: #182996;

@@ -17,7 +17,7 @@
       <section class="card" role="region" aria-labelledby="users-section-title">
         <div class="card-body px-0 overflow-auto">
           <div class="title-and-button mb-3">
-            <h4 class="card-title pl-4">Users list</h4>
+            <h4 class="card-title pl-0">Users list</h4>
             <div class="header-actions">
               <div class="search-box">
                 <input
@@ -33,21 +33,25 @@
                 <i class="mdi mdi-close search-clear" *ngIf="query && !isLoading" (click)="clearSearch()" title="Clear search"></i>
               </div>
               <a routerLink="/users/add" class="btn btn btn-primary btn-primary-md btn-with-icon">
-                <i class="mdi mdi-account-plus mr-2"></i>
+                <i class="mdi mdi-account-plus mr-0"></i>
                 Add User
               </a>
             </div>
           </div>
 
           <!-- Info message about super admin exclusion -->
+
+
           <div class="alert alert-info mx-4 mb-3" role="alert">
-            <div class="d-flex align-items-center">
-              <i class="mdi mdi-information-outline me-2" aria-hidden="true"></i>
+    
+  <i class="mdi mdi-information-outline me-2" aria-hidden="true"></i>
               <div>
                 <strong>Note:</strong> Super admin users are not displayed in this list for security reasons.
               </div>
-            </div>
+       
           </div>
+
+
 
           <div *ngIf="errorMessage && !isLoading" class="alert alert-danger mx-4" role="alert">
             <div class="d-flex align-items-center">
@@ -83,7 +87,7 @@
                 <tr *ngFor="let user of users; trackBy: trackById; let i = index">
                   <td class="text-muted">{{ (page - 1) * limit + i + 1 }}</td>
                   <td>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center username-table">
                       <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
                         {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
                       </div>
@@ -94,7 +98,7 @@
                     </div>
                   </td>
                   <td>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center email-table">
                       <i class="mdi mdi-email-outline me-2 text-muted"></i>
                       <span class="text-dark">{{ user.email }}</span>
                     </div>

@@ -138,8 +138,8 @@
                   </div>
 
                   <!-- Password Form Actions -->
-                  <div class="d-flex gap-2 justify-content-end">
-                    <mat-button
+                  <div class="d-flex gap-2 justify-content-end mt-4">
+                    <mat-button class="cancel-btn-style"
                       type="button"
                       variant="secondary"
                       (click)="onPasswordCancel()"
@@ -147,7 +147,7 @@
                     >
                       Cancel
                     </mat-button>
-                    <mat-button
+                    <mat-button class="savebtn-supplier"
                       type="submit"
                       variant="primary"
                       [loading]="passwordSubmitting"
@@ -161,8 +161,8 @@
             </div>
 
             <!-- Form Actions -->
-            <div class="d-flex gap-2 justify-content-end">
-              <mat-button
+            <div class="d-flex gap-2 justify-content-end border-top pt-3">
+              <mat-button class="cancel-btn-style"
                 type="button"
                 variant="secondary"
                 (click)="onCancel()"
@@ -170,7 +170,7 @@
               >
                 Cancel
               </mat-button>
-              <mat-button
+              <mat-button class="savebtn-supplier"
                 type="submit"
                 variant="primary"
                 [loading]="submitting"

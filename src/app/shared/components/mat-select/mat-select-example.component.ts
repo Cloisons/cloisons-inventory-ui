@@ -135,7 +135,7 @@ import { MatSelectComponent, MatSelectOption, MatSelectConfig } from './mat-sele
     .example-section {
       margin-bottom: 30px;
       padding: 20px;
-      border: 1px solid #e0e0e0;
+      border: 1px solid #BEC0D3;
       border-radius: 8px;
     }
 

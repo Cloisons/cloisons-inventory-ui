@@ -16,7 +16,7 @@
   font-weight: 600;
   color: #495057;
   margin-bottom: 0.5rem;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -61,19 +61,20 @@
       }
       
       &.selected {
-        background-color: #0d6efd;
+        background-color: #156db9;
         color: white;
       }
     }
   }
   
   .selected-item {
-    background-color: #0d6efd;
+    background-color: #156db9;
     color: white;
     border-radius: 0.25rem;
     padding: 0.25rem 0.5rem;
     margin: 0.125rem;
-    font-size: 0.75rem;
+    font-size: 14px;
+    font-weight: 500;
     
     .fa-times {
       margin-left: 0.25rem;

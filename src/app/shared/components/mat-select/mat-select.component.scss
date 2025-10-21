@@ -4,7 +4,7 @@
 // Component styles
 .mat-select-field {
   width: 100%;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Barlow';
 
   // Size variations
   &.small-size {
@@ -76,7 +76,7 @@
 // Search option styling
 .search-option {
   padding: 8px 16px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #BEC0D3;
   background-color: #fafafa;
   
   .search-input {
@@ -84,7 +84,7 @@
     border: none;
     outline: none;
     background: transparent;
-    font-size: 14px;
+    font-size: 16px;
     padding: 4px 0;
     
     &::placeholder {
@@ -197,7 +197,7 @@
   &.custom-panel {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border: 1px solid #e0e0e0;
+    border: 1px solid #BEC0D3;
     max-height: 300px;
     overflow-y: auto;
   }
