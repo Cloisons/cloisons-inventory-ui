@@ -9,7 +9,6 @@ import { ItemService, Item } from '../../core/services/item.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
-import { MatTextareaComponent } from '../../shared/components/mat-textarea/mat-textarea.component';
 import { MatSelectComponent, MatSelectOption } from '../../shared/components/mat-select/mat-select.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject, takeUntil } from 'rxjs';
@@ -17,7 +16,7 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, MatTextareaComponent, MatSelectComponent, NgSelectModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, MatSelectComponent, NgSelectModule],
   templateUrl: './edit-project.component.html',
   styleUrls: ['./edit-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -44,13 +44,11 @@
                     </div>
                   </div>
                   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                    <app-mat-textarea
-                      label="Description"
-                      placeholder="Enter item description..."
-                      formControlName="itemDescription"
-                      [required]="true"
-                      [rows]="4">
-                    </app-mat-textarea>
+                    <div class="form-group">
+                      <label for="itemDescription">Description <span class="text-danger">*</span></label>
+                      <textarea id="itemDescription" class="form-control" placeholder="Enter item description..."
+                        formControlName="itemDescription" rows="4" required></textarea>
+                    </div>
                   </div>
                 </div>
                 <div class="row">

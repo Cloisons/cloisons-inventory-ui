@@ -14,13 +14,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { UserInputComponent } from '../shared/components/user-input/user-input.component';
 import { MatInputComponent } from '../shared/components/mat-input/mat-input.component';
-import { MatTextareaComponent } from '../shared/components/mat-textarea/mat-textarea.component';
 
 
 @Component({
   selector: 'app-items',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NgSelectModule, MatFormFieldModule, MatInputModule, MatDialogModule, UserInputComponent, MatInputComponent, MatTextareaComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NgSelectModule, MatFormFieldModule, MatInputModule, MatDialogModule, UserInputComponent, MatInputComponent],
   templateUrl: './items.component.html',
   styleUrl: './items.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

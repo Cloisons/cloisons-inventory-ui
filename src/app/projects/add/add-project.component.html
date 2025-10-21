@@ -33,12 +33,11 @@
               </div>
             </div>
 
-            <app-mat-textarea
-              label="Description"
-              placeholder="Enter project description..."
-              formControlName="projectDescription"
-              [rows]="3">
-            </app-mat-textarea>
+            <div class="form-group">
+              <label for="projectDescription">Description</label>
+              <textarea id="projectDescription" class="form-control" placeholder="Enter project description..."
+                formControlName="projectDescription" rows="3"></textarea>
+            </div>
 
             <div class="form-group">
               <label for="contractorId">Contractor <span class="text-danger">*</span></label>
