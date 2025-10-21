@@ -95,7 +95,7 @@
                   <img [src]="imagePreviewUrl" alt="Preview" class="preview-img" />
                   <button type="button" class="btn btn-light remove-btn" (click)="removeImage($event)">Remove</button>
                 </ng-template>
-                <div class="uploading-overlay" *ngIf="uploading">Uploading...</div>
+                <!-- <div class="uploading-overlay" *ngIf="uploading">Uploading...</div> -->
               </div>
               <input #fileInput type="file" accept="image/*" class="d-none" (change)="onFileSelected($event)" />
               <div class="text-danger mt-2" *ngIf="uploadError">{{ uploadError }}</div>
