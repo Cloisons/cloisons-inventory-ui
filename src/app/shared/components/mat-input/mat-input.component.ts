@@ -72,7 +72,7 @@ export class MatInputComponent implements ControlValueAccessor {
   }
 
   get hasValue(): boolean {
-    return !!(this.value && this.value.length > 0);
+    return this.value !== null && this.value !== undefined && this.value.length > 0;
   }
 
   get isFloating(): boolean {
@@ -88,7 +88,7 @@ export class MatInputComponent implements ControlValueAccessor {
 
   // ControlValueAccessor implementation
   writeValue(value: string | number): void {
-    this.value = value ? String(value) : '';
+    this.value = (value !== null && value !== undefined) ? String(value) : '';
   }
 
   registerOnChange(fn: (value: string | number) => void): void {

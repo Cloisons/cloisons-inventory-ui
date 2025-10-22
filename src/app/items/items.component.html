@@ -74,37 +74,33 @@
 
             <div class="col-md-6 col-sm-6">
               <div class="form-group mb-3">
-                <app-mat-input 
-                  id="availableStock" 
-                  label="Available Stock" 
-                  type="number" 
-                  placeholder="Select an item to view available stock"
-                  [disabled]="true"
-                  [(ngModel)]="availableStock">
-                </app-mat-input>
+                <!-- <input id="availableStock" label="Available Stock" type="number"
+                  placeholder="Select an item to view available stock" [disabled]="true" [(ngModel)]="availableStock"> -->
+                  <app-mat-input label="Select an item to view available stock" [(ngModel)]="availableStock"[disabled]="true"></app-mat-input>
+                <!-- </app-mat-input> -->
               </div>
             </div>
 
-        
+
             <div class="col-md-6 col-sm-6">
               <div class="form-group mb-3">
-                <app-user-input id="stockQuantity" label="Quantity" type="number" placeholder="Enter quantity"
+                <app-mat-input id="stockQuantity" label="Quantity" type="number" placeholder="Enter quantity"
                   [required]="true" [(ngModel)]="stockQuantity">
-                </app-user-input>
+                </app-mat-input>
               </div>
             </div>
             <div class="col-md-6 col-sm-6" *ngIf="!isUser2">
               <div class="form-group mb-3">
-                <app-user-input id="unitCost" label="Unit Cost (AED)" type="number" placeholder="Enter unit cost"
+                <app-mat-input id="unitCost" label="Unit Cost (AED)" type="number" placeholder="Enter unit cost"
                   [required]="true" [(ngModel)]="unitCost">
-                </app-user-input>
+                </app-mat-input>
               </div>
             </div>
             <div class="col-md-6 col-sm-6" *ngIf="isSuperAdmin">
               <div class="form-group mb-3">
-                <app-user-input id="sellingCost" label="Selling Cost (AED)" type="number"
+                <app-mat-input id="sellingCost" label="Selling Cost (AED)" type="number"
                   placeholder="Enter selling cost" [required]="true" [(ngModel)]="sellingCost">
-                </app-user-input>
+                </app-mat-input>
               </div>
             </div>
           </div>
@@ -243,8 +239,8 @@
                   <td>{{ getSupplierName(item.supplierId) }}</td>
                   <td>{{ item.unitScale }}</td>
                   <td>{{ item.availableQty }}</td>
-                  <td *ngIf="!isUser2"><span *ngIf="item.sellingCost !== undefined">AED {{ item.sellingCost |
-                      number:'1.0-0' }}</span><span *ngIf="item.sellingCost === undefined">—</span></td>
+                  <td *ngIf="!isUser2"><span *ngIf="item.sellingCost !== undefined">AED {{ item.sellingCost
+                      }}</span><span *ngIf="item.sellingCost === undefined">—</span></td>
                   <td>
                     <div class="table-actions">
                       <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"

@@ -12,14 +12,13 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../shared/components/confirm-dialog/confirm-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { UserInputComponent } from '../shared/components/user-input/user-input.component';
 import { MatInputComponent } from '../shared/components/mat-input/mat-input.component';
 
 
 @Component({
   selector: 'app-items',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NgSelectModule, MatFormFieldModule, MatInputModule, MatDialogModule, UserInputComponent, MatInputComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NgSelectModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatInputComponent],
   templateUrl: './items.component.html',
   styleUrl: './items.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -30,7 +29,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   selectedImage: string = '';
   showModal: boolean = false;
   currentPage: number = 1;
-  itemsPerPage: number = 3;
+  itemsPerPage: number = 10;
   totalItems: number = 0;
   totalPages: number = 0;
   isLoading: boolean = false;
@@ -396,6 +395,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
     if (this.selectedStockItem) {
       const item = this.items.find(i => i._id === this.selectedStockItem);
       if (item) {
+        debugger
         // Use availableQty as the current available stock
         this.availableStock = item.availableQty || 0;
         // Pre-fill unit cost and selling cost from item data if available

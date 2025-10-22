@@ -64,13 +64,13 @@
               <label class="form-label">Do you want to list this item in the item list?</label>
               <div class="d-flex" style="gap: 16px;">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="listedItem" id="listedItemYes" value="true" formControlName="listedItem">
+                  <input class="form-check-input" type="radio" name="listedItem" id="listedItemYes" [value]="true" formControlName="listedItem">
                   <label class="form-check-label" for="listedItemYes">
                     Yes
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="listedItem" id="listedItemNo" value="false" formControlName="listedItem">
+                  <input class="form-check-input" type="radio" name="listedItem" id="listedItemNo" [value]="false" formControlName="listedItem">
                   <label class="form-check-label" for="listedItemNo">
                     No
                   </label>
