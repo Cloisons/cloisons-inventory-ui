@@ -45,7 +45,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
   readonly statuses: { value: string; label: string }[] = [
     { value: 'PLANNING', label: 'Planning' },
     { value: 'ON_HOLD', label: 'On Hold' },
-    { value: 'CANCELLED', label: 'Cancelled' },
+    // { value: 'CANCELLED', label: 'Cancelled' },
     { value: 'COMPLETED', label: 'Completed' }
   ];
 
