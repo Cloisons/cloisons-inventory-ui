@@ -111,5 +111,5 @@ function handleErrorResponse(error: HttpErrorResponse, toastService: ToastServic
       title = `Error ${error.status}`;
   }
 
-  toastService.error(message, title);
+  // toastService.error(message, title);
 }
