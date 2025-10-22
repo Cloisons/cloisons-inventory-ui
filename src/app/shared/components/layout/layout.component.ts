@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SideNavComponent, NavItem } from '../side-nav/side-nav.component';
@@ -6,6 +6,8 @@ import { HeaderComponent } from '../header/header.component';
 import { AuthService, User } from '../../../core/services/auth.service';
 import { Notification } from '../../../core/services/notification.service';
 import { Message } from '../../../core/services/message.service';
+import { MobileDetectionService } from '../../../core/services/mobile-detection.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
@@ -41,7 +43,7 @@ import { Message } from '../../../core/services/message.service';
   styleUrl: './layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit, OnDestroy {
   @Input() pageTitle: string = 'Dashboard';
   @Input() navItems: NavItem[] = [];
   @Output() navItemClick = new EventEmitter<NavItem>();
@@ -52,10 +54,12 @@ export class LayoutComponent {
 
   isSideNavExpanded = false; // Start collapsed to match reference
   currentUser: User | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
     private authService: AuthService,
+    private mobileDetectionService: MobileDetectionService,
     private cdr: ChangeDetectorRef
   ) {
     this.authService.currentUser$.subscribe((user: User | null) => {
@@ -64,11 +68,33 @@ export class LayoutComponent {
     });
   }
 
+  ngOnInit(): void {
+    // Listen to mobile detection changes
+    this.mobileDetectionService.isMobile$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isMobile => {
+        // Auto-collapse side menu when switching to mobile
+        if (isMobile && this.isSideNavExpanded) {
+          this.isSideNavExpanded = false;
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onToggleSideNav(): void {
     this.isSideNavExpanded = !this.isSideNavExpanded;
   }
 
   onNavItemClick(item: NavItem): void {
+    // Auto-close side menu on mobile when nav item is clicked
+    if (this.mobileDetectionService.isMobile) {
+      this.isSideNavExpanded = false;
+    }
     this.navItemClick.emit(item);
   }
 
