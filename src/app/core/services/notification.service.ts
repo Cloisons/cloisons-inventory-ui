@@ -146,9 +146,9 @@ export class NotificationService {
     this.loadNotifications();
 
     // Set up polling interval
-    this.pollingInterval = setInterval(() => {
-      this.loadNotifications();
-    }, this.POLLING_INTERVAL);
+    // this.pollingInterval = setInterval(() => {
+    //   this.loadNotifications();
+    // }, this.POLLING_INTERVAL);
   }
 
   // Stop polling

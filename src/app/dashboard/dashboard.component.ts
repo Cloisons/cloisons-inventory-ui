@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DashboardService } from '../core/services/dashboard.service';
 
 interface StatItem {
   id: string;
@@ -38,36 +39,29 @@ interface StatItem {
 export class DashboardComponent implements OnInit {
   
   stats: StatItem[] = [
-    {
-      id: 'total-projects',
-      label: 'Total Projects',
-      value: '1,234',
-      icon: 'mdi mdi-package-variant'
-    },
-    {
-      id: 'delivered',
-      label: 'Delivered',
-      value: '456',
-      icon: 'mdi mdi-truck-delivery'
-    },
-    {
-      id: 'planning',
-      label: 'Planning',
-      value: '78',
-      icon: 'mdi mdi-clock-outline'
-    },
-    {
-      id: 'revenue',
-      label: 'Revenue',
-      value: '$12,345',
-      icon: 'mdi mdi-currency-usd'
-    }
+    { id: 'total-projects', label: 'Total Projects', value: '0', icon: 'mdi mdi-view-dashboard' },
+    { id: 'completed-projects', label: 'Completed', value: '0', icon: 'mdi mdi-check-circle' },
+    { id: 'planning-projects', label: 'Planning', value: '0', icon: 'mdi mdi-clock-outline' }
   ];
 
-  constructor() {}
+  constructor(private dashboardService: DashboardService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    // Component initialization logic if needed
+    this.dashboardService.getProjectStats().subscribe({
+      next: (stats) => {
+        const fmt = (n: number) => (Number.isFinite(n) ? n.toLocaleString() : '0');
+        // Recreate array to trigger OnPush change detection
+        this.stats = [
+          { id: 'total-projects', label: 'Total Projects', value: fmt(stats.totalProjects), icon: 'mdi mdi-view-dashboard' },
+          { id: 'completed-projects', label: 'Completed', value: fmt(stats.completedProjects), icon: 'mdi mdi-check-circle' },
+          { id: 'planning-projects', label: 'Planning', value: fmt(stats.planningProjects), icon: 'mdi mdi-clock-outline' }
+        ];
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        // Values remain as defaults; errors are handled globally by CommunicationService
+      }
+    });
   }
 
   trackByStatId(index: number, stat: StatItem): string {
