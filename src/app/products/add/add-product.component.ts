@@ -102,7 +102,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     itemsArray.push(this.fb.group({
       selectedItem: [null], // For ng-multiselect-dropdown
       itemId: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      quantity: [1, [Validators.required, Validators.min(0.1)]]
     }));
     this.cdr.markForCheck();
   }

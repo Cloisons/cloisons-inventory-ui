@@ -88,21 +88,21 @@
         
             <div class="col-md-6 col-sm-6">
               <div class="form-group mb-3">
-                <app-user-input id="stockQuantity" label="Quantity *" type="number" placeholder="Enter quantity"
+                <app-user-input id="stockQuantity" label="Quantity" type="number" placeholder="Enter quantity"
                   [required]="true" [(ngModel)]="stockQuantity">
                 </app-user-input>
               </div>
             </div>
             <div class="col-md-6 col-sm-6" *ngIf="!isUser2">
               <div class="form-group mb-3">
-                <app-user-input id="unitCost" label="Unit Cost (AED) *" type="number" placeholder="Enter unit cost"
+                <app-user-input id="unitCost" label="Unit Cost (AED)" type="number" placeholder="Enter unit cost"
                   [required]="true" [(ngModel)]="unitCost">
                 </app-user-input>
               </div>
             </div>
             <div class="col-md-6 col-sm-6" *ngIf="isSuperAdmin">
               <div class="form-group mb-3">
-                <app-user-input id="sellingCost" label="Selling Cost (AED) *" type="number"
+                <app-user-input id="sellingCost" label="Selling Cost (AED)" type="number"
                   placeholder="Enter selling cost" [required]="true" [(ngModel)]="sellingCost">
                 </app-user-input>
               </div>

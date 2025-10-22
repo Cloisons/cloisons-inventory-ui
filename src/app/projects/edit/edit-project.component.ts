@@ -306,7 +306,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
           const formGroup = this.fb.group({
             selectedItem: [fullItem],
             itemId: [itemId],
-            quantity: [quantity, [Validators.required, Validators.min(1)]]
+            quantity: [quantity, [Validators.required, Validators.min(0.1)]]
           });
           
           directItemsArray.push(formGroup);
@@ -477,7 +477,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     directItemsArray.push(this.fb.group({
       selectedItem: [null], // For ng-multiselect-dropdown
       itemId: [''],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      quantity: [1, [Validators.required, Validators.min(0.1)]]
     }));
     this.cdr.markForCheck();
   }
@@ -601,7 +601,7 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     itemsArray.push(this.fb.group({
       selectedItem: [null],
       itemId: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      quantity: [1, [Validators.required, Validators.min(0.1)]]
     }));
     this.cdr.markForCheck();
   }

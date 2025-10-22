@@ -40,7 +40,7 @@
         <form (ngSubmit)="onUpdate()">
           <div class="mb-3">
             <label for="sellingCost" class="form-label">Selling Cost (AED) *</label>
-            <app-mat-input label="Selling Cost (AED)" 
+            <input 
               type="number" 
               class="form-control" 
               id="sellingCost"
@@ -51,7 +51,6 @@
               placeholder="Enter selling cost"
               required
               [disabled]="isUpdating">
-            </app-mat-input>
           </div>
 
           <div *ngIf="errorMessage" class="alert alert-danger" role="alert">

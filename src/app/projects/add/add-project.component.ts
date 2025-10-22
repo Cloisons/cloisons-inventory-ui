@@ -284,7 +284,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
     directItemsArray.push(this.fb.group({
       selectedItem: [null], // For ng-multiselect-dropdown
       itemId: [''],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      quantity: [1, [Validators.required, Validators.min(0.1)]]
     }));
     this.cdr.markForCheck();
   }

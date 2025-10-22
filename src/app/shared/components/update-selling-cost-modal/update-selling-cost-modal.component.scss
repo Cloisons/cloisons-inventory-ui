@@ -202,3 +202,35 @@
 .me-2 {
   margin-right: 0.5rem !important;
 }
+
+.label-result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  strong {
+    color: #495057;
+    font-weight: 600;
+  }
+  
+  span {
+    color: #212529;
+  }
+}
+
+// Ensure input is properly styled
+input[type="number"] {
+  -moz-appearance: textfield;
+  
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
