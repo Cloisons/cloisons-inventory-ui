@@ -242,7 +242,7 @@
                   <td>{{ item.itemDescription || 'No description' }}</td>
                   <td>{{ getSupplierName(item.supplierId) }}</td>
                   <td>{{ item.unitScale }}</td>
-                  <td>{{ item.availableQty | number:'1.0-0' }}</td>
+                  <td>{{ item.availableQty }}</td>
                   <td *ngIf="!isUser2"><span *ngIf="item.sellingCost !== undefined">AED {{ item.sellingCost |
                       number:'1.0-0' }}</span><span *ngIf="item.sellingCost === undefined">—</span></td>
                   <td>

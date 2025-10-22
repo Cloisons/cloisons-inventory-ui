@@ -81,7 +81,8 @@ body {
 }
 
 
-
+.multiselect-dropdown .dropdown-btn .selected-item-container .selected-item { max-width:auto !important; width:auto !important;}
+.multiselect-dropdown .dropdown-btn { height:auto !important; min-height:58px;}
 /* Shared Component Styles (moved from duplicate component SCSS files) */
 /* Grid helpers */
 .row {
