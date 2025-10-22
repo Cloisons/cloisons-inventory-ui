@@ -35,13 +35,23 @@ export class MatInputComponent implements ControlValueAccessor {
   isFocused: boolean = false;
   showPassword: boolean = false;
 
-  private onChange = (value: string) => {};
+  private onChange = (value: string | number) => {};
   private onTouched = () => {};
 
   onInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
-    this.onChange(this.value);
+    
+    // For number inputs, convert to number if it's a valid number
+    let outputValue: string | number = this.value;
+    if (this.type === 'number' && this.value !== '') {
+      const numValue = parseFloat(this.value);
+      if (!isNaN(numValue)) {
+        outputValue = numValue;
+      }
+    }
+    
+    this.onChange(outputValue);
     this.inputChange.emit(this.value);
   }
 
@@ -77,11 +87,11 @@ export class MatInputComponent implements ControlValueAccessor {
   }
 
   // ControlValueAccessor implementation
-  writeValue(value: string): void {
-    this.value = value || '';
+  writeValue(value: string | number): void {
+    this.value = value ? String(value) : '';
   }
 
-  registerOnChange(fn: (value: string) => void): void {
+  registerOnChange(fn: (value: string | number) => void): void {
     this.onChange = fn;
   }
 

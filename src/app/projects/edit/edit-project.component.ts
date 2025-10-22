@@ -263,10 +263,12 @@ export class EditProjectComponent implements OnInit, OnDestroy {
         const fullProduct = this.availableProducts.filter(product => product._id === productId);
         debugger
         if (fullProduct) {
+          const quantity = projectProduct.quantity || 1;
+          
           const formGroup = this.fb.group({
             selectedProduct: [fullProduct],
             productId: [productId, Validators.required],
-            quantity: [projectProduct.quantity || 1, [Validators.required, Validators.min(1)]]
+            quantity: [quantity, [Validators.required, Validators.min(1)]]
           });
           
           productsArray.push(formGroup);
@@ -299,10 +301,12 @@ export class EditProjectComponent implements OnInit, OnDestroy {
         const fullItem = this.availableItems.filter(item => item._id === itemId);
         
         if (fullItem) {
+          const quantity = projectItem.quantity || 1;
+          
           const formGroup = this.fb.group({
             selectedItem: [fullItem],
             itemId: [itemId],
-            quantity: [projectItem.quantity || 1, [Validators.required, Validators.min(1)]]
+            quantity: [quantity, [Validators.required, Validators.min(1)]]
           });
           
           directItemsArray.push(formGroup);

@@ -171,11 +171,12 @@ export class EditProductComponent implements OnInit, OnDestroy {
         debugger
         
         if (fullItem) {
+          const quantity = productItem.quantity || 1;
           console.log(`Full item:`, fullItem);
           const formGroup = this.fb.group({
             selectedItem: [fullItem], // For ng-multiselect-dropdown
             itemId: [itemId, Validators.required],
-            quantity: [productItem.quantity || 1, [Validators.required, Validators.min(1)]]
+            quantity: [quantity, [Validators.required, Validators.min(1)]]
           });
           
           console.log(`Created form group:`, formGroup.value);
