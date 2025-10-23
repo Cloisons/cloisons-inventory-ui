@@ -209,7 +209,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       .filter((item: any) => item.itemId && item.itemId.trim() !== '')
       .map((item: any) => ({
         itemId: item.itemId,
-        quantity: parseInt(item.quantity, 10)
+        quantity: Number(item.quantity)
       }));
 
     const payload = {

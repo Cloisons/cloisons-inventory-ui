@@ -386,7 +386,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
       .filter((product: any) => product.productId && product.productId.trim() !== '')
       .map((product: any) => ({
         productId: product.productId,
-        quantity: parseInt(product.quantity, 10)
+        quantity: Number(product.quantity)
       }));
 
     // Filter out direct items with empty itemId and format for API
@@ -394,7 +394,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
       .filter((item: any) => item.itemId && item.itemId.trim() !== '')
       .map((item: any) => ({
         itemId: item.itemId,
-        quantity: parseInt(item.quantity, 10)
+        quantity: Number(item.quantity)
       }));
 
     const payload = {
