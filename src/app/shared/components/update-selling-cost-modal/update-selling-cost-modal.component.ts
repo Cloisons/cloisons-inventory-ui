@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ItemService, StockHistoryItem } from '../../../core/services/item.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-update-selling-cost-modal',
@@ -21,7 +22,10 @@ export class UpdateSellingCostModalComponent implements OnInit, OnChanges {
   isUpdating: boolean = false;
   errorMessage: string = '';
 
-  constructor(private itemService: ItemService) {}
+  constructor(
+    private itemService: ItemService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     if (this.stockHistoryItem) {
@@ -60,6 +64,7 @@ export class UpdateSellingCostModalComponent implements OnInit, OnChanges {
     ).subscribe({
       next: (response) => {
         if (response.success) {
+          this.toastService.success('Selling cost updated successfully!');
           // Update the local stock history item with new values
           const updatedItem: StockHistoryItem = {
             ...this.stockHistoryItem!,

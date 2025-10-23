@@ -6,6 +6,7 @@ import { SupplierService, Supplier } from '../../../core/services/supplier.servi
 import { MatInputComponent } from '../mat-input/mat-input.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-create-item-modal',
@@ -36,7 +37,8 @@ export class CreateItemModalComponent {
     private fb: FormBuilder,
     private itemService: ItemService,
     private supplierService: SupplierService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastService: ToastService
   ) {
     this.isSuperAdmin = this.authService.hasRole('superAdmin');
     this.isUser2 = this.authService.hasRole('user2');
@@ -100,6 +102,7 @@ export class CreateItemModalComponent {
     this.itemService.createItem(payload).subscribe({
       next: (resp) => {
         this.submitting = false;
+        this.toastService.success('Item created successfully!');
         const createdItem = resp.data as unknown as Item;
         this.created.emit(createdItem);
       },

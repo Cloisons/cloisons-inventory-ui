@@ -7,6 +7,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ProductService, Product } from '../../core/services/product.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { ItemService, Item } from '../../core/services/item.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -37,6 +38,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private s3UploadService: S3UploadService,
     private itemService: ItemService,
+    private toastService: ToastService,
     public router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
@@ -328,7 +330,10 @@ export class EditProductComponent implements OnInit, OnDestroy {
     };
 
     this.productService.updateProduct(this.product._id, payload).subscribe({
-      next: () => this.router.navigate(['/products']),
+      next: () => {
+        this.toastService.success('Product updated successfully!');
+        this.router.navigate(['/products']);
+      },
       error: () => (this.submitting = false)
     });
   }

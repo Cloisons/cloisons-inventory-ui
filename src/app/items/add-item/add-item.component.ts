@@ -8,6 +8,7 @@ import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-add-item',
@@ -39,7 +40,8 @@ export class AddItemComponent {
     private supplierService: SupplierService,
     private router: Router,
     private s3UploadService: S3UploadService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastService: ToastService
   ) {
     this.isSuperAdmin = this.authService.hasRole('superAdmin');
     this.isUser2 = this.authService.hasRole('user2');
@@ -132,6 +134,7 @@ export class AddItemComponent {
     this.itemService.createItem(payload).subscribe({
       next: () => {
         this.submitting = false;
+        this.toastService.success('Item created successfully!');
         this.router.navigate(['/items']);
       },
       error: () => {

@@ -8,6 +8,7 @@ import { SupplierService, Supplier } from '../../core/services/supplier.service'
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-edit-item',
@@ -38,7 +39,8 @@ export class EditItemComponent implements OnDestroy {
     private itemService: ItemService,
     private supplierService: SupplierService,
     private router: Router,
-    private s3UploadService: S3UploadService
+    private s3UploadService: S3UploadService,
+    private toastService: ToastService
   ) {
     this.itemId = this.route.snapshot.paramMap.get('id') || '';
     this.form = this.createForm();
@@ -145,7 +147,10 @@ export class EditItemComponent implements OnDestroy {
     this.itemService.updateItem(this.itemId, payload)
       .pipe(finalize(() => this.submitting = false))
       .subscribe({
-        next: () => this.router.navigate(['/items']),
+        next: () => {
+          this.toastService.success('Item updated successfully!');
+          this.router.navigate(['/items']);
+        },
         error: () => {}
       });
   }

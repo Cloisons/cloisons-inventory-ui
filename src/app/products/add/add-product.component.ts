@@ -8,6 +8,7 @@ import { ProductService } from '../../core/services/product.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { ItemService, Item } from '../../core/services/item.service';
 import { Subject, takeUntil } from 'rxjs';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-add-product',
@@ -34,7 +35,8 @@ export class AddProductComponent implements OnInit, OnDestroy {
     private s3UploadService: S3UploadService,
     private itemService: ItemService,
     private cdr: ChangeDetectorRef,
-    public router: Router
+    public router: Router,
+    private toastService: ToastService
   ) {
     this.form = this.fb.group({
       productName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -220,7 +222,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
     };
 
     this.productService.createProduct(payload).subscribe({
-      next: () => this.router.navigate(['/products']),
+      next: () => {
+        this.toastService.success('Product created successfully!');
+        this.router.navigate(['/products']);
+      },
       error: () => (this.submitting = false)
     });
   }

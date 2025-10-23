@@ -6,6 +6,7 @@ import { finalize, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ItemService, Item, StockAdditionRequest } from '../core/services/item.service';
 import { AuthService } from '../core/services/auth.service';
+import { ToastService } from '../core/services/toast.service';
 // Removed Material autocomplete in favor of Ng Select
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -67,7 +68,8 @@ export class ItemsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastService: ToastService
   ) {
     this.isSuperAdmin = this.authService.hasRole('superAdmin');
     this.isUser2 = this.authService.hasRole('user2');
@@ -470,8 +472,8 @@ let message = `Add ${this.stockQuantity} units of "${item.itemName}"?\n\n`;
         next: (response) => {
           if (response.success) {
             console.log('Stock added successfully:', response);
+            this.toastService.success('Stock added successfully!');
             this.closeStockModal();
-            // Show success message
             // Reload items to reflect the changes
             this.loadItems();
           } else {
