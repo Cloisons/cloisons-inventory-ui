@@ -26,7 +26,8 @@
                 label="First Name"
                 formControlName="firstName"
                 placeholder="Enter first name"
-                [errorMessage]="form.get('firstName')?.invalid && form.get('firstName')?.touched ? 'First name is required' : ''"
+                [formControl]="firstNameControl"
+                [required]="true"
               ></app-mat-input>
             </div>
 
@@ -37,7 +38,8 @@
                 label="Last Name"
                 formControlName="lastName"
                 placeholder="Enter last name"
-                [errorMessage]="form.get('lastName')?.invalid && form.get('lastName')?.touched ? 'Last name is required' : ''"
+                [formControl]="lastNameControl"
+                [required]="true"
               ></app-mat-input>
             </div>
 
@@ -49,7 +51,8 @@
                 type="email"
                 formControlName="email"
                 placeholder="Enter email address"
-                [errorMessage]="form.get('email')?.invalid && form.get('email')?.touched ? 'Please enter a valid email address' : ''"
+                [formControl]="emailControl"
+                [required]="true"
               ></app-mat-input>
             </div>
 
@@ -64,10 +67,11 @@
                 bindValue="value"
                 placeholder="Select role"
                 [clearable]="false"
-                [searchable]="true">
+                [searchable]="true"
+                [class.is-invalid]="roleControl.invalid && roleControl.touched">
               </ng-select>
-              <div class="invalid-feedback" *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
-                <div *ngIf="form.get('role')?.errors?.['required']">Role is required</div>
+              <div class="invalid-feedback" *ngIf="roleControl.invalid && roleControl.touched">
+                <div *ngIf="roleControl.errors?.['required']">Role is required</div>
               </div>
             </div>
 
@@ -102,7 +106,8 @@
                       type="password"
                       formControlName="newPassword"
                       placeholder="Enter new password"
-                      [errorMessage]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched ? 'Password is required' : ''"
+                      [formControl]="newPasswordControl"
+                      [required]="true"
                     ></app-mat-input>
                   </div>
 
@@ -114,7 +119,8 @@
                       type="password"
                       formControlName="confirmPassword"
                       placeholder="Confirm new password"
-                      [errorMessage]="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched ? 'Please confirm password' : ''"
+                      [formControl]="confirmPasswordControl"
+                      [required]="true"
                     ></app-mat-input>
                   </div>
 

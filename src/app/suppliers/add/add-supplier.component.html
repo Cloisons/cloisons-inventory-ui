@@ -22,19 +22,19 @@
             <div class="form-outer-block mt-4">
               <div class="row col-margin-bottom">
                 <div class="col-xl-4 col-md-6">
-                  <app-mat-input label="Supplier Name" formControlName="supplierName" [required]="true"></app-mat-input>
+                  <app-mat-input label="Supplier Name" formControlName="supplierName" [required]="true" [formControl]="supplierNameControl"></app-mat-input>
                 </div>
                 <div class="col-xl-4 col-md-6">
-                  <app-mat-input label="Contact Person" formControlName="contactPerson" [required]="true"></app-mat-input>
+                  <app-mat-input label="Contact Person" formControlName="contactPerson" [required]="true" [formControl]="contactPersonControl"></app-mat-input>
                 </div>
                 <div class="col-xl-4 col-md-6">
-                  <app-mat-input label="Email" formControlName="email" [required]="true" type="email"></app-mat-input>
+                  <app-mat-input label="Email" formControlName="email" [required]="true" type="email" [formControl]="emailControl"></app-mat-input>
                 </div>
                 <div class="col-xl-4 col-md-6">
-                  <app-mat-input label="Phone Number" formControlName="phoneNumber" [required]="true"></app-mat-input>
+                  <app-mat-input label="Phone Number" formControlName="phoneNumber" [required]="true" [formControl]="phoneNumberControl"></app-mat-input>
                 </div>
                 <div class="col-md-12">
-                  <app-mat-input label="Address" formControlName="address" [required]="true"></app-mat-input>
+                  <app-mat-input label="Address" formControlName="address" [required]="true" [formControl]="addressControl"></app-mat-input>
                 </div>
                 <div class="col-xl-4 col-md-6">
                   <label class="form-label">Country of Origin <span class="text-danger">*</span></label>
@@ -47,8 +47,12 @@
                     [searchable]="true"
                     [clearable]="true"
                     [loading]="countryOptions.length === 0"
-                    class="">
+                    class=""
+                    [class.is-invalid]="countryOfOriginControl.invalid && countryOfOriginControl.touched">
                   </ng-select>
+                  <div class="invalid-feedback" *ngIf="countryOfOriginControl.invalid && countryOfOriginControl.touched">
+                    <span *ngIf="countryOfOriginControl.errors?.['required']">Country of origin is required</span>
+                  </div>
                 </div>
                 
                 <div class="col-xl-12 form-btns-bottom mt-3">

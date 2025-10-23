@@ -23,19 +23,21 @@
     <div class="row">
             <div class="col-xl-5 col-lg-6 col-md-8 left-forms-block left-forms-project-block">
             <div class="form-group">
-              <app-mat-input label="Project Name" id="projectName" class="" type="text" formControlName="projectName" 
-                     [class.is-invalid]="form.get('projectName')?.invalid && form.get('projectName')?.touched">
+              <app-mat-input label="Project Name" id="projectName" class="" type="text" formControlName="projectName" [required]="true"
+                [formControl]="projectNameControl">
               </app-mat-input>
-              <div class="invalid-feedback" *ngIf="form.get('projectName')?.invalid && form.get('projectName')?.touched">
-                <span *ngIf="form.get('projectName')?.errors?.['required']">Project name is required</span>
-                <span *ngIf="form.get('projectName')?.errors?.['maxlength']">Project name must be 100 characters or less</span>
-              </div>
             </div>
 
             <div class="form-group">
               <label for="projectDescription">Description</label>
               <textarea id="projectDescription" class="form-control" placeholder="Enter project description..."
-                formControlName="projectDescription" rows="3"></textarea>
+                formControlName="projectDescription" rows="3"
+                [class.is-invalid]="projectDescriptionControl.invalid && projectDescriptionControl.touched"></textarea>
+              <div class="invalid-feedback" *ngIf="projectDescriptionControl.invalid && projectDescriptionControl.touched">
+                <span *ngIf="projectDescriptionControl.errors?.['maxlength']">
+                  Description cannot exceed {{ projectDescriptionControl.errors?.['maxlength'].requiredLength }} characters
+                </span>
+              </div>
             </div>
 
             <div class="form-group">
@@ -50,11 +52,11 @@
                 [searchable]="true"
                 [clearable]="true"
                 [loading]="contractorOptions.length === 0"
-                [class.is-invalid]="form.get('contractorId')?.invalid && form.get('contractorId')?.touched"
+                [class.is-invalid]="contractorIdControl.invalid && contractorIdControl.touched"
                 class="">
               </ng-select>
-              <div class="invalid-feedback" *ngIf="form.get('contractorId')?.invalid && form.get('contractorId')?.touched">
-                <span *ngIf="form.get('contractorId')?.errors?.['required']">Contractor is required</span>
+              <div class="invalid-feedback" *ngIf="contractorIdControl.invalid && contractorIdControl.touched">
+                <span *ngIf="contractorIdControl.errors?.['required']">Contractor is required</span>
               </div>
             </div>
 
@@ -68,18 +70,23 @@
                 bindValue="value"
                 placeholder="Select status"
                 [clearable]="false"
-                [searchable]="true">
+                [searchable]="true"
+                [class.is-invalid]="statusControl.invalid && statusControl.touched">
               </ng-select>
+              <div class="invalid-feedback" *ngIf="statusControl.invalid && statusControl.touched">
+                <span *ngIf="statusControl.errors?.['required']">Status is required</span>
+              </div>
             </div>
 
             <div class="form-group">
-              <app-mat-input label="Start Date" id="startDate" type="date" class="" formControlName="startDate">
+              <app-mat-input label="Start Date" id="startDate" type="date" class="" formControlName="startDate"
+                [formControl]="startDateControl">
               </app-mat-input>
             </div>
 
             <!-- Products Section -->
             <div class="form-group mb-4 file-upload-block">
-              <label class="mb-2">Products <span class="text-muted">(optional)</span></label>
+              <label class="mb-2">Products </label>
               
               <!-- Products Table -->
               <div formArrayName="products" class="table-responsive add-product-item-add mt-2">

@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ProductService, Product } from '../../core/services/product.service';
@@ -409,4 +409,8 @@ export class EditProductComponent implements OnInit, OnDestroy {
     }
     return true;
   }
+
+  // Getter methods for form controls to ensure proper typing
+  get productNameControl() { return this.form.get('productName') as FormControl; }
+  get productDescriptionControl() { return this.form.get('productDescription') as FormControl; }
 }

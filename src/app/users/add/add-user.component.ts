@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { UserService, CreateUserRequest } from '../../core/services/user.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { MatButtonComponent } from '../../shared/components/mat-button/mat-button.component';
@@ -61,4 +61,11 @@ export class AddUserComponent {
   onCancel(): void {
     this.router.navigate(['/users']);
   }
+
+  // Getter methods for form controls to ensure proper typing
+  get firstNameControl() { return this.form.get('firstName') as FormControl; }
+  get lastNameControl() { return this.form.get('lastName') as FormControl; }
+  get emailControl() { return this.form.get('email') as FormControl; }
+  get passwordControl() { return this.form.get('password') as FormControl; }
+  get roleControl() { return this.form.get('role') as FormControl; }
 }

@@ -25,22 +25,32 @@
 
                 <div class="form-group">
                   <app-mat-input label="Project Name" id="projectName" class="" type="text"
-                    formControlName="projectName">
+                    formControlName="projectName" [formControl]="projectNameControl" [required]="true">
                   </app-mat-input>
                 </div>
 
                 <div class="form-group">
                   <label for="projectDescription">Description</label>
                   <textarea id="projectDescription" class="form-control" placeholder="Enter project description..."
-                    formControlName="projectDescription" rows="3"></textarea>
+                    formControlName="projectDescription" rows="3"
+                    [class.is-invalid]="projectDescriptionControl.invalid && projectDescriptionControl.touched"></textarea>
+                  <div class="invalid-feedback" *ngIf="projectDescriptionControl.invalid && projectDescriptionControl.touched">
+                    <span *ngIf="projectDescriptionControl.errors?.['maxlength']">
+                      Description cannot exceed {{ projectDescriptionControl.errors?.['maxlength'].requiredLength }} characters
+                    </span>
+                  </div>
                 </div>
 
                 <div class="form-group">
                   <label for="contractorId">Contractor</label>
                   <ng-select id="contractorId" formControlName="contractorId" [items]="contractorOptions"
                     bindLabel="label" bindValue="value" placeholder="Select contractor" [searchable]="true"
-                    [clearable]="true" [loading]="contractorOptions.length === 0" class="">
+                    [clearable]="true" [loading]="contractorOptions.length === 0" class=""
+                    [class.is-invalid]="contractorIdControl.invalid && contractorIdControl.touched">
                   </ng-select>
+                  <div class="invalid-feedback" *ngIf="contractorIdControl.invalid && contractorIdControl.touched">
+                    <span *ngIf="contractorIdControl.errors?.['required']">Contractor is required</span>
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -54,8 +64,12 @@
                     placeholder="Select status"
                     [clearable]="false"
                     [searchable]="true"
-                    (change)="onStatusChange()">
+                    (change)="onStatusChange()"
+                    [class.is-invalid]="statusControl.invalid && statusControl.touched">
                   </ng-select>
+                  <div class="invalid-feedback" *ngIf="statusControl.invalid && statusControl.touched">
+                    <span *ngIf="statusControl.errors?.['required']">Status is required</span>
+                  </div>
                   <div *ngIf="!canChangeStatusToPlanning" class="form-text text-warning">
                     <i class="mdi mdi-information"></i>
                     Once a project moves away from Planning status, it cannot be changed back to Planning.
@@ -63,7 +77,8 @@
                 </div>
 
                 <div class="form-group">
-                  <app-mat-input label="Start Date" id="startDate" type="date" class="" formControlName="startDate">
+                  <app-mat-input label="Start Date" id="startDate" type="date" class="" formControlName="startDate"
+                    [formControl]="startDateControl">
                   </app-mat-input>
                 </div>
 

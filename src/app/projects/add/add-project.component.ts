@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { ProjectService, ProjectStatus } from '../../core/services/project.service';
 import { ContractorService, Contractor } from '../../core/services/contractor.service';
 import { ProductService, Product } from '../../core/services/product.service';
@@ -412,6 +412,13 @@ export class AddProjectComponent implements OnInit, OnDestroy {
       error: () => (this.submitting = false),
     });
   }
+
+  // Getter methods for form controls to ensure proper typing
+  get projectNameControl() { return this.form.get('projectName') as FormControl; }
+  get projectDescriptionControl() { return this.form.get('projectDescription') as FormControl; }
+  get contractorIdControl() { return this.form.get('contractorId') as FormControl; }
+  get statusControl() { return this.form.get('status') as FormControl; }
+  get startDateControl() { return this.form.get('startDate') as FormControl; }
 }
 
 

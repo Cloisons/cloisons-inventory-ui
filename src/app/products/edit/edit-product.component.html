@@ -47,6 +47,7 @@
                     formControlName="productName"
                     placeholder="Enter product name"
                     [required]="true"
+                    [formControl]="productNameControl"
                   ></app-mat-input>
                 </div>
                 <div class="form-group mb-4">
@@ -54,6 +55,7 @@
                     label="Description"
                     formControlName="productDescription"
                     placeholder="Enter product description"
+                    [formControl]="productDescriptionControl"
                   ></app-mat-input>
                 </div>
 

@@ -29,6 +29,7 @@
                 formControlName="itemName"
                 placeholder="Enter your item name"
                 [required]="true"
+                [formControl]="itemNameControl"
               ></app-mat-input>
             </div>
           </div>
@@ -37,8 +38,9 @@
               <app-mat-input
                 label="Item Code"
                 formControlName="itemCode"
-                placeholder="Enter item code (optional)"
-                [required]="false"
+                placeholder="Enter item code"
+                [required]="true"
+                [formControl]="itemCodeControl"
               ></app-mat-input>
             </div>
           </div>
@@ -52,15 +54,26 @@
                 bindLabel="label"
                 bindValue="value"
                 [clearable]="false"
-                [searchable]="true">
+                [searchable]="true"
+                [class.is-invalid]="supplierIdControl.invalid && supplierIdControl.touched">
               </ng-select>
+              <div class="invalid-feedback" *ngIf="supplierIdControl.invalid && supplierIdControl.touched">
+                <span *ngIf="supplierIdControl.errors?.['required']">Supplier is required</span>
+              </div>
             </div>
           </div>
           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
               <label for="itemDescription">Description <span class="text-danger">*</span></label>
               <textarea id="itemDescription" class="form-control" placeholder="Enter item description..."
-                formControlName="itemDescription" rows="4" required></textarea>
+                formControlName="itemDescription" rows="4" required
+                [class.is-invalid]="form.get('itemDescription')?.invalid && form.get('itemDescription')?.touched"></textarea>
+              <div class="invalid-feedback" *ngIf="form.get('itemDescription')?.invalid && form.get('itemDescription')?.touched">
+                <span *ngIf="form.get('itemDescription')?.errors?.['required']">Description is required</span>
+                <span *ngIf="form.get('itemDescription')?.errors?.['maxlength']">
+                  Description cannot exceed {{ form.get('itemDescription')?.errors?.['maxlength'].requiredLength }} characters
+                </span>
+              </div>
             </div>
           </div>
           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
@@ -74,8 +87,12 @@
                 bindValue="value"
                 placeholder="Select"
                 [clearable]="false"
-                [searchable]="true">
+                [searchable]="true"
+                [class.is-invalid]="unitScaleControl.invalid && unitScaleControl.touched">
               </ng-select>
+              <div class="invalid-feedback" *ngIf="unitScaleControl.invalid && unitScaleControl.touched">
+                <span *ngIf="unitScaleControl.errors?.['required']">Unit scale is required</span>
+              </div>
             </div>
           </div>
 

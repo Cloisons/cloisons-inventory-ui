@@ -22,19 +22,19 @@
             <div class="form-outer-block mt-4 col-margin-bottom">
               <div class="row">
                 <div class="col-xl-4 col-md-6">
-                  <app-mat-input label="Contractor Name" formControlName="contractorName" [required]="true"></app-mat-input>
+                  <app-mat-input label="Contractor Name" formControlName="contractorName" [required]="true" [formControl]="contractorNameControl"></app-mat-input>
                 </div>
                 <div class="col-xl-4  col-md-6">
-                  <app-mat-input label="Contact Person" formControlName="contactPerson" [required]="true"></app-mat-input>
+                  <app-mat-input label="Contact Person" formControlName="contactPerson" [required]="true" [formControl]="contactPersonControl"></app-mat-input>
                 </div>
                 <div class="col-xl-4  col-md-6">
-                  <app-mat-input label="Email" formControlName="email" [required]="true" type="email"></app-mat-input>
+                  <app-mat-input label="Email" formControlName="email" [required]="true" type="email" [formControl]="emailControl"></app-mat-input>
                 </div>
                 <div class="col-xl-4  col-md-6">
-                  <app-mat-input label="Phone Number" formControlName="phoneNumber" [required]="true"></app-mat-input>
+                  <app-mat-input label="Phone Number" formControlName="phoneNumber" [required]="true" [formControl]="phoneNumberControl"></app-mat-input>
                 </div>
                 <div class="col-md-12">
-                  <app-mat-input label="Address" formControlName="address" [required]="true"></app-mat-input>
+                  <app-mat-input label="Address" formControlName="address" [required]="true" [formControl]="addressControl"></app-mat-input>
                 </div>
                 <div class="col-xl-12 form-btns-bottom mt-3">
                   <div class="d-flex justify-content-end gap-2">

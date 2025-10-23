@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { UserService, UpdateUserRequest, UpdateUserPasswordRequest } from '../../core/services/user.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { MatButtonComponent } from '../../shared/components/mat-button/mat-button.component';
@@ -174,4 +174,12 @@ export class EditUserComponent {
     this.showPasswordSection = false;
     this.passwordErrorMessage = '';
   }
+
+  // Getter methods for form controls to ensure proper typing
+  get firstNameControl() { return this.form.get('firstName') as FormControl; }
+  get lastNameControl() { return this.form.get('lastName') as FormControl; }
+  get emailControl() { return this.form.get('email') as FormControl; }
+  get roleControl() { return this.form.get('role') as FormControl; }
+  get newPasswordControl() { return this.passwordForm.get('newPassword') as FormControl; }
+  get confirmPasswordControl() { return this.passwordForm.get('confirmPassword') as FormControl; }
 }

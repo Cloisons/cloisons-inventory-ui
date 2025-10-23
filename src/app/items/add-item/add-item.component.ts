@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { ItemService, ItemCreateRequest } from '../../core/services/item.service';
 import { SupplierService, Supplier } from '../../core/services/supplier.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
@@ -47,16 +47,49 @@ export class AddItemComponent {
     this.loadSuppliers();
   }
 
+  private itemCodeValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    
+    // If no value provided, it's valid (itemCode is optional)
+    if (!value || value.trim().length === 0) {
+      return null;
+    }
+    
+    // Check if it's a string
+    if (typeof value !== 'string') {
+      return { itemCodeType: { message: 'Item code must be a string' } };
+    }
+    
+    const trimmedValue = value.trim();
+    
+    // Check if empty after trimming
+    if (trimmedValue.length === 0) {
+      return { itemCodeEmpty: { message: 'Item code cannot be empty' } };
+    }
+    
+    // Check length
+    if (trimmedValue.length > 20) {
+      return { itemCodeLength: { message: 'Item code cannot exceed 20 characters' } };
+    }
+    
+    // Check pattern - only uppercase letters, numbers, hyphens, and underscores
+    if (!/^[A-Z0-9_-]+$/.test(trimmedValue)) {
+      return { itemCodePattern: { message: 'Item code can only contain uppercase letters, numbers, hyphens, and underscores' } };
+    }
+    
+    return null;
+  }
+
   private createForm() {
     return this.fb.group({
-      itemCode: ['', [Validators.maxLength(20)]],
+      itemCode: ['', [this.itemCodeValidator.bind(this)]],
       itemName: ['', [Validators.required, Validators.maxLength(100)]],
       itemImage: [''],
       itemDescription: ['', [Validators.required, Validators.maxLength(1000)]],
       supplierId: ['', Validators.required],
       unitScale: [this.isSuperAdmin ? '' : 'numbers', this.isSuperAdmin ? [Validators.required] : []],
-      totalQty: [0, [Validators.required, Validators.min(0)]],
-      unitCost: [0, [Validators.required, Validators.min(0)]],
+      totalQty: [0.5, [Validators.required, Validators.min(0.5)]],
+      unitCost: [0.5, [Validators.required, Validators.min(0.5)]],
       sellingCost: [undefined as number | undefined, [Validators.min(0)]]
     });
   }
@@ -178,4 +211,11 @@ export class AddItemComponent {
     }
     return true;
   }
+
+  // Getter methods for form controls to ensure proper typing
+  get itemNameControl() { return this.form.get('itemName') as FormControl; }
+  get itemCodeControl() { return this.form.get('itemCode') as FormControl; }
+  get totalQtyControl() { return this.form.get('totalQty') as FormControl; }
+  get unitCostControl() { return this.form.get('unitCost') as FormControl; }
+  get sellingCostControl() { return this.form.get('sellingCost') as FormControl; }
 }

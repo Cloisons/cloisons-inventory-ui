@@ -1,4 +1,4 @@
-<div class="mat-input-container" [class.focused]="isFocused" [class.has-value]="hasValue" [class.disabled]="disabled" [class.has-error]="errorMessage">
+<div class="mat-input-container" [class.focused]="isFocused" [class.has-value]="hasValue" [class.disabled]="disabled" [class.has-error]="hasError || errorMessage">
   <div class="mat-input-wrapper">
     <div class="mat-input-field">
       <input
@@ -37,6 +37,7 @@
     <div class="mat-input-underline" [class.active]="isFocused"></div>
   </div>
   
-  <div class="mat-input-hint" *ngIf="hint && !errorMessage">{{ hint }}</div>
-  <div class="mat-input-error error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</div>
+  <div class="mat-input-hint" *ngIf="hint && !hasError && !errorMessage">{{ hint }}</div>
+  <div class="mat-input-error error-message" *ngIf="hasError" role="alert">{{ errorText }}</div>
+  <div class="mat-input-error error-message" *ngIf="errorMessage && !hasError" role="alert">{{ errorMessage }}</div>
 </div>

@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ProductService } from '../../core/services/product.service';
@@ -38,7 +38,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group({
       productName: ['', [Validators.required, Validators.maxLength(100)]],
-      productDescription: ['', [Validators.maxLength(1000)]],
+      productDescription: ['', [Validators.required,Validators.maxLength(1000)]],
       productImage: [''],
       items: this.fb.array([])
     });
@@ -301,6 +301,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
     }
     return true;
   }
+
+  // Getter methods for form controls to ensure proper typing
+  get productNameControl() { return this.form.get('productName') as FormControl; }
+  get productDescriptionControl() { return this.form.get('productDescription') as FormControl; }
 }
 
 

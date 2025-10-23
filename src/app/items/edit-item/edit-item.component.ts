@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { ItemService, ItemUpdateRequest, Item } from '../../core/services/item.service';
 import { SupplierService, Supplier } from '../../core/services/supplier.service';
@@ -51,9 +51,42 @@ export class EditItemComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
+  private itemCodeValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    
+    // If no value provided, it's valid (itemCode is optional)
+    if (!value || value.trim().length === 0) {
+      return null;
+    }
+    
+    // Check if it's a string
+    if (typeof value !== 'string') {
+      return { itemCodeType: { message: 'Item code must be a string' } };
+    }
+    
+    const trimmedValue = value.trim();
+    
+    // Check if empty after trimming
+    if (trimmedValue.length === 0) {
+      return { itemCodeEmpty: { message: 'Item code cannot be empty' } };
+    }
+    
+    // Check length
+    if (trimmedValue.length > 20) {
+      return { itemCodeLength: { message: 'Item code cannot exceed 20 characters' } };
+    }
+    
+    // Check pattern - only uppercase letters, numbers, hyphens, and underscores
+    if (!/^[A-Z0-9_-]+$/.test(trimmedValue)) {
+      return { itemCodePattern: { message: 'Item code can only contain uppercase letters, numbers, hyphens, and underscores' } };
+    }
+    
+    return null;
+  }
+
   private createForm() {
     return this.fb.group({
-      itemCode: ['', [Validators.maxLength(20)]],
+      itemCode: ['', [this.itemCodeValidator.bind(this)]],
       itemName: ['', [Validators.required, Validators.maxLength(100)]],
       itemImage: [''],
       itemDescription: ['', [Validators.required, Validators.maxLength(1000)]],
@@ -177,6 +210,12 @@ export class EditItemComponent implements OnDestroy {
     }
     return true;
   }
+
+  // Getter methods for form controls to ensure proper typing
+  get itemNameControl() { return this.form.get('itemName') as FormControl; }
+  get itemCodeControl() { return this.form.get('itemCode') as FormControl; }
+  get supplierIdControl() { return this.form.get('supplierId') as FormControl; }
+  get unitScaleControl() { return this.form.get('unitScale') as FormControl; }
 }
 
 

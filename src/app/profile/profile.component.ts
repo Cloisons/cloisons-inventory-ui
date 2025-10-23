@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ProfileService, UserProfile, UpdateProfileRequest, ChangePasswordRequest } from '../core/services/profile.service';
 import { AuthService } from '../core/services/auth.service';
 import { ToastService } from '../core/services/toast.service';
@@ -222,4 +222,14 @@ export class ProfileComponent implements OnInit {
     const field = form.get(fieldName);
     return !!(field?.errors && field.touched);
   }
+
+  // Getter methods for profile form controls to ensure proper typing
+  get firstNameControl() { return this.profileForm.get('firstName') as FormControl; }
+  get lastNameControl() { return this.profileForm.get('lastName') as FormControl; }
+  get emailControl() { return this.profileForm.get('email') as FormControl; }
+
+  // Getter methods for password form controls to ensure proper typing
+  get currentPasswordControl() { return this.passwordForm.get('currentPassword') as FormControl; }
+  get newPasswordControl() { return this.passwordForm.get('newPassword') as FormControl; }
+  get confirmPasswordControl() { return this.passwordForm.get('confirmPassword') as FormControl; }
 }
