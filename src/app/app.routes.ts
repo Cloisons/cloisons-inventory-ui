@@ -118,6 +118,14 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./profile/profile.component').then(m => m.ProfileComponent)
       },
+      {
+        path: 'reports',
+        loadComponent: () => import('./reports/reports.component').then(m => m.ReportsComponent)
+      },
+      {
+        path: 'reports/item-level',
+        loadComponent: () => import('./reports/item-level-report/item-level-report.component').then(m => m.ItemLevelReportComponent)
+      },
       // Add more protected routes here as children
     ]
   },

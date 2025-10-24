@@ -1,0 +1,15 @@
+<div class="report-card" 
+     [attr.data-icon]="report.icon"
+     (click)="onCardClick()" 
+     role="button" 
+     tabindex="0" 
+     (keydown.enter)="onCardClick()" 
+     (keydown.space)="onCardClick()">
+  <div class="report-icon">
+    <i [class]="'mdi ' + report.icon" aria-hidden="true"></i>
+  </div>
+  <div class="report-content">
+    <h3 class="report-title">{{ report.title }}</h3>
+    <p class="report-description">{{ report.description }}</p>
+  </div>
+</div>

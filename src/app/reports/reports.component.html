@@ -1,0 +1,48 @@
+<div class="content-wrapper pb-0">
+  <header class="page-header flex-wrap pb-0">
+    <div class="page-title">
+      <h3 class="mb-0">Reports</h3>
+      <span class="pl-0 h6 text-sub d-inline-block">Generate and view various reports for your inventory management</span>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard" aria-label="Go to Dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Reports</li>
+      </ol>
+    </nav>
+  </header>
+
+  <main class="row">
+    <div class="col-12">
+      <div class="reports-container">
+        <div class="reports-sections">
+          <!-- Core Reports Section -->
+          <div class="section">
+            <h2 class="section-title">Core Reports</h2>
+            <div class="reports-grid">
+              <app-report-card
+                *ngFor="let report of forecastReports"
+                [report]="report"
+                (reportClick)="onReportClick($event)"
+              ></app-report-card>
+            </div>
+          </div>
+
+          <!-- Performance Reports Section -->
+          <div class="section">
+            <h2 class="section-title">Performance Reports</h2>
+            <div class="reports-grid">
+              <app-report-card
+                *ngFor="let report of otherReports"
+                [report]="report"
+                (reportClick)="onReportClick($event)"
+              ></app-report-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

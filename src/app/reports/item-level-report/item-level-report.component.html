@@ -1,0 +1,286 @@
+<div class="content-wrapper pb-0">
+  <header class="page-header flex-wrap pb-0">
+    <div class="page-title">
+      <h3 class="mb-0">Item Level Report</h3>
+      <span class="pl-0 h6 text-sub d-inline-block">Detailed analysis of inventory items, stock levels, and performance metrics</span>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard" aria-label="Go to Dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a routerLink="/reports" aria-label="Go to Reports">Reports</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Item Level Report</li>
+      </ol>
+    </nav>
+  </header>
+
+  <main class="row">
+    <div class="col-12">
+      <div class="item-level-report">
+        <!-- Header Actions -->
+        <div class="report-header">
+          <div class="header-actions">
+            <button class="refresh-button" (click)="refreshReport()" [disabled]="loading">
+              <i class="mdi mdi-refresh" [class.spinning]="loading"></i>
+              Refresh
+            </button>
+            <div class="export-dropdown">
+              <button class="export-button">
+                <i class="mdi mdi-download"></i>
+                Export
+              </button>
+              <div class="export-menu">
+                <button (click)="exportReport('pdf')">Export as PDF</button>
+                <button (click)="exportReport('excel')">Export as Excel</button>
+                <button (click)="exportReport('csv')">Export as CSV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+  <!-- Analytics Cards -->
+  <div class="analytics-section" *ngIf="analytics">
+    <div class="analytics-cards">
+      <div class="analytics-card">
+        <div class="card-icon">
+          <i class="mdi mdi-package-variant"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ analytics.totalItems }}</h3>
+          <p>Total Items</p>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <div class="card-icon success">
+          <i class="mdi mdi-check-circle"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ analytics.inStockItems }}</h3>
+          <p>In Stock</p>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <div class="card-icon warning">
+          <i class="mdi mdi-alert"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ analytics.lowStockItems }}</h3>
+          <p>Low Stock</p>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <div class="card-icon error">
+          <i class="mdi mdi-close-circle"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ analytics.outOfStockItems }}</h3>
+          <p>Out of Stock</p>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <div class="card-icon info">
+          <i class="mdi mdi-currency"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ analytics.totalValue | currency:'AED':'symbol':'1.2-2' }}</h3>
+          <p>Total Value</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <div class="search-box">
+        <i class="mdi mdi-magnify"></i>
+        <input 
+          type="text" 
+          placeholder="Search items..." 
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange()"
+        >
+      </div>
+      
+      <select [(ngModel)]="selectedListedStatus" (ngModelChange)="onListedStatusChange()">
+        <option value="">All Items</option>
+        <option value="listed">Listed Items</option>
+        <option value="unlisted">Unlisted Items</option>
+      </select>
+      
+      <select [(ngModel)]="selectedStatus" (ngModelChange)="onStatusChange()">
+        <option value="">All Status</option>
+        <option value="in-stock">In Stock</option>
+        <option value="low-stock">Low Stock</option>
+        <option value="out-of-stock">Out of Stock</option>
+        <option value="overstocked">Overstocked</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-section">
+    <div class="table-header">
+      <h3>Item Details</h3>
+      <div class="table-info">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, filteredItems.length) }} of {{ filteredItems.length }} items
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th (click)="onSort('itemName')" class="sortable">
+              Item Name
+              <i class="mdi" [class]="sortBy === 'itemName' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+            </th>
+            <th (click)="onSort('listedItem')" class="sortable">
+              Type
+              <i class="mdi" [class]="sortBy === 'listedItem' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+            </th>
+            <th (click)="onSort('currentStock')" class="sortable">
+              Stock
+              <i class="mdi" [class]="sortBy === 'currentStock' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+            </th>
+            <th (click)="onSort('status')" class="sortable">
+              Status
+              <i class="mdi" [class]="sortBy === 'status' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+            </th>
+            <th (click)="onSort('unitPrice')" class="sortable">
+              Unit Price
+              <i class="mdi" [class]="sortBy === 'unitPrice' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+            </th>
+            <th (click)="onSort('totalValue')" class="sortable">
+              Total Value
+              <i class="mdi" [class]="sortBy === 'totalValue' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+            </th>
+            <th (click)="onSort('turnoverRate')" class="sortable">
+              Turnover Rate
+              <i class="mdi" [class]="sortBy === 'turnoverRate' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+            </th>
+            <th>Supplier</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of getPaginatedItems()" class="data-row">
+            <td class="item-name">
+              <div class="name-cell">
+                <strong>{{ item.itemName }}</strong>
+                <small>{{ item.itemId }}</small>
+              </div>
+            </td>
+            <td>
+              <span class="item-type" [ngClass]="item.listedItem ? 'listed' : 'unlisted'">
+                {{ item.listedItem ? 'Listed' : 'Unlisted' }}
+              </span>
+            </td>
+            <td class="stock-cell">
+              <div class="stock-info">
+                <span class="current-stock">{{ item.currentStock }}</span>
+                <small class="stock-range">{{ item.minStockLevel }} - {{ item.maxStockLevel }}</small>
+              </div>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(item.status)">
+                {{ getStatusText(item.status) }}
+              </span>
+            </td>
+            <td class="price-cell">{{ item.unitPrice | currency:'AED':'symbol':'1.2-2' }}</td>
+            <td class="value-cell">{{ item.totalValue | currency:'AED':'symbol':'1.2-2' }}</td>
+            <td class="turnover-cell">
+              <div class="turnover-info">
+                <span class="turnover-value">{{ item.turnoverRate | number:'1.2-2' }}</span>
+                <div class="turnover-bar">
+                  <div class="turnover-fill" [style.width.%]="item.turnoverRate * 100"></div>
+                </div>
+              </div>
+            </td>
+            <td>{{ item.supplier }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button 
+        class="page-button" 
+        [disabled]="currentPage === 1"
+        (click)="goToPage(currentPage - 1)"
+      >
+        <i class="mdi mdi-chevron-left"></i>
+      </button>
+      
+      <button 
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        class="page-button"
+        [class.active]="currentPage === i + 1"
+        (click)="goToPage(i + 1)"
+      >
+        {{ i + 1 }}
+      </button>
+      
+      <button 
+        class="page-button" 
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(currentPage + 1)"
+      >
+        <i class="mdi mdi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section" *ngIf="analytics">
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h4>Listed vs Unlisted Items</h4>
+        <div class="chart-container">
+          <div class="listed-unlisted-chart">
+            <div *ngFor="let item of listedUnlistedChartData" class="chart-item">
+              <div class="chart-bar">
+                <div class="bar-fill" [style.width.%]="item.percentage"></div>
+              </div>
+              <div class="chart-info">
+                <span class="chart-name">{{ item.name }}</span>
+                <span class="chart-count">{{ item.value }} items</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <h4>Stock Status</h4>
+        <div class="chart-container">
+          <div class="status-chart">
+            <div *ngFor="let item of statusChartData" class="status-item">
+              <div class="status-indicator" [style.background-color]="item.color"></div>
+              <span class="status-name">{{ item.name }}</span>
+              <span class="status-count">{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" *ngIf="loading">
+          <div class="loading-spinner">
+            <i class="mdi mdi-loading mdi-spin"></i>
+            <p>Loading item level report...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
