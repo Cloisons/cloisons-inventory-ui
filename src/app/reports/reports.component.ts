@@ -100,18 +100,8 @@ export class ReportsComponent implements OnInit {
   }
 
   private generateSupplierLevelReport(): void {
-    this.toastService.show('Generating Supplier Level Report...', 'info');
-    this.reportsService.generateSupplierPerformanceReport().subscribe({
-      next: (data) => {
-        this.toastService.show('Supplier Level Report generated successfully!', 'success');
-        console.log('Supplier Level Report:', data);
-        // In a real implementation, you would display this data
-      },
-      error: (error) => {
-        this.toastService.show('Failed to generate Supplier Level Report', 'error');
-        console.error('Error generating report:', error);
-      }
-    });
+    this.toastService.show('Opening Supplier Level Report...', 'info');
+    this.router.navigate(['/reports/supplier-level']);
   }
 
   private generateContractorLevelReport(): void {

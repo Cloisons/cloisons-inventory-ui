@@ -189,6 +189,54 @@ export interface ProjectLevelReport {
   };
 }
 
+export interface SupplierLevelReport {
+  suppliers: Array<{
+    supplierId: string;
+    supplierName: string;
+    contactPerson: string;
+    email: string;
+    phoneNumber: string;
+    address: string;
+    countryOfOrigin: string;
+    totalItems: number;
+    totalValue: number;
+    averageDeliveryTime: number;
+    onTimeDeliveryRate: number;
+    qualityScore: number;
+    costEffectiveness: number;
+    reliabilityScore: number;
+    lastOrderDate: string | null;
+    totalOrders: number;
+    lastUpdated: string;
+    createdAt: string;
+  }>;
+  analytics: {
+    totalSuppliers: number;
+    totalItems: number;
+    totalValue: number;
+    averageDeliveryTime: number;
+    averageQualityScore: number;
+    averageReliabilityScore: number;
+    countryBreakdown: Array<{
+      country: string;
+      count: number;
+      value: number;
+      percentage: number;
+    }>;
+    performanceBreakdown: Array<{
+      category: string;
+      count: number;
+      percentage: number;
+    }>;
+  };
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -292,5 +340,21 @@ export class ReportsService {
     }
 
     return this.http.get<ProjectLevelReport>(`${this.apiUrl}/projects/level`, { params });
+  }
+
+  // Supplier Level Report
+  generateSupplierLevelReport(filters?: any): Observable<SupplierLevelReport> {
+    let params = new HttpParams();
+    
+    if (filters) {
+      if (filters.search) params = params.set('search', filters.search);
+      if (filters.countryOfOrigin) params = params.set('countryOfOrigin', filters.countryOfOrigin);
+      if (filters.startDate) params = params.set('startDate', filters.startDate);
+      if (filters.endDate) params = params.set('endDate', filters.endDate);
+      if (filters.page) params = params.set('page', filters.page.toString());
+      if (filters.limit) params = params.set('limit', filters.limit.toString());
+    }
+
+    return this.http.get<SupplierLevelReport>(`${this.apiUrl}/suppliers/level`, { params });
   }
 }
