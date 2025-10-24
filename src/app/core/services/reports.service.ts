@@ -145,6 +145,50 @@ export interface ItemLevelReport {
   };
 }
 
+export interface ProjectLevelReport {
+  projects: Array<{
+    projectId: string;
+    projectName: string;
+    projectCode: string;
+    status: 'planning' | 'active' | 'completed' | 'on-hold' | 'cancelled';
+    startDate: string;
+    endDate: string;
+    totalCost: number;
+    totalRevenue: number;
+    profit: number;
+    profitMargin: number;
+    contractor: string;
+    contractorId: string;
+    totalItems: number;
+    itemsUsed: number;
+    completionPercentage: number;
+    daysRemaining: number;
+    lastUpdated: string;
+    projectDescription: string;
+  }>;
+  analytics: {
+    totalProjects: number;
+    completedProjects: number;
+    onHoldProjects: number;
+    totalCost: number;
+    totalRevenue: number;
+    totalProfit: number;
+    averageProfitMargin: number;
+    averageCompletionRate: number;
+    statusBreakdown: Array<{
+      status: string;
+      count: number;
+      percentage: number;
+    }>;
+  };
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -232,5 +276,21 @@ export class ReportsService {
     }
 
     return this.http.get<ItemLevelReport>(`${this.apiUrl}/items/level`, { params });
+  }
+
+  // Project Level Report
+  generateProjectLevelReport(filters?: any): Observable<ProjectLevelReport> {
+    let params = new HttpParams();
+    
+    if (filters) {
+      if (filters.search) params = params.set('search', filters.search);
+      if (filters.status) params = params.set('status', filters.status);
+      if (filters.startDate) params = params.set('startDate', filters.startDate);
+      if (filters.endDate) params = params.set('endDate', filters.endDate);
+      if (filters.page) params = params.set('page', filters.page.toString());
+      if (filters.limit) params = params.set('limit', filters.limit.toString());
+    }
+
+    return this.http.get<ProjectLevelReport>(`${this.apiUrl}/projects/level`, { params });
   }
 }

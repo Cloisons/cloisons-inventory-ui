@@ -1,0 +1,267 @@
+<div class="content-wrapper pb-0">
+  <header class="page-header flex-wrap pb-0">
+    <div class="page-title">
+      <h3 class="mb-0">Project Level Report</h3>
+      <span class="pl-0 h6 text-sub d-inline-block">Comprehensive analysis of project performance, costs, and profitability</span>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard" aria-label="Go to Dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a routerLink="/reports" aria-label="Go to Reports">Reports</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Project Level Report</li>
+      </ol>
+    </nav>
+  </header>
+  <main class="row">
+    <div class="col-12">
+      <div class="project-level-report">
+        <!-- Header Actions -->
+        <div class="report-header">
+          <div class="header-actions">
+            <button class="refresh-button" (click)="refreshReport()" [disabled]="loading">
+              <i class="mdi mdi-refresh" [class.spinning]="loading"></i>
+              Refresh
+            </button>
+            <div class="export-dropdown">
+              <button class="export-button">
+                <i class="mdi mdi-download"></i>
+                Export
+              </button>
+              <div class="export-menu">
+                <button (click)="exportReport('pdf')">Export as PDF</button>
+                <button (click)="exportReport('excel')">Export as Excel</button>
+                <button (click)="exportReport('csv')">Export as CSV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="analytics-section" *ngIf="analytics">
+          <div class="analytics-grid">
+            <div class="analytics-card">
+              <div class="card-icon primary">
+                <i class="mdi mdi-folder-multiple"></i>
+              </div>
+              <div class="card-content">
+                <h3>{{ analytics.totalProjects }}</h3>
+                <p>Total Projects</p>
+              </div>
+            </div>
+            
+            <div class="analytics-card">
+              <div class="card-icon info">
+                <i class="mdi mdi-check-circle"></i>
+              </div>
+              <div class="card-content">
+                <h3>{{ analytics.completedProjects }}</h3>
+                <p>Completed</p>
+              </div>
+            </div>
+            
+            <div class="analytics-card">
+              <div class="card-icon warning">
+                <i class="mdi mdi-pause-circle"></i>
+              </div>
+              <div class="card-content">
+                <h3>{{ analytics.onHoldProjects }}</h3>
+                <p>On Hold</p>
+              </div>
+            </div>
+            
+            <div class="analytics-card">
+              <div class="card-icon info">
+                <i class="mdi mdi-currency"></i>
+              </div>
+              <div class="card-content">
+                <h3>{{ analytics.totalCost | currency:'AED':'symbol':'1.2-2' }}</h3>
+                <p>Total Cost</p>
+              </div>
+            </div>
+            
+            <div class="analytics-card">
+              <div class="card-icon success">
+                <i class="mdi mdi-trending-up"></i>
+              </div>
+              <div class="card-content">
+                <h3>{{ analytics.totalProfit | currency:'AED':'symbol':'1.2-2' }}</h3>
+                <p>Total Profit</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="filters-section">
+          <div class="search-box">
+            <i class="mdi mdi-magnify"></i>
+            <input 
+              type="text" 
+              [(ngModel)]="searchTerm" 
+              (ngModelChange)="onSearchChange()"
+              placeholder="Search projects..."
+              class="search-input">
+          </div>
+          
+          <select [(ngModel)]="selectedStatus" (ngModelChange)="onStatusChange()">
+            <option value="">All Status</option>
+            <option value="planning">Planning</option>
+            <option value="completed">Completed</option>
+            <option value="on-hold">On Hold</option>
+          </select>
+          
+          <div class="date-filters">
+            <div class="date-input-group">
+              <label>From:</label>
+              <input 
+                type="date" 
+                [(ngModel)]="startDate" 
+                (ngModelChange)="onDateChange()"
+                class="date-input">
+            </div>
+            <div class="date-input-group">
+              <label>To:</label>
+              <input 
+                type="date" 
+                [(ngModel)]="endDate" 
+                (ngModelChange)="onDateChange()"
+                class="date-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="loading">
+          <div class="spinner"></div>
+          <p>Loading project data...</p>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-section" *ngIf="!loading">
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th (click)="onSort('projectName')" class="sortable">
+                    Project Name
+                    <i class="mdi" [class]="sortBy === 'projectName' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+                  </th>
+                  <th (click)="onSort('status')" class="sortable">
+                    Status
+                    <i class="mdi" [class]="sortBy === 'status' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+                  </th>
+                  <th (click)="onSort('totalCost')" class="sortable">
+                    Total Cost
+                    <i class="mdi" [class]="sortBy === 'totalCost' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+                  </th>
+                  <th (click)="onSort('profit')" class="sortable">
+                    Profit
+                    <i class="mdi" [class]="sortBy === 'profit' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+                  </th>
+                  <th (click)="onSort('contractor')" class="sortable">
+                    Contractor
+                    <i class="mdi" [class]="sortBy === 'contractor' ? (sortOrder === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down') : 'mdi-chevron-up'"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let project of getPagedProjects()" class="data-row">
+                  <td class="project-name-cell">
+                    <div class="project-info">
+                      <span class="project-name">{{ project.projectName }}</span>
+                      <span class="project-code" *ngIf="project.projectCode">{{ project.projectCode }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge" [ngClass]="getStatusClass(project.status)">
+                      {{ getStatusText(project.status) }}
+                    </span>
+                  </td>
+                  <td class="cost-cell">{{ project.totalCost | currency:'AED':'symbol':'1.2-2' }}</td>
+                  <td class="profit-cell" [ngClass]="project.profit >= 0 ? 'positive' : 'negative'">
+                    {{ project.profit | currency:'AED':'symbol':'1.2-2' }}
+                  </td>
+                  <td class="contractor-cell">{{ project.contractor }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination-section" *ngIf="totalPages > 1">
+            <div class="pagination-info">
+              <span>Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ Math.min(currentPage * itemsPerPage, filteredProjects.length) }} of {{ filteredProjects.length }} projects</span>
+            </div>
+            <div class="pagination-controls">
+              <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" class="page-btn">
+                <i class="mdi mdi-chevron-left"></i>
+              </button>
+              <div class="page-numbers">
+                <button *ngFor="let page of [].constructor(totalPages); let i = index" 
+                        (click)="goToPage(i + 1)" 
+                        [class.active]="currentPage === i + 1"
+                        class="page-btn">
+                  {{ i + 1 }}
+                </button>
+              </div>
+              <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages" class="page-btn">
+                <i class="mdi mdi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section" *ngIf="analytics && !loading">
+          <div class="charts-grid">
+            <!-- Status Distribution Chart -->
+            <div class="chart-card">
+              <h4>Project Status Distribution</h4>
+              <div class="chart-container" *ngIf="statusChartData.length > 0; else noStatusData">
+                <div class="chart-item" *ngFor="let item of statusChartData">
+                  <div class="chart-bar">
+                    <div class="bar-fill" 
+                         [style.width.%]="getStatusChartWidth(item.value)"
+                         [style.background-color]="item.color"></div>
+                  </div>
+                  <div class="chart-info">
+                    <span class="chart-name">{{ item.name | titlecase }}</span>
+                    <span class="chart-count">{{ item.value }}</span>
+                  </div>
+                </div>
+              </div>
+              <ng-template #noStatusData>
+                <div class="no-data-message">
+                  <p>No project status data available</p>
+                </div>
+              </ng-template>
+            </div>
+
+
+            <!-- Top Projects by Profit Chart -->
+            <div class="chart-card">
+              <h4>Top Projects by Profit</h4>
+              <div class="chart-container">
+                <div class="chart-item" *ngFor="let item of profitChartData">
+                  <div class="chart-bar">
+                    <div class="bar-fill" 
+                         [style.width.%]="getProfitChartWidth(item.value)"
+                         [style.background-color]="item.value >= 0 ? '#28a745' : '#dc3545'"></div>
+                  </div>
+                  <div class="chart-info">
+                    <span class="chart-name">{{ item.name }}</span>
+                    <span class="chart-count">{{ item.value | currency:'AED':'symbol':'1.0-0' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

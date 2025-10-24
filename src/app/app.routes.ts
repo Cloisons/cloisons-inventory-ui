@@ -122,10 +122,14 @@ export const routes: Routes = [
         path: 'reports',
         loadComponent: () => import('./reports/reports.component').then(m => m.ReportsComponent)
       },
-      {
-        path: 'reports/item-level',
-        loadComponent: () => import('./reports/item-level-report/item-level-report.component').then(m => m.ItemLevelReportComponent)
-      },
+  {
+    path: 'reports/item-level',
+    loadComponent: () => import('./reports/item-level-report/item-level-report.component').then(m => m.ItemLevelReportComponent)
+  },
+  {
+    path: 'reports/project-level',
+    loadComponent: () => import('./reports/project-level-report/project-level-report.component').then(m => m.ProjectLevelReportComponent)
+  },
       // Add more protected routes here as children
     ]
   },

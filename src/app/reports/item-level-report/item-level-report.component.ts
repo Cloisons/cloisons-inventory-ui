@@ -72,7 +72,7 @@ export class ItemLevelReportComponent implements OnInit {
 
   // Pagination
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 100;
   totalPages = 0;
 
   // Math reference for template
