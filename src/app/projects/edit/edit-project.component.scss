@@ -33,4 +33,91 @@
   }
 }
 
+// Make selected item display as inline text with blue background
+::ng-deep ng-multiselect-dropdown {
+  .dropdown-list {
+    width: 100% !important;
+  }
+  
+  .dropdown-btn {
+    padding: 0.375rem 0.75rem !important;
+    
+    .dropdown-multiselect__caret {
+      float: right;
+    }
+  }
+  
+  // Make selected item display as inline text
+  .selected-item {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline !important;
+    font-size: inherit !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: auto !important;
+    height: auto !important;
+    
+    // Remove border on hover
+    &:hover {
+      border: none !important;
+      outline: none !important;
+    }
+    
+    a {
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      display: inline !important;
+      color: white !important;
+      
+      // Remove border on hover for the link
+      &:hover {
+        border: none !important;
+        outline: none !important;
+      }
+    }
+  }
+}
+
+// Remove chip/badge styling for single selection while keeping blue background
+::ng-deep .multiselect-dropdown .dropdown-btn .selected-item {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  display: inline !important;
+  font-size: 1rem !important;
+  height: auto !important;
+  line-height: 1.5 !important;
+  
+  // Remove border and outline on hover
+  &:hover {
+    border: none !important;
+    outline: none !important;
+  }
+  
+  a {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-weight: normal !important;
+    color: white !important;
+    
+    // Remove border and outline on hover
+    &:hover {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    
+    &:focus {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+  }
+}
+
 
