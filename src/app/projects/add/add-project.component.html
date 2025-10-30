@@ -86,14 +86,14 @@
 
             <!-- Products Section -->
             <div class="form-group mb-4 file-upload-block">
-              <label class="mb-2">Products </label>
+              <label class="mb-2">Products (optional) </label>
               
               <!-- Products Table -->
               <div formArrayName="products" class="table-responsive add-product-item-add mt-2">
                 <table class="table table-bordered table-hover">
                   <thead class="table-light">
                     <tr>
-                      <th width="50%">Product <span class="text-danger">*</span></th>
+                      <th width="50%">Product</th>
                       <th width="25%"></th>
                       <th width="15%">Actions</th>
                     </tr>
@@ -113,15 +113,14 @@
                           (onSelect)="onProductSelect($event, i)"
                           (onDeSelect)="onProductDeSelect($event, i)"
                           class="form-control"
-                          [ngClass]="{'is-invalid': product.get('productId')?.invalid && product.get('productId')?.touched}"
+                          [ngClass]="{'is-invalid': product.get('productId')?.errors?.['duplicate'] && product.get('productId')?.touched}"
                         >
                         </ng-multiselect-dropdown>
                         <div 
-                          *ngIf="product.get('productId')?.invalid && product.get('productId')?.touched" 
+                          *ngIf="product.get('productId')?.errors?.['duplicate'] && product.get('productId')?.touched" 
                           class="invalid-feedback d-block"
                         >
-                          <div *ngIf="product.get('productId')?.errors?.['required']">Please select a product</div>
-                          <div *ngIf="product.get('productId')?.errors?.['duplicate']">This product is already selected</div>
+                          <div>This product is already selected</div>
                         </div>
                       </td>
                       <td>
