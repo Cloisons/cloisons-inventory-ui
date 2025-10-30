@@ -84,7 +84,7 @@
 
                 <!-- Products Section -->
                 <div class="form-group mb-4 file-upload-block">
-                  <label class="mb-2">Products <span class="text-muted">(optional)</span></label>
+                  <label class="mb-2">Products (optional) <span class="text-muted">(optional)</span></label>
 
                   <!-- Restriction Message -->
                   <div *ngIf="!canEditProducts" class="alert alert-warning" role="alert">
@@ -99,7 +99,7 @@
                     <table class="table table-bordered table-hover">
                       <thead class="table-light">
                         <tr>
-                          <th width="50%">Product <span class="text-danger">*</span></th>
+                          <th width="50%">Product</th>
                           <th width="25%"></th>
                           <th width="15%">Actions</th>
                         </tr>
@@ -120,7 +120,6 @@
                             </div>
                             <div *ngIf="product.get('productId')?.invalid && product.get('productId')?.touched"
                               class="invalid-feedback d-block">
-                              <div *ngIf="product.get('productId')?.errors?.['required']">Please select a product</div>
                               <div *ngIf="product.get('productId')?.errors?.['duplicate']">This product is already
                                 selected</div>
                             </div>

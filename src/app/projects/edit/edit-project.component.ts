@@ -267,8 +267,8 @@ export class EditProjectComponent implements OnInit, OnDestroy {
           
           const formGroup = this.fb.group({
             selectedProduct: [fullProduct],
-            productId: [productId, Validators.required],
-            quantity: [quantity, [Validators.required, Validators.min(1)]]
+            productId: [productId],
+            quantity: [quantity, [Validators.min(1)]]
           });
           
           productsArray.push(formGroup);
@@ -366,8 +366,8 @@ export class EditProjectComponent implements OnInit, OnDestroy {
     const productsArray = this.form.get('products') as FormArray;
     productsArray.push(this.fb.group({
       selectedProduct: [null],
-      productId: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      productId: [''],
+      quantity: [1, [Validators.min(1)]]
     }));
     this.cdr.markForCheck();
   }
