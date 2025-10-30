@@ -185,8 +185,8 @@ export class AddProjectComponent implements OnInit, OnDestroy {
     const productsArray = this.form.get('products') as FormArray;
     productsArray.push(this.fb.group({
       selectedProduct: [null], // For ng-multiselect-dropdown
-      productId: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      productId: [''],
+      quantity: [1, [Validators.min(1)]]
     }));
     this.cdr.markForCheck();
   }
