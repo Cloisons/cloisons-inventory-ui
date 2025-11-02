@@ -51,6 +51,11 @@ export class LayoutRouteComponent implements OnInit, OnDestroy {
       route: '/projects'
     },
     {
+      label: 'Categories',
+      icon: 'mdi-shape-outline',
+      route: '/categories'
+    },
+    {
       label: 'All Suppliers',
       icon: 'mdi-account-settings-outline',
       route: '/suppliers'
@@ -127,6 +132,9 @@ export class LayoutRouteComponent implements OnInit, OnDestroy {
       '/products': 'Product Management',
       '/products/add': 'Add New Product',
       '/products/edit': 'Edit Product',
+      '/categories': 'Category Management',
+      '/categories/add': 'Add New Category',
+      '/categories/edit': 'Edit Category',
       '/users': 'User Management',
       '/users/add': 'Add New User',
       '/reports': 'Reports',

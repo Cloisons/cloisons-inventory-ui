@@ -1,0 +1,70 @@
+<div class="content-wrapper pb-0">
+  <div class="page-header flex-wrap pb-0">
+    <h3 class="mb-0">
+      Add Category <br>
+      <span class="pl-0 h6 text-sub d-inline-block">Create a new category</span>
+    </h3>
+    <div class="d-flex">
+      <ul class="breadcrumb">
+        <li><a routerLink="/dashboard">Dashboard</a></li>
+        <li><a routerLink="/categories">Category management</a></li>
+        <li>Add category</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Enter category details</h4>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-outer-block mt-4">
+              <div class="row col-margin-bottom">
+                <div class="col-xl-6 col-md-6">
+                  <app-mat-input
+                    label="Category Name"
+                    formControlName="categoryName"
+                    [required]="true"
+                    [formControl]="categoryNameControl"
+                  ></app-mat-input>
+                </div>
+                <div class="col-xl-6 col-md-6">
+                  <app-mat-input
+                    label="Sort Order"
+                    formControlName="sortOrder"
+                    type="number"
+                    [formControl]="sortOrderControl"
+                  ></app-mat-input>
+                </div>
+                <div class="col-md-12">
+                  <app-mat-input
+                    label="Description"
+                    formControlName="categoryDescription"
+                    type="textarea"
+                    [formControl]="categoryDescriptionControl"
+                  ></app-mat-input>
+                </div>
+                
+                <div class="col-xl-12 form-btns-bottom mt-3">
+                  <div class="d-flex justify-content-end gap-2">
+                    <a class="btn btn-primary secondary-line-btn-cancel" [routerLink]="['/categories']">Cancel</a>
+                    <mat-button
+                      class="savebtn-category ms-2"
+                      [type]="'submit'"
+                      [loading]="submitting"
+                      [disabled]="form.invalid"
+                    >
+                      Save
+                    </mat-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

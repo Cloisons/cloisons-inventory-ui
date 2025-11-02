@@ -115,6 +115,18 @@ export const routes: Routes = [
         data: { expectedRole: 'superAdmin' }
       },
       {
+        path: 'categories',
+        loadComponent: () => import('./categories/list/categories.component').then(m => m.CategoriesComponent)
+      },
+      {
+        path: 'categories/add',
+        loadComponent: () => import('./categories/add/add-category.component').then(m => m.AddCategoryComponent)
+      },
+      {
+        path: 'categories/:id/edit',
+        loadComponent: () => import('./categories/edit/edit-category.component').then(m => m.EditCategoryComponent)
+      },
+      {
         path: 'profile',
         loadComponent: () => import('./profile/profile.component').then(m => m.ProfileComponent)
       },
