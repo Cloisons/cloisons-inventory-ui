@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractContro
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { ItemService, ItemUpdateRequest, Item } from '../../core/services/item.service';
 import { SupplierService, Supplier } from '../../core/services/supplier.service';
+import { CategoryService, Category } from '../../core/services/category.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -22,7 +23,9 @@ export class EditItemComponent implements OnDestroy {
   submitting = false;
   itemId!: string;
   suppliers: Supplier[] = [];
+  categories: Category[] = [];
   supplierOptions: { value: string; label: string }[] = [];
+  categoryOptions: { value: string; label: string }[] = [];
   unitScaleOptions: { value: string; label: string }[] = [
     { value: 'numbers', label: 'Numbers' },
     { value: 'meters', label: 'Meters' },
@@ -38,6 +41,7 @@ export class EditItemComponent implements OnDestroy {
     private fb: FormBuilder,
     private itemService: ItemService,
     private supplierService: SupplierService,
+    private categoryService: CategoryService,
     private router: Router,
     private s3UploadService: S3UploadService,
     private toastService: ToastService
@@ -45,6 +49,7 @@ export class EditItemComponent implements OnDestroy {
     this.itemId = this.route.snapshot.paramMap.get('id') || '';
     this.form = this.createForm();
     this.loadSuppliers();
+    this.loadCategories();
     this.loadItem();
   }
 
@@ -93,6 +98,7 @@ export class EditItemComponent implements OnDestroy {
       itemImage: [''],
       itemDescription: ['', [Validators.required, Validators.maxLength(1000)]],
       supplierId: ['', Validators.required],
+      categoryId: [null],
       unitScale: ['', Validators.required]
     });
   }
@@ -109,6 +115,18 @@ export class EditItemComponent implements OnDestroy {
       });
   }
 
+  private loadCategories(): void {
+    this.categoryService.listCategories(1, 100)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => {
+          this.categories = resp.items || [];
+          this.categoryOptions = this.categories.map((c) => ({ value: c._id, label: c.categoryName }));
+        },
+        error: () => (this.categories = [])
+      });
+  }
+
   private loadItem(): void {
     if (!this.itemId) return;
     this.itemService.getItemById(this.itemId)
@@ -122,6 +140,7 @@ export class EditItemComponent implements OnDestroy {
             itemImage: item.itemImage,
             itemDescription: item.itemDescription,
             supplierId: item.supplierId ? (item.supplierId as any)._id : '',
+            categoryId: item.categoryId ? (item.categoryId as any)._id : null,
             unitScale: item.unitScale
           });
           this.imagePreviewUrl = item.itemImage || null;
@@ -141,6 +160,7 @@ export class EditItemComponent implements OnDestroy {
       itemImage: raw.itemImage,
       itemDescription: raw.itemDescription,
       supplierId: raw.supplierId,
+      categoryId: raw.categoryId || null,
       unitScale: raw.unitScale
     };
 

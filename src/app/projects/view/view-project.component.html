@@ -141,11 +141,28 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <h5 class="card-title mb-0">
-                <i class="mdi mdi-package-variant me-2" aria-hidden="true"></i>
-                Items Used
-                <span class="badge bg-primary ms-2">{{ getItemsWithDetails().length }}</span>
-              </h5>
+              <div class="d-flex justify-content-between align-items-center w-100">
+                <h5 class="card-title mb-0">
+                  <i class="mdi mdi-package-variant me-2" aria-hidden="true"></i>
+                  Items Used
+                  <span class="badge bg-primary ms-2">{{ getItemsWithDetails().length }}</span>
+                </h5>
+                <div class="header-actions">
+                  <div class="category-filter">
+                    <select
+                      id="categoryId"
+                      class="form-select category-select"
+                      [(ngModel)]="selectedCategoryId"
+                      (change)="onCategoryChange()"
+                      aria-label="Filter by category">
+                      <option value="">All Categories</option>
+                      <option *ngFor="let category of getAvailableCategories()" [value]="category.id">
+                        {{ category.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div> 
+              </div>
             </div>
             <div class="card-body px-0">
               <div class="table-responsive">

@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { ItemService, ItemCreateRequest } from '../../core/services/item.service';
 import { SupplierService, Supplier } from '../../core/services/supplier.service';
+import { CategoryService, Category } from '../../core/services/category.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -21,10 +22,12 @@ export class AddItemComponent {
   form!: FormGroup;
 
   suppliers: Supplier[] = [];
+  categories: Category[] = [];
   submitting = false;
   uploading = false;
   imagePreviewUrl: string | null = null;
   supplierOptions: { value: string; label: string }[] = [];
+  categoryOptions: { value: string; label: string }[] = [];
   unitScaleOptions: { value: string; label: string }[] = [
     { value: 'numbers', label: 'Numbers' },
     { value: 'meters', label: 'Meters' },
@@ -38,6 +41,7 @@ export class AddItemComponent {
     private fb: FormBuilder,
     private itemService: ItemService,
     private supplierService: SupplierService,
+    private categoryService: CategoryService,
     private router: Router,
     private s3UploadService: S3UploadService,
     private authService: AuthService,
@@ -47,6 +51,7 @@ export class AddItemComponent {
     this.isUser2 = this.authService.hasRole('user2');
     this.form = this.createForm();
     this.loadSuppliers();
+    this.loadCategories();
   }
 
   private itemCodeValidator(control: AbstractControl): ValidationErrors | null {
@@ -89,6 +94,7 @@ export class AddItemComponent {
       itemImage: [''],
       itemDescription: ['', [Validators.required, Validators.maxLength(1000)]],
       supplierId: ['', Validators.required],
+      categoryId: [null],
       unitScale: [this.isSuperAdmin ? '' : 'numbers', this.isSuperAdmin ? [Validators.required] : []],
       totalQty: [0.5, [Validators.required, Validators.min(0.5)]],
       unitCost: [0.5, [Validators.required, Validators.min(0.5)]],
@@ -106,6 +112,16 @@ export class AddItemComponent {
     });
   }
 
+  private loadCategories(): void {
+    this.categoryService.listCategories(1, 100).subscribe({
+      next: (resp) => {
+        this.categories = resp.items || [];
+        this.categoryOptions = this.categories.map((c) => ({ value: c._id, label: c.categoryName }));
+      },
+      error: () => (this.categories = [])
+    });
+  }
+
   onSubmit(): void {
     if (this.form.invalid) return;
     this.submitting = true;
@@ -117,6 +133,7 @@ export class AddItemComponent {
       itemImage: raw.itemImage,
       itemDescription: raw.itemDescription,
       supplierId: raw.supplierId,
+      categoryId: raw.categoryId || null,
       unitScale: raw.unitScale,
       totalQty: Number(raw.totalQty),
       unitCost: Number(raw.unitCost),

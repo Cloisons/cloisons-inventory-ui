@@ -2,10 +2,13 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef, OnInit, OnDestro
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, forkJoin, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { ProjectService, Project } from '../../core/services/project.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
+import { CategoryService, Category } from '../../core/services/category.service';
+import { ItemService } from '../../core/services/item.service';
 
 interface ProjectItemWithDetails {
   itemId: {
@@ -14,11 +17,20 @@ interface ProjectItemWithDetails {
     unitCost?: number;
     sellingCost?: number;
     unitScale: string;
+    categoryId?: {
+      _id: string;
+      categoryName: string;
+    } | null;
   };
   quantity: number;
   listedItem: boolean;
   sellingPrice?: number | null;
   unitPrice?: number | null;
+}
+
+interface CategoryOption {
+  id: string;
+  name: string;
 }
 
 @Component({
@@ -33,19 +45,45 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
   project: Project | null = null;
   isLoading = false;
   errorMessage = '';
+  selectedCategoryId: string | null = ''; // Initialize as empty string to match select option value
+  allCategories: Category[] = [];
+  isLoadingCategories = false;
+  itemCategoryMap: Map<string, string> = new Map(); // itemId -> categoryId
   private destroy$ = new Subject<void>();
 
   constructor(
     private projectService: ProjectService,
     private authService: AuthService,
     private toastService: ToastService,
+    private categoryService: CategoryService,
+    private itemService: ItemService,
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.loadCategories();
     this.loadProject();
+  }
+
+  loadCategories(): void {
+    this.isLoadingCategories = true;
+    this.categoryService.listCategories(1, 100, undefined, undefined, true)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => {
+          this.allCategories = resp.items || [];
+          this.isLoadingCategories = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Failed to load categories:', err);
+          this.allCategories = [];
+          this.isLoadingCategories = false;
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -70,12 +108,68 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (project) => {
           this.project = project;
+          this.loadItemCategories();
           this.isLoading = false;
           this.cdr.markForCheck();
         },
         error: (err) => {
           this.errorMessage = err?.message || 'Failed to load project';
           this.isLoading = false;
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  loadItemCategories(): void {
+    if (!this.project?.itemsUsed || this.project.itemsUsed.length === 0) {
+      return;
+    }
+
+    // Extract unique item IDs from project items
+    const itemIds = new Set<string>();
+    this.project.itemsUsed.forEach(item => {
+      const itemIdObj = item.itemId as any;
+      const itemId = typeof itemIdObj === 'string' ? itemIdObj : itemIdObj?._id;
+      if (itemId && typeof itemId === 'string') {
+        itemIds.add(itemId);
+      }
+    });
+
+    if (itemIds.size === 0) {
+      return;
+    }
+
+    // Fetch all items in parallel to get their categoryIds
+    const itemObservables = Array.from(itemIds).map(itemId =>
+      this.itemService.getItemById(itemId).pipe(
+        map(response => {
+          const categoryId = response.data?.categoryId;
+          return { itemId, categoryId };
+        }),
+        catchError(() => of({ itemId, categoryId: null as any }))
+      )
+    );
+
+    forkJoin(itemObservables)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (results) => {
+          this.itemCategoryMap.clear();
+          results.forEach(result => {
+            if (result.categoryId) {
+              const catId = result.categoryId as any;
+              const categoryId = typeof catId === 'string' 
+                ? catId 
+                : (catId?._id || null);
+              if (categoryId && typeof categoryId === 'string') {
+                this.itemCategoryMap.set(result.itemId, categoryId);
+              }
+            }
+          });
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Failed to load item categories:', err);
           this.cdr.markForCheck();
         }
       });
@@ -109,7 +203,62 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
 
   getItemsWithDetails(): ProjectItemWithDetails[] {
     if (!this.project?.itemsUsed) return [];
-    return this.project.itemsUsed as unknown as ProjectItemWithDetails[];
+    let items = this.project.itemsUsed as unknown as ProjectItemWithDetails[];
+    
+    // Filter by selected category if a category is selected
+    // Only filter if selectedCategoryId has a valid value (not empty string, null, or 'null')
+    if (this.selectedCategoryId && 
+        this.selectedCategoryId !== '' && 
+        this.selectedCategoryId !== 'null' &&
+        this.selectedCategoryId !== null) {
+      items = items.filter(item => {
+        const itemIdObj = item.itemId as any;
+        const itemId = typeof itemIdObj === 'string' ? itemIdObj : itemIdObj?._id;
+        if (!itemId || typeof itemId !== 'string') return false;
+        
+        // Get categoryId from our mapping
+        const categoryId = this.itemCategoryMap.get(itemId);
+        if (!categoryId) return false;
+        
+        return categoryId === this.selectedCategoryId;
+      });
+    }
+    // If selectedCategoryId is empty string, null, or 'null', return all items (no filtering)
+    
+    return items;
+  }
+
+  getAvailableCategories(): CategoryOption[] {
+    // Return only categories that are actually used in project items
+    if (this.allCategories.length === 0 || this.itemCategoryMap.size === 0) return [];
+    
+    // Get unique category IDs from items
+    const usedCategoryIds = new Set(Array.from(this.itemCategoryMap.values()));
+    
+    return this.allCategories
+      .filter(category => usedCategoryIds.has(category._id))
+      .map(category => ({
+        id: category._id,
+        name: category.categoryName
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  hasCategoriesLoaded(): boolean {
+    return this.allCategories.length > 0 && !this.isLoadingCategories;
+  }
+
+  onCategoryChange(): void {
+    // Handle standard select dropdown change
+    // selectedCategoryId is automatically updated via ngModel
+    // Keep empty string for "All Categories" - don't convert to null
+    // This ensures the select box value sticks
+    if (this.selectedCategoryId === null || this.selectedCategoryId === 'null') {
+      this.selectedCategoryId = '';
+    }
+    // Force change detection to update the filtered list
+    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   getTotalUnitCost(): number {

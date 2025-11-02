@@ -80,6 +80,21 @@
                       </div>
                     </div>
                   </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="form-group">
+                      <label for="categoryId">Category</label>
+                      <ng-select
+                        id="categoryId"
+                        formControlName="categoryId"
+                        [items]="categoryOptions"
+                        bindLabel="label"
+                        bindValue="value"
+                        placeholder="Select category (optional)"
+                        [clearable]="true"
+                        [searchable]="true">
+                      </ng-select>
+                    </div>
+                  </div>
                   <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6" *ngIf="isSuperAdmin">
                     <div class="form-group">
                       <label for="unitScale">Unit scale <span class="text-danger">*</span></label>

@@ -64,6 +64,21 @@
           </div>
           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
             <div class="form-group">
+              <label for="categoryId" class="form-label">Category</label>
+              <ng-select
+                id="categoryId"
+                formControlName="categoryId"
+                [items]="categoryOptions"
+                bindLabel="label"
+                bindValue="value"
+                placeholder="Select category (optional)"
+                [clearable]="true"
+                [searchable]="true">
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+            <div class="form-group">
               <label for="itemDescription">Description <span class="text-danger">*</span></label>
               <textarea id="itemDescription" class="form-control" placeholder="Enter item description..."
                 formControlName="itemDescription" rows="4" required

@@ -29,6 +29,10 @@ export interface Item {
   totalQty: number;
   availableQty: number;
   listedItem: boolean;
+  categoryId?: {
+    _id: string;
+    categoryName: string;
+  } | null;
   createdBy: string;
   updatedBy: string;
   isDeleted: boolean;
@@ -58,6 +62,7 @@ export interface ItemsRequestParams {
   page?: number;
   limit?: number;
   search?: string;
+  categoryId?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
@@ -68,6 +73,7 @@ export interface ItemCreateRequest {
   itemImage?: string;
   itemDescription: string;
   supplierId: string;
+  categoryId?: string | null;
   unitScale: string;
   totalQty: number;
   unitCost: number; // required by backend
@@ -82,6 +88,7 @@ export interface ItemUpdateRequest {
   itemImage?: string;
   itemDescription?: string;
   supplierId?: string;
+  categoryId?: string | null;
   unitScale?: string;
   listedItem?: boolean;
 }
@@ -133,13 +140,18 @@ export class ItemService {
   constructor(private communicationService: CommunicationService) {}
 
   getItems(params: ItemsRequestParams = {}): Observable<ItemsResponse> {
-    const queryParams = {
+    const queryParams: Record<string, string> = {
       page: (params.page || 1).toString(),
       limit: (params.limit || this.DEFAULT_PAGE_SIZE).toString(),
       q: params.search || '',
       sortBy: params.sortBy || 'createdAt',
       sortOrder: params.sortOrder || 'desc'
     };
+    
+    // Add categoryId if provided and not "all"
+    if (params.categoryId && params.categoryId !== 'all') {
+      queryParams['categoryId'] = params.categoryId;
+    }
 
     return this.communicationService.get<ItemsResponse>(
       '/items',
@@ -154,13 +166,18 @@ export class ItemService {
   }
 
   getAllItems(params: ItemsRequestParams = {}): Observable<ItemsResponse> {
-    const queryParams = {
+    const queryParams: Record<string, string> = {
       page: (params.page || 1).toString(),
       limit: (params.limit || this.DEFAULT_PAGE_SIZE).toString(),
       q: params.search || '',
       sortBy: params.sortBy || 'createdAt',
       sortOrder: params.sortOrder || 'desc'
     };
+    
+    // Add categoryId if provided and not "all"
+    if (params.categoryId && params.categoryId !== 'all') {
+      queryParams['categoryId'] = params.categoryId;
+    }
 
     return this.communicationService.get<ItemsResponse>(
       '/items/all',

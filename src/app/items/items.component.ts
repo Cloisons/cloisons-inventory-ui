@@ -5,6 +5,7 @@ import { RouterModule, Router } from '@angular/router';
 import { finalize, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ItemService, Item, StockAdditionRequest } from '../core/services/item.service';
+import { CategoryService, Category } from '../core/services/category.service';
 import { AuthService } from '../core/services/auth.service';
 import { ToastService } from '../core/services/toast.service';
 // Removed Material autocomplete in favor of Ng Select
@@ -36,6 +37,9 @@ export class ItemsComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   isSearching: boolean = false;
   searchQuery: string = '';
+  selectedCategoryId: string = 'all';
+  categories: Category[] = [];
+  categoryOptionsList: any[] = [{ _id: 'all', categoryName: 'All Categories' }];
   errorMessage: string = '';
   isSuperAdmin = false;
   isUser2 = false;
@@ -65,6 +69,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
 
   constructor(
     private itemService: ItemService,
+    private categoryService: CategoryService,
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
@@ -80,11 +85,34 @@ export class ItemsComponent implements OnInit, OnDestroy {
     console.log('🔍 Auth status on init:', this.authService.isAuthenticated());
     console.log('🔍 Current user on init:', this.authService.getCurrentUser());
     
+    // Load categories
+    this.loadCategories();
+    
     // Load items
     this.loadItems();
     this.loadAllItems();
     
     // Using Ng Select built-in search; no manual filter init needed
+  }
+
+  loadCategories(): void {
+    this.categoryService.listCategories(1, 100).subscribe({
+      next: (resp) => {
+        this.categories = resp.items || [];
+        // Build options array with "All Categories" option
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          ...this.categories
+        ];
+        console.log('🔍 Categories loaded:', this.categories.length);
+        console.log('🔍 Category options:', this.categoryOptionsList);
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to load categories:', err);
+        this.categoryOptionsList = [{ _id: 'all', categoryName: 'All Categories' }];
+      }
+    });
   }
 
   loadAllItems(): void {
@@ -124,7 +152,8 @@ export class ItemsComponent implements OnInit, OnDestroy {
     this.itemService.getItems({
       page: this.currentPage,
       limit: this.itemsPerPage,
-      search: this.searchQuery
+      search: this.searchQuery,
+      categoryId: this.selectedCategoryId
     }).pipe(
       takeUntil(this.destroy$),
       finalize(() => {
@@ -306,6 +335,18 @@ export class ItemsComponent implements OnInit, OnDestroy {
     this.loadItems();
   }
 
+  onCategoryChange(): void {
+    console.log('🔍 Category changed to:', this.selectedCategoryId);
+    // Ensure we have a valid categoryId (handle null/undefined from clearing)
+    if (!this.selectedCategoryId || this.selectedCategoryId === null) {
+      this.selectedCategoryId = 'all';
+    }
+    this.currentPage = 1; // Reset to first page when category changes
+    this.errorMessage = '';
+    this.cdr.markForCheck(); // Trigger change detection for OnPush
+    this.loadItems();
+  }
+
   private debouncedSearch(): void {
     // Clear any existing timeout
     if (this.searchTimeout) {
@@ -322,11 +363,20 @@ export class ItemsComponent implements OnInit, OnDestroy {
   clearSearch(): void {
     console.log('🔍 Clearing search');
     this.searchQuery = '';
+    this.selectedCategoryId = 'all';
     this.currentPage = 1;
     this.isSearching = false;
     this.errorMessage = '';
     this.cdr.markForCheck();
     this.loadItems();
+  }
+
+  getCategoryName(categoryId: any): string {
+    if (!categoryId) return '—';
+    if (typeof categoryId === 'object' && categoryId.categoryName) {
+      return categoryId.categoryName;
+    }
+    return '—';
   }
 
 
