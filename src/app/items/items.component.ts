@@ -15,12 +15,47 @@ import { ConfirmDialogComponent } from '../shared/components/confirm-dialog/conf
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatInputComponent } from '../shared/components/mat-input/mat-input.component';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
 
+// Interfaces for expandable table
+interface CategoryRow {
+  id: string;
+  name: string;
+  isNonCategorized: boolean;
+  categoryId: string | null;
+}
+
+interface CategoryItemData {
+  items: Item[];
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
+  isLoading: boolean;
+  errorMessage: string;
+}
 
 @Component({
   selector: 'app-items',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NgSelectModule, MatFormFieldModule, MatInputModule, MatDialogModule, MatInputComponent],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    RouterModule, 
+    NgSelectModule, 
+    MatFormFieldModule, 
+    MatInputModule, 
+    MatDialogModule, 
+    MatInputComponent,
+    MatTableModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatButtonModule
+  ],
   templateUrl: './items.component.html',
   styleUrl: './items.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -44,9 +79,16 @@ export class ItemsComponent implements OnInit, OnDestroy {
   isSuperAdmin = false;
   isUser2 = false;
   
+  // Expandable table properties
+  categoryRows: CategoryRow[] = [];
+  expandedCategories: Set<string> = new Set();
+  categoryItemsMap: Map<string, CategoryItemData> = new Map();
+  displayedColumns: string[] = ['itemName', 'itemCode', 'image', 'description', 'supplierId', 'unitScale', 'availableQty', 'sellingCost', 'actions'];
+  
   // Stock management properties
   showStockModal: boolean = false;
   selectedStockItem: string = '';
+  selectedStockCategoryId: string = 'all';
   availableStock: number = 0;
   stockQuantity: number = 0;
   unitCost: number = 0;
@@ -55,6 +97,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   
   // Stock item select properties (Ng Select)
   allStockItems: Item[] = [];
+  filteredStockItems: Item[] = [];
   
   // Image handling
   readonly NO_IMAGE_PLACEHOLDER = '/assets/images/no-image-placeholder.svg';
@@ -85,34 +128,251 @@ export class ItemsComponent implements OnInit, OnDestroy {
     console.log('🔍 Auth status on init:', this.authService.isAuthenticated());
     console.log('🔍 Current user on init:', this.authService.getCurrentUser());
     
-    // Load categories
+    // Load categories and build expandable table structure
     this.loadCategories();
     
-    // Load items
-    this.loadItems();
+    // Load all items for stock management
     this.loadAllItems();
     
-    // Using Ng Select built-in search; no manual filter init needed
+    // Update displayed columns based on user role
+    if (this.isUser2) {
+      this.displayedColumns = this.displayedColumns.filter(col => col !== 'sellingCost');
+    }
   }
 
   loadCategories(): void {
     this.categoryService.listCategories(1, 100).subscribe({
       next: (resp) => {
         this.categories = resp.items || [];
-        // Build options array with "All Categories" option
+        // Build options array with "All Categories" and "Non-categorized" options
         this.categoryOptionsList = [
           { _id: 'all', categoryName: 'All Categories' },
-          ...this.categories
+          ...this.categories,
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
         ];
         console.log('🔍 Categories loaded:', this.categories.length);
         console.log('🔍 Category options:', this.categoryOptionsList);
+        
+        // Build category rows for expandable table
+        this.buildCategoryRows();
+        
         this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Failed to load categories:', err);
-        this.categoryOptionsList = [{ _id: 'all', categoryName: 'All Categories' }];
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
+        ];
+        this.buildCategoryRows();
       }
     });
+  }
+  
+  buildCategoryRows(): void {
+    this.categoryRows = [];
+    
+    // Add category rows first
+    this.categories.forEach(category => {
+      const categoryRow: CategoryRow = {
+        id: category._id,
+        name: category.categoryName || 'Unnamed Category',
+        isNonCategorized: false,
+        categoryId: category._id
+      };
+      this.categoryRows.push(categoryRow);
+      
+      // Expand all categories by default
+      this.expandedCategories.add(category._id);
+      // Load items for each category
+      this.loadCategoryItems(categoryRow);
+    });
+    
+    // Add non-categorized row at the end
+    const nonCategorizedRow: CategoryRow = {
+      id: 'non-categorized',
+      name: 'Non-categorized Items',
+      isNonCategorized: true,
+      categoryId: null
+    };
+    this.categoryRows.push(nonCategorizedRow);
+    
+    // Expand non-categorized row by default
+    this.expandedCategories.add('non-categorized');
+    // Load items for non-categorized row
+    this.loadCategoryItems(nonCategorizedRow);
+    
+    this.cdr.markForCheck();
+  }
+  
+  onPanelOpened(categoryRow: CategoryRow): void {
+    // Panel was opened - ensure it's in our expanded set and load items
+    if (!this.expandedCategories.has(categoryRow.id)) {
+      this.expandedCategories.add(categoryRow.id);
+    }
+    this.loadCategoryItems(categoryRow);
+    this.cdr.markForCheck();
+  }
+  
+  onPanelClosed(categoryRow: CategoryRow): void {
+    // Panel was closed - remove from expanded set
+    this.expandedCategories.delete(categoryRow.id);
+    this.cdr.markForCheck();
+  }
+  
+  toggleCategory(categoryRow: CategoryRow): void {
+    const isExpanded = this.expandedCategories.has(categoryRow.id);
+    
+    if (isExpanded) {
+      // Collapse
+      this.expandedCategories.delete(categoryRow.id);
+    } else {
+      // Expand - load items for this category
+      this.expandedCategories.add(categoryRow.id);
+      this.loadCategoryItems(categoryRow);
+    }
+    
+    this.cdr.markForCheck();
+  }
+  
+  isCategoryExpanded(categoryId: string): boolean {
+    return this.expandedCategories.has(categoryId);
+  }
+  
+  loadCategoryItems(categoryRow: CategoryRow, forceReload: boolean = false): void {
+    // Initialize category data if it doesn't exist
+    let categoryData = this.categoryItemsMap.get(categoryRow.id);
+    if (!categoryData) {
+      categoryData = {
+        items: [],
+        currentPage: 1,
+        totalItems: 0,
+        totalPages: 0,
+        isLoading: false,
+        errorMessage: ''
+      };
+      this.categoryItemsMap.set(categoryRow.id, categoryData);
+    }
+    
+    // Check if already loaded (unless force reload)
+    if (!forceReload && categoryData.items.length > 0 && !categoryData.isLoading) {
+      return; // Already loaded
+    }
+    
+    categoryData.isLoading = true;
+    categoryData.errorMessage = '';
+    this.cdr.markForCheck();
+    
+    // Build API params
+    const params: any = {
+      page: categoryData.currentPage,
+      limit: this.itemsPerPage,
+      search: this.searchQuery
+    };
+    
+    // For non-categorized, fetch all items and filter client-side
+    // For categories, pass the categoryId
+    if (!categoryRow.isNonCategorized && categoryRow.categoryId) {
+      params.categoryId = categoryRow.categoryId;
+    }
+    // For non-categorized, we don't pass categoryId, so we get all items
+    // Then we'll filter client-side to get only items without categoryId
+    
+    this.itemService.getItems(params).pipe(
+      takeUntil(this.destroy$),
+      finalize(() => {
+        categoryData.isLoading = false;
+        this.cdr.markForCheck();
+      })
+    ).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          let items = response.data.items || [];
+          
+          // If non-categorized, filter items without categoryId
+          if (categoryRow.isNonCategorized) {
+            items = items.filter(item => !item.categoryId || !item.categoryId._id || !item.categoryId._id.trim());
+            // Update total count for filtered items
+            categoryData.totalItems = items.length;
+            categoryData.totalPages = Math.ceil(items.length / this.itemsPerPage);
+          } else {
+            categoryData.totalItems = response.meta?.total || 0;
+            categoryData.totalPages = response.meta?.totalPages || 0;
+          }
+          
+          categoryData.items = items;
+          
+          this.cdr.markForCheck();
+        } else {
+          categoryData.errorMessage = 'Failed to load items. Please try again.';
+          categoryData.items = [];
+          this.cdr.markForCheck();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading category items:', error);
+        categoryData.errorMessage = 'Failed to load items. Please try again.';
+        categoryData.items = [];
+        this.cdr.markForCheck();
+      }
+    });
+  }
+  
+  onCategoryPageChange(categoryId: string, page: number): void {
+    const categoryData = this.categoryItemsMap.get(categoryId);
+    if (!categoryData) return;
+    
+    if (page >= 1 && page <= categoryData.totalPages) {
+      categoryData.currentPage = page;
+      const categoryRow = this.categoryRows.find(r => r.id === categoryId);
+      if (categoryRow) {
+        this.loadCategoryItems(categoryRow);
+      }
+    }
+  }
+  
+  getCategoryItems(categoryId: string): MatTableDataSource<Item> {
+    const categoryData = this.categoryItemsMap.get(categoryId);
+    const items = categoryData ? categoryData.items : [];
+    return new MatTableDataSource<Item>(items);
+  }
+  
+  getCategoryPageRange(categoryId: string): number[] {
+    const pageInfo = this.getCategoryPageInfo(categoryId);
+    const pages: number[] = [];
+    const startPage = Math.max(1, pageInfo.currentPage - 2);
+    const endPage = Math.min(pageInfo.totalPages, pageInfo.currentPage + 2);
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+  
+  trackByCategoryId: TrackByFunction<CategoryRow> = (index: number, categoryRow: CategoryRow): string => {
+    return categoryRow.id;
+  };
+  
+  getCategoryPageInfo(categoryId: string): { currentPage: number; totalPages: number; totalItems: number } {
+    const categoryData = this.categoryItemsMap.get(categoryId);
+    if (!categoryData) {
+      return { currentPage: 1, totalPages: 0, totalItems: 0 };
+    }
+    return {
+      currentPage: categoryData.currentPage,
+      totalPages: categoryData.totalPages,
+      totalItems: categoryData.totalItems
+    };
+  }
+  
+  isCategoryLoading(categoryId: string): boolean {
+    const categoryData = this.categoryItemsMap.get(categoryId);
+    return categoryData ? categoryData.isLoading : false;
+  }
+  
+  getCategoryErrorMessage(categoryId: string): string {
+    const categoryData = this.categoryItemsMap.get(categoryId);
+    return categoryData ? categoryData.errorMessage : '';
   }
 
   loadAllItems(): void {
@@ -122,6 +382,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
       search: ''
     }).subscribe((response) => {
       this.allStockItems = response.data.items || [];
+      this.filterStockItems(); // Filter items based on current category selection
       this.cdr.markForCheck();
     });
   }
@@ -267,7 +528,14 @@ export class ItemsComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (response.success) {
             console.log('Item deleted successfully:', response);
-            this.loadItems(); // Reload the list
+            // Refresh all expanded categories
+            this.expandedCategories.forEach(categoryId => {
+              const categoryRow = this.categoryRows.find(r => r.id === categoryId);
+              if (categoryRow) {
+                this.loadCategoryItems(categoryRow, true); // Force reload
+              }
+            });
+            this.cdr.markForCheck();
           } else {
             this.errorMessage = 'Failed to delete item. Please try again.';
           }
@@ -331,8 +599,20 @@ export class ItemsComponent implements OnInit, OnDestroy {
     this.currentPage = 1; // Reset to first page when searching
     this.isSearching = true;
     this.errorMessage = '';
+    
+    // Reload items for all expanded categories
+    this.expandedCategories.forEach(categoryId => {
+      const categoryRow = this.categoryRows.find(r => r.id === categoryId);
+      if (categoryRow) {
+        const categoryData = this.categoryItemsMap.get(categoryId);
+        if (categoryData) {
+          categoryData.currentPage = 1; // Reset to first page
+        }
+        this.loadCategoryItems(categoryRow, true); // Force reload with new search
+      }
+    });
+    
     this.cdr.markForCheck(); // Trigger change detection for loading state
-    this.loadItems();
   }
 
   onCategoryChange(): void {
@@ -436,18 +716,50 @@ export class ItemsComponent implements OnInit, OnDestroy {
 
   resetStockForm(): void {
     this.selectedStockItem = '';
+    this.selectedStockCategoryId = 'all';
     this.availableStock = 0;
     this.stockQuantity = 0;
     this.unitCost = 0;
     this.sellingCost = 0;
     this.stockNotes = '';
+    this.filterStockItems();
+  }
+  
+  onStockCategoryChange(): void {
+    // Filter stock items based on selected category
+    this.filterStockItems();
+    // Clear selected item if it's no longer in filtered list
+    if (this.selectedStockItem && !this.filteredStockItems.find(item => item._id === this.selectedStockItem)) {
+      this.selectedStockItem = '';
+      this.onStockItemChange();
+    }
+    this.cdr.markForCheck();
+  }
+  
+  filterStockItems(): void {
+    if (!this.selectedStockCategoryId || this.selectedStockCategoryId === 'all' || this.selectedStockCategoryId === null) {
+      // Show all items
+      this.filteredStockItems = [...this.allStockItems];
+    } else {
+      // Filter by category
+      this.filteredStockItems = this.allStockItems.filter(item => {
+        if (!item.categoryId) {
+          // Non-categorized items - show only if "non-categorized" is selected
+          return this.selectedStockCategoryId === 'non-categorized';
+        }
+        // Check if item's category matches selected category
+        const categoryId = typeof item.categoryId === 'string' ? item.categoryId : item.categoryId._id;
+        return categoryId === this.selectedStockCategoryId;
+      });
+    }
   }
 
   onStockItemChange(): void {
     if (this.selectedStockItem) {
-      const item = this.items.find(i => i._id === this.selectedStockItem);
+      // Search in both items and filteredStockItems
+      const item = this.filteredStockItems.find(i => i._id === this.selectedStockItem) || 
+                   this.allStockItems.find(i => i._id === this.selectedStockItem);
       if (item) {
-        debugger
         // Use availableQty as the current available stock
         this.availableStock = item.availableQty || 0;
         // Pre-fill unit cost and selling cost from item data if available
@@ -524,8 +836,14 @@ let message = `Add ${this.stockQuantity} units of "${item.itemName}"?\n\n`;
             console.log('Stock added successfully:', response);
             this.toastService.success('Stock added successfully!');
             this.closeStockModal();
-            // Reload items to reflect the changes
-            this.loadItems();
+            // Refresh all expanded categories
+            this.expandedCategories.forEach(categoryId => {
+              const categoryRow = this.categoryRows.find(r => r.id === categoryId);
+              if (categoryRow) {
+                this.loadCategoryItems(categoryRow, true); // Force reload
+              }
+            });
+            this.cdr.markForCheck();
           } else {
             this.errorMessage = 'Failed to add stock. Please try again.';
           }

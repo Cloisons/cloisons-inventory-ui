@@ -58,11 +58,20 @@
         <div class="modal-body">
           <div class="row">
 
+            <div class="col-md-12">
+              <div class="form-group mb-3">
+                <label for="stockCategoryFilter" class="form-label">Filter by Category</label>
+                <ng-select id="stockCategoryFilter" class="w-100" [items]="categoryOptionsList" bindLabel="categoryName"
+                  bindValue="_id" [searchable]="true" [clearable]="true"
+                  placeholder="All Categories" [(ngModel)]="selectedStockCategoryId" (change)="onStockCategoryChange()">
+                </ng-select>
+              </div>
+            </div>
 
             <div class="col-md-12">
               <div class="form-group mb-3">
                 <label for="stockItemSelect" class="form-label">Select Item</label>
-                <ng-select id="stockItemSelect" class="w-100" [items]="allStockItems" bindLabel="itemName"
+                <ng-select id="stockItemSelect" class="w-100" [items]="filteredStockItems" bindLabel="itemName"
                   bindValue="_id" [searchable]="true" [clearable]="true" [virtualScroll]="true"
                   placeholder="Choose an item..." [(ngModel)]="selectedStockItem" (change)="onStockItemChange()">
                   <ng-template ng-option-tmp let-item="item">
@@ -154,7 +163,7 @@
                 <i class="mdi mdi-close search-clear" *ngIf="searchQuery && !isSearching" (click)="clearSearch()"
                   title="Clear search"></i>
               </div>
-              <div class="category-filter">
+              <!-- <div class="category-filter">
                 <ng-select
                   id="categoryId"
                   [items]="categoryOptionsList"
@@ -167,7 +176,7 @@
                   [disabled]="categoryOptionsList.length === 0"
                   class="category-select">
                 </ng-select>
-              </div>
+              </div> -->
               <button *ngIf="!isUser2" class="btn btn-primary btn-primary-md btn-with-icon me-2 secondary-btn"
                 (click)="openStockManagementModal()" title="Manage stock levels" aria-label="Open stock management">
                 <i class="mdi mdi-warehouse mr-0"></i>
@@ -216,97 +225,189 @@
             </div>
           </div>
 
-          <!-- Items Table -->
-          <div *ngIf="!isLoading && isAuthenticated && !errorMessage" class="table-responsive">
-            <table class="table table-common">
-              <thead class="bg-light">
-                <tr>
-                  <th>Item name</th>
-                  <th>Item Code</th>
-                  <th>Image</th>
-                  <th>Description</th>
-                  <th>Category</th>
-                  <th>Supplier ID</th>
-                  <th>Unit scale</th>
-                  <th>Available Qty</th>
-                  <th *ngIf="!isUser2">Selling cost</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of paginatedItems; trackBy: trackByItemId">
-                  <td>{{ item.itemName }}</td>
-                  <td>{{ item.itemCode || '-' }}</td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <img class="table-img" [src]="getItemImage(item)"
-                        [alt]="shouldShowPlaceholder(item) ? 'No image available for ' + item.itemName : 'Image of ' + item.itemName"
-                        (error)="onImageError(item)" (load)="onImageLoad(item)"
-                        (click)="shouldShowPlaceholder(item) ? null : openImageModal(item.itemImage)"
-                        (keydown.enter)="shouldShowPlaceholder(item) ? null : openImageModal(item.itemImage)"
-                        tabindex="0" role="button"
-                        [attr.aria-label]="shouldShowPlaceholder(item) ? 'No image available for ' + item.itemName : 'View image of ' + item.itemName"
-                        [title]="shouldShowPlaceholder(item) ? 'No image available' : 'Click to view full size image'"
-                        [class.placeholder-image]="shouldShowPlaceholder(item)">
+          <!-- Expandable Category Table -->
+          <div *ngIf="!isLoading && isAuthenticated && !errorMessage && categoryRows.length > 0" class="category-table-container">
+            <mat-accordion class="category-accordion" multi="false">
+              <mat-expansion-panel 
+                *ngFor="let categoryRow of categoryRows; trackBy: trackByCategoryId" 
+                [expanded]="isCategoryExpanded(categoryRow.id)"
+                (opened)="onPanelOpened(categoryRow)"
+                (closed)="onPanelClosed(categoryRow)"
+                class="category-panel">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <div class="category-header">
+                      <i class="mdi category-icon" [class.mdi-folder-question]="categoryRow.isNonCategorized" [class.mdi-folder]="!categoryRow.isNonCategorized"></i>
+                      <span class="category-name">{{ categoryRow.name }}</span>
+                      <span class="category-badge" *ngIf="getCategoryPageInfo(categoryRow.id).totalItems > 0">
+                        ({{ getCategoryPageInfo(categoryRow.id).totalItems }})
+                      </span>
                     </div>
-                  </td>
-                  <td>{{ item.itemDescription || 'No description' }}</td>
-                  <td>{{ getCategoryName(item.categoryId) }}</td>
-                  <td>{{ getSupplierName(item.supplierId) }}</td>
-                  <td>{{ item.unitScale }}</td>
-                  <td>{{ item.availableQty }}</td>
-                  <td *ngIf="!isUser2"><span *ngIf="item.sellingCost !== undefined">AED {{ item.sellingCost
-                      }}</span><span *ngIf="item.sellingCost === undefined">—</span></td>
-                  <td>
-                    <div class="table-actions">
-                      <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
-                        (click)="onView(item)" title="View item" aria-label="View item">
-                        <i class="mdi mdi-eye"></i>
-                      </button>
-                      <button *ngIf="!isUser2" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
-                        (click)="onEdit(item)" title="Edit item" aria-label="Edit item">
-                        <i class="mdi mdi-pencil"></i>
-                      </button>
-                      <button *ngIf="!isUser2" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
-                        (click)="onDelete(item)" title="Delete item" aria-label="Delete item">
-                        <i class="mdi mdi-delete"></i>
-                      </button>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- Category Items Table -->
+                <div class="category-items-container">
+                  <!-- Loading State -->
+                  <div *ngIf="isCategoryLoading(categoryRow.id)" class="text-center py-4">
+                    <mat-spinner diameter="40"></mat-spinner>
+                    <p class="mt-3 text-muted">Loading items...</p>
+                  </div>
+
+                  <!-- Error State -->
+                  <div *ngIf="getCategoryErrorMessage(categoryRow.id) && !isCategoryLoading(categoryRow.id)" 
+                       class="alert alert-danger mx-4" role="alert">
+                    <i class="mdi mdi-alert-circle me-2"></i>
+                    {{ getCategoryErrorMessage(categoryRow.id) }}
+                  </div>
+
+                  <!-- Items Table -->
+                  <div *ngIf="!isCategoryLoading(categoryRow.id) && !getCategoryErrorMessage(categoryRow.id)" 
+                       class="table-responsive">
+                    <table mat-table [dataSource]="getCategoryItems(categoryRow.id)" class="mat-table category-items-table">
+                      <!-- Item Name Column -->
+                      <ng-container matColumnDef="itemName">
+                        <th mat-header-cell *matHeaderCellDef>Item name</th>
+                        <td mat-cell *matCellDef="let item">{{ item.itemName }}</td>
+                      </ng-container>
+
+                      <!-- Item Code Column -->
+                      <ng-container matColumnDef="itemCode">
+                        <th mat-header-cell *matHeaderCellDef>Item Code</th>
+                        <td mat-cell *matCellDef="let item">{{ item.itemCode || '-' }}</td>
+                      </ng-container>
+
+                      <!-- Image Column -->
+                      <ng-container matColumnDef="image">
+                        <th mat-header-cell *matHeaderCellDef>Image</th>
+                        <td mat-cell *matCellDef="let item">
+                          <div class="d-flex align-items-center">
+                            <img class="table-img" [src]="getItemImage(item)"
+                              [alt]="shouldShowPlaceholder(item) ? 'No image available for ' + item.itemName : 'Image of ' + item.itemName"
+                              (error)="onImageError(item)" (load)="onImageLoad(item)"
+                              (click)="shouldShowPlaceholder(item) ? null : openImageModal(item.itemImage)"
+                              (keydown.enter)="shouldShowPlaceholder(item) ? null : openImageModal(item.itemImage)"
+                              tabindex="0" role="button"
+                              [attr.aria-label]="shouldShowPlaceholder(item) ? 'No image available for ' + item.itemName : 'View image of ' + item.itemName"
+                              [title]="shouldShowPlaceholder(item) ? 'No image available' : 'Click to view full size image'"
+                              [class.placeholder-image]="shouldShowPlaceholder(item)">
+                          </div>
+                        </td>
+                      </ng-container>
+
+                      <!-- Description Column -->
+                      <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef>Description</th>
+                        <td mat-cell *matCellDef="let item">{{ item.itemDescription || 'No description' }}</td>
+                      </ng-container>
+
+                      <!-- Supplier Column -->
+                      <ng-container matColumnDef="supplierId">
+                        <th mat-header-cell *matHeaderCellDef>Supplier ID</th>
+                        <td mat-cell *matCellDef="let item">{{ getSupplierName(item.supplierId) }}</td>
+                      </ng-container>
+
+                      <!-- Unit Scale Column -->
+                      <ng-container matColumnDef="unitScale">
+                        <th mat-header-cell *matHeaderCellDef>Unit scale</th>
+                        <td mat-cell *matCellDef="let item">{{ item.unitScale }}</td>
+                      </ng-container>
+
+                      <!-- Available Qty Column -->
+                      <ng-container matColumnDef="availableQty">
+                        <th mat-header-cell *matHeaderCellDef>Available Qty</th>
+                        <td mat-cell *matCellDef="let item">{{ item.availableQty }}</td>
+                      </ng-container>
+
+                      <!-- Selling Cost Column -->
+                      <ng-container matColumnDef="sellingCost" *ngIf="!isUser2">
+                        <th mat-header-cell *matHeaderCellDef>Selling cost</th>
+                        <td mat-cell *matCellDef="let item">
+                          <span *ngIf="item.sellingCost !== undefined">AED {{ item.sellingCost }}</span>
+                          <span *ngIf="item.sellingCost === undefined">—</span>
+                        </td>
+                      </ng-container>
+
+                      <!-- Actions Column -->
+                      <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>Action</th>
+                        <td mat-cell *matCellDef="let item">
+                          <div class="table-actions">
+                            <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                              (click)="onView(item)" 
+                              title="View item" 
+                              aria-label="View item">
+                              <i class="mdi mdi-eye"></i>
+                            </button>
+                            <button *ngIf="!isUser2" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                              (click)="onEdit(item)" 
+                              title="Edit item" 
+                              aria-label="Edit item">
+                              <i class="mdi mdi-pencil"></i>
+                            </button>
+                            <button *ngIf="!isUser2" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                              (click)="onDelete(item)" 
+                              title="Delete item" 
+                              aria-label="Delete item">
+                              <i class="mdi mdi-delete"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                    
+                    <!-- No items message -->
+                    <div *ngIf="getCategoryItems(categoryRow.id).data.length === 0 && !isCategoryLoading(categoryRow.id)" 
+                         class="text-center py-5">
+                      <div class="empty-state">
+                        <i class="mdi mdi-package-variant-empty mb-3" style="font-size: 3rem; color: #6c757d;"></i>
+                        <h5 class="text-muted">No items found in this category</h5>
+                      </div>
                     </div>
-                  </td>
-                </tr>
-                <tr *ngIf="paginatedItems.length === 0">
-                  <td [attr.colspan]="isUser2 ? '9' : '10'" class="text-center py-5">
-                    <div class="empty-state">
-                      <i class="mdi mdi-package-variant-empty mb-3" style="font-size: 3rem; color: #6c757d;"
-                        aria-hidden="true"></i>
-                      <h5 class="text-muted">No items found</h5>
-                      <p class="text-muted mb-0">
-                        Start by adding your first item to the inventory.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </div>
+
+                  <!-- Category Pagination -->
+                  <div *ngIf="!isCategoryLoading(categoryRow.id) && getCategoryPageInfo(categoryRow.id).totalPages > 1" 
+                       class="pagination-block mt-3">
+                    <span class="pagecount">
+                      {{ ((getCategoryPageInfo(categoryRow.id).currentPage - 1) * itemsPerPage) + 1 }}-{{ 
+                        Math.min(getCategoryPageInfo(categoryRow.id).currentPage * itemsPerPage, 
+                        getCategoryPageInfo(categoryRow.id).totalItems) }} 
+                      of {{ getCategoryPageInfo(categoryRow.id).totalItems }} items
+                    </span>
+                    <ul class="pagination">
+                      <li [class.disabled]="getCategoryPageInfo(categoryRow.id).currentPage === 1">
+                        <a href="#" 
+                          (click)="onCategoryPageChange(categoryRow.id, getCategoryPageInfo(categoryRow.id).currentPage - 1); $event.preventDefault()"
+                          [class.disabled]="getCategoryPageInfo(categoryRow.id).currentPage === 1">&laquo;</a>
+                      </li>
+                      <li *ngFor="let page of getCategoryPageRange(categoryRow.id); trackBy: trackByPageNumber" 
+                          [class.active]="page === getCategoryPageInfo(categoryRow.id).currentPage">
+                        <a href="#" 
+                          (click)="onCategoryPageChange(categoryRow.id, page); $event.preventDefault()">{{ page }}</a>
+                      </li>
+                      <li [class.disabled]="getCategoryPageInfo(categoryRow.id).currentPage === getCategoryPageInfo(categoryRow.id).totalPages">
+                        <a href="#" 
+                          (click)="onCategoryPageChange(categoryRow.id, getCategoryPageInfo(categoryRow.id).currentPage + 1); $event.preventDefault()"
+                          [class.disabled]="getCategoryPageInfo(categoryRow.id).currentPage === getCategoryPageInfo(categoryRow.id).totalPages">&raquo;</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
           </div>
 
-          <!-- Pagination -->
-          <div *ngIf="!isLoading && isAuthenticated && totalPages > 1" class="pagination-block">
-            <span class="pagecount">{{ ((currentPage - 1) * itemsPerPage) + 1 }}-{{ Math.min(currentPage * itemsPerPage,
-              totalItems) }} of {{ totalItems }} items</span>
-            <ul class="pagination">
-              <li [class.disabled]="currentPage === 1">
-                <a href="#" (click)="onPageChange(currentPage - 1); $event.preventDefault()"
-                  [class.disabled]="currentPage === 1">&laquo;</a>
-              </li>
-              <li *ngFor="let page of pageRange; trackBy: trackByPageNumber" [class.active]="page === currentPage">
-                <a href="#" (click)="onPageChange(page); $event.preventDefault()">{{ page }}</a>
-              </li>
-              <li [class.disabled]="currentPage === totalPages">
-                <a href="#" (click)="onPageChange(currentPage + 1); $event.preventDefault()"
-                  [class.disabled]="currentPage === totalPages">&raquo;</a>
-              </li>
-            </ul>
+          <!-- Empty State -->
+          <div *ngIf="!isLoading && isAuthenticated && !errorMessage && categoryRows.length === 0" class="text-center py-5">
+            <div class="empty-state">
+              <i class="mdi mdi-package-variant-empty mb-3" style="font-size: 3rem; color: #6c757d;"></i>
+              <h5 class="text-muted">No categories found</h5>
+              <p class="text-muted mb-0">Start by adding your first category.</p>
+            </div>
           </div>
         </div>
       </section>

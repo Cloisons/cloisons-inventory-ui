@@ -175,6 +175,31 @@
                       [disabled]="!canEditDirectItems">+ Create new item</button>
                   </label>
 
+                  <!-- Category Filter Card -->
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label for="directItemsCategoryFilter" class="form-label">Filter by Category</label>
+                          <ng-select
+                            id="directItemsCategoryFilter"
+                            class="w-100"
+                            [items]="categoryOptionsList"
+                            bindLabel="categoryName"
+                            bindValue="_id"
+                            placeholder="All Categories"
+                            [(ngModel)]="selectedDirectItemsCategoryId"
+                            [ngModelOptions]="{standalone: true}"
+                            (change)="onDirectItemsCategoryChange()"
+                            [searchable]="true"
+                            [clearable]="true"
+                            [disabled]="categoryOptionsList.length === 0 || loadingCategories">
+                          </ng-select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Direct Items Table -->
                   <div formArrayName="directItems" class="table-responsive add-product-item-add mt-2">
                     <table class="table table-bordered table-hover">

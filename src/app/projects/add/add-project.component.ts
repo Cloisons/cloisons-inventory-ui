@@ -6,16 +6,18 @@ import { ProjectService, ProjectStatus } from '../../core/services/project.servi
 import { ContractorService, Contractor } from '../../core/services/contractor.service';
 import { ProductService, Product } from '../../core/services/product.service';
 import { ItemService, Item } from '../../core/services/item.service';
+import { CategoryService, Category } from '../../core/services/category.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CreateItemModalComponent } from '../../shared/components/create-item-modal/create-item-modal.component';
 import { MatInputComponent } from '../../shared/components/mat-input/mat-input.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-add-project',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, NgSelectModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, NgMultiSelectDropDownModule, CreateItemModalComponent, MatInputComponent, NgSelectModule],
   templateUrl: './add-project.component.html',
   styleUrls: ['./add-project.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -30,8 +32,12 @@ export class AddProjectComponent implements OnInit, OnDestroy {
   showCreateItemModal = false;
   loadingProducts = false;
   loadingItems = false;
+  loadingCategories = false;
   productDropdownSettings: any = null;
   itemDropdownSettings: any = null;
+  categories: Category[] = [];
+  categoryOptionsList: any[] = [{ _id: 'all', categoryName: 'All Categories' }];
+  selectedDirectItemsCategoryId: string = 'all';
   private destroy$ = new Subject<void>();
 
   readonly statuses: { value: string; label: string }[] = [
@@ -44,6 +50,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
     private contractorService: ContractorService,
     private productService: ProductService,
     private itemService: ItemService,
+    private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
     private router: Router
   ) {
@@ -64,6 +71,7 @@ export class AddProjectComponent implements OnInit, OnDestroy {
     this.loadContractors();
     this.loadProducts();
     this.loadItems();
+    this.loadCategories();
     // Initialize with one empty product and direct item
     this.addProduct();
     this.addDirectItem();
@@ -173,6 +181,39 @@ export class AddProjectComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  private loadCategories(): void {
+    this.loadingCategories = true;
+    this.categoryService.listCategories(1, 100).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (resp) => {
+        this.categories = resp.items || [];
+        // Build options array with "All Categories" and "Non-categorized" options
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          ...this.categories,
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
+        ];
+        this.loadingCategories = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to load categories:', err);
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
+        ];
+        this.loadingCategories = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  onDirectItemsCategoryChange(): void {
+    // Trigger change detection to update filtered items in dropdowns
+    this.cdr.markForCheck();
   }
 
   // Form array getters
@@ -369,8 +410,28 @@ export class AddProjectComponent implements OnInit, OnDestroy {
       }
     }
     
+    // First filter by category if one is selected
+    let categoryFilteredItems = this.availableItems;
+    if (this.selectedDirectItemsCategoryId && 
+        this.selectedDirectItemsCategoryId !== 'all' && 
+        this.selectedDirectItemsCategoryId !== null) {
+      if (this.selectedDirectItemsCategoryId === 'non-categorized') {
+        // Show only non-categorized items
+        categoryFilteredItems = this.availableItems.filter(item => 
+          !item.categoryId || !item.categoryId._id
+        );
+      } else {
+        // Filter by selected category
+        categoryFilteredItems = this.availableItems.filter(item => {
+          if (!item.categoryId) return false;
+          const categoryId = typeof item.categoryId === 'string' ? item.categoryId : item.categoryId._id;
+          return categoryId === this.selectedDirectItemsCategoryId;
+        });
+      }
+    }
+    
     // Filter out already selected items, but include the currently selected item
-    return this.availableItems.filter(item => 
+    return categoryFilteredItems.filter(item => 
       !selectedItemIds.includes(item._id) || item._id === currentItemId
     );
   }

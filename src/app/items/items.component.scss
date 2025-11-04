@@ -1020,3 +1020,211 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+// Expandable Category Table Styles
+.category-table-container {
+  padding: 0 1rem;
+  margin-top: 1rem;
+}
+
+.category-accordion {
+  .category-panel {
+    margin-bottom: 0.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+
+    &:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .mat-expansion-panel-header {
+      padding: 1rem 1.5rem;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      pointer-events: auto !important;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+
+      &:hover {
+        background-color: #e9ecef;
+      }
+
+      .category-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+
+        .category-icon {
+          color: #182996;
+          font-size: 24px;
+          width: 24px;
+          height: 24px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .category-name {
+          font-size: 16px;
+          font-weight: 600;
+          color: #10121F;
+          flex: 1;
+        }
+
+        .category-badge {
+          color: #6c757d;
+          font-size: 14px;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .mat-expansion-panel-body {
+      padding: 1.5rem;
+      background-color: #fff;
+    }
+  }
+}
+
+.category-items-container {
+  .category-items-table {
+    width: 100%;
+    
+    .mat-header-cell {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #10121F;
+      padding: 1rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .mat-cell {
+      padding: 1rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .mat-row {
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+
+    .table-img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      &.placeholder-image {
+        opacity: 0.5;
+        cursor: default;
+      }
+    }
+
+    .table-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+
+      .mdl-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: #666;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        transition: all 0.15s ease-in-out;
+        border-radius: 100px;
+        text-align: center;
+        line-height: 32px;
+
+        &:hover {
+          color: #495057;
+        }
+
+        i {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+
+// Pagination styles for category tables
+.pagination-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1rem 0;
+
+  .pagecount {
+    font-size: 14px;
+    color: #6c757d;
+  }
+
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0.25rem;
+
+    li {
+      a {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        color: #182996;
+        text-decoration: none;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+
+        &:hover:not(.disabled) {
+          background-color: #182996;
+          color: #fff;
+          border-color: #182996;
+        }
+
+        &.disabled {
+          color: #ccc;
+          cursor: not-allowed;
+          pointer-events: none;
+        }
+      }
+
+      &.active a {
+        background-color: #182996;
+        color: #fff;
+        border-color: #182996;
+      }
+
+      &.disabled a {
+        color: #ccc;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+  }
+}
