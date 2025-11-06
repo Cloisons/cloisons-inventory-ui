@@ -66,7 +66,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   selectedImage: string = '';
   showModal: boolean = false;
   currentPage: number = 1;
-  itemsPerPage: number = 2;
+  itemsPerPage: number = 10;
   totalItems: number = 0;
   totalPages: number = 0;
   isLoading: boolean = false;
