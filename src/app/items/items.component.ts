@@ -66,7 +66,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
   selectedImage: string = '';
   showModal: boolean = false;
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 2;
   totalItems: number = 0;
   totalPages: number = 0;
   isLoading: boolean = false;
@@ -255,9 +255,26 @@ export class ItemsComponent implements OnInit, OnDestroy {
     }
     
     // Check if already loaded (unless force reload)
+    // Also reload if page, search query, or category has changed
+    const currentParams = {
+      page: categoryData.currentPage,
+      search: this.searchQuery,
+      categoryId: categoryRow.isNonCategorized ? 'non-categorized' : categoryRow.categoryId
+    };
+    const lastParams = (categoryData as any).lastParams;
+    
     if (!forceReload && categoryData.items.length > 0 && !categoryData.isLoading) {
-      return; // Already loaded
+      // Check if params have changed
+      if (lastParams && 
+          lastParams.page === currentParams.page &&
+          lastParams.search === currentParams.search &&
+          lastParams.categoryId === currentParams.categoryId) {
+        return; // Already loaded with same params
+      }
     }
+    
+    // Store current params for next comparison
+    (categoryData as any).lastParams = currentParams;
     
     categoryData.isLoading = true;
     categoryData.errorMessage = '';
@@ -270,13 +287,13 @@ export class ItemsComponent implements OnInit, OnDestroy {
       search: this.searchQuery
     };
     
-    // For non-categorized, fetch all items and filter client-side
-    // For categories, pass the categoryId
-    if (!categoryRow.isNonCategorized && categoryRow.categoryId) {
+    // For non-categorized, pass 'non-categorized' as categoryId
+    // For categories, pass the actual categoryId
+    if (categoryRow.isNonCategorized) {
+      params.categoryId = 'non-categorized';
+    } else if (categoryRow.categoryId) {
       params.categoryId = categoryRow.categoryId;
     }
-    // For non-categorized, we don't pass categoryId, so we get all items
-    // Then we'll filter client-side to get only items without categoryId
     
     this.itemService.getItems(params).pipe(
       takeUntil(this.destroy$),
@@ -287,19 +304,11 @@ export class ItemsComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          let items = response.data.items || [];
+          const items = response.data.items || [];
           
-          // If non-categorized, filter items without categoryId
-          if (categoryRow.isNonCategorized) {
-            items = items.filter(item => !item.categoryId || !item.categoryId._id || !item.categoryId._id.trim());
-            // Update total count for filtered items
-            categoryData.totalItems = items.length;
-            categoryData.totalPages = Math.ceil(items.length / this.itemsPerPage);
-          } else {
-            categoryData.totalItems = response.meta?.total || 0;
-            categoryData.totalPages = response.meta?.totalPages || 0;
-          }
-          
+          // Use API response metadata for pagination
+          categoryData.totalItems = response.meta?.total || 0;
+          categoryData.totalPages = response.meta?.totalPages || 0;
           categoryData.items = items;
           
           this.cdr.markForCheck();
@@ -326,7 +335,7 @@ export class ItemsComponent implements OnInit, OnDestroy {
       categoryData.currentPage = page;
       const categoryRow = this.categoryRows.find(r => r.id === categoryId);
       if (categoryRow) {
-        this.loadCategoryItems(categoryRow);
+        this.loadCategoryItems(categoryRow, true); // Force reload when page changes
       }
     }
   }
