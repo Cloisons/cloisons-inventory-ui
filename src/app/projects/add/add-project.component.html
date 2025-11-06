@@ -22,6 +22,7 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     <div class="row">
             <div class="col-xl-5 col-lg-6 col-md-8 left-forms-block left-forms-project-block">
+              <div class="sticky-div">
             <div class="form-group">
               <app-mat-input label="Project Name" id="projectName" class="" type="text" formControlName="projectName" [required]="true"
                 [formControl]="projectNameControl">
@@ -83,6 +84,10 @@
                 [formControl]="startDateControl">
               </app-mat-input>
             </div>
+          </div>
+
+</div>
+      <div class="col-xl-7 col-lg-6 col-md-8 left-forms-block right-forms-project-block">
 
             <!-- Products Section -->
             <div class="form-group mb-4 file-upload-block">
@@ -158,7 +163,7 @@
               <div class="mt-2">
                 <button 
                   type="button" 
-                  class="btn btn-outline-primary btn-sm"
+                  class="btn btn-outline-primary btn-sm primary-btn-sm"
                   (click)="addProduct()"
                 >
                   <i class="mdi mdi-plus"></i> Add Product
@@ -180,7 +185,9 @@
               </label>
               
               <!-- Category Filter Card -->
-              <div class="card mb-3">
+     
+
+                     <div class="card mb-3 filter-category">
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-6">
@@ -274,7 +281,7 @@
               <div class="mt-2">
                 <button 
                   type="button" 
-                  class="btn btn-outline-primary btn-sm"
+                  class="btn btn-outline-primary btn-sm primary-btn-sm"
                   (click)="addDirectItem()"
                 >
                   <i class="mdi mdi-plus"></i> Add Direct Item

@@ -239,7 +239,7 @@
                     <div class="category-header">
                       <i class="mdi category-icon" [class.mdi-folder-question]="categoryRow.isNonCategorized" [class.mdi-folder]="!categoryRow.isNonCategorized"></i>
                       <span class="category-name">{{ categoryRow.name }}</span>
-                      <span class="category-badge" *ngIf="getCategoryPageInfo(categoryRow.id).totalItems > 0">
+                      <span class="category-badge items-count-accordion" *ngIf="getCategoryPageInfo(categoryRow.id).totalItems > 0">
                         ({{ getCategoryPageInfo(categoryRow.id).totalItems }})
                       </span>
                     </div>

@@ -41,6 +41,7 @@
             <div class="row">
             <div class="col-xl-5 col-lg-6 col-md-8 left-forms-block">
 
+                  <div class="sticky-div">
                 <div class="form-group mb-4">
                   <app-mat-input
                     label="Product Name"
@@ -59,6 +60,53 @@
                   ></app-mat-input>
                 </div>
 
+
+     <div class="form-group item-image-upload">
+                  <label class="mb-2">Product image <span class="text-muted">(optional)</span></label>
+                  <div
+                    class="upload-card d-flex flex-column align-items-center justify-content-center mt-3"
+                    (click)="fileInput.click()"
+                    (dragover)="$event.preventDefault()"
+                    (drop)="onDrop($event)"
+                    style="cursor:pointer;  position: relative;"
+                  >
+                    <ng-container *ngIf="!imagePreviewUrl; else previewTpl">
+                      <div class="upload-icon mb-2" style="font-size:2rem; color:#6c757d;">⬆️</div>
+                      <div class="upload-title fw-semibold mb-1" style="color:#10121F;">Upload image</div>
+                      <div class="upload-subtitle text-muted" style="font-size:0.95rem;">Upload your product image</div>
+                    </ng-container>
+                    <ng-template #previewTpl>
+                      <div class="w-100 d-flex flex-column align-items-center">
+                        <img [src]="imagePreviewUrl" alt="Preview" class="preview-img mb-2" style="max-width: 180px; max-height: 120px; border-radius: 6px; object-fit: contain; border:1px solid #e9ecef; background:#fff;" />
+                        <button type="button" class="btn btn-light btn-sm remove-btn" (click)="removeImage($event)">
+                          <i class="mdi mdi-close"></i> Remove
+                        </button>
+                      </div>
+                    </ng-template>
+                    <div
+                      class="uploading-overlay d-flex align-items-center justify-content-center"
+                      *ngIf="uploading"
+                      style="position:absolute; inset:0; background:rgba(255,255,255,0.7); z-index:2; font-weight:500; color:#1976d2; font-size:1.1rem;"
+                    >
+                      <!-- <span>
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Uploading...
+                      </span> -->
+                    </div>
+                  </div>
+                  <input #fileInput type="file" accept="image/*" class="d-none" (change)="onFileSelected($event)" />
+                  <div class="text-danger mt-2" *ngIf="uploadError">{{ uploadError }}</div>
+                </div>
+
+</div>
+
+
+
+
+</div>
+ <div class="col-xl-7 col-lg-6 col-md-8 left-forms-block right-forms-project-block">
+
+           
                 <div class="form-group mb-4 file-upload-block">
                   <label class="mb-2">Items <span class="text-muted">(optional)</span></label>
                   
@@ -133,7 +181,7 @@
                   <div class="mt-2">
                     <button 
                       type="button" 
-                      class="btn btn-outline-primary btn-md"
+                      class="btn btn-outline-primary btn-md primary-btn-sm"
                       (click)="addItem()"
                     >
                       <i class="mdi mdi-plus"></i> Add Item
@@ -146,46 +194,6 @@
                     Loading items...
                   </div>
                 </div>
-</div>
- <div class="col-xl-5 col-lg-6">
-
-                <div class="form-group item-image-upload pl-4">
-                  <label class="mb-2">Product image <span class="text-muted">(optional)</span></label>
-                  <div
-                    class="upload-card d-flex flex-column align-items-center justify-content-center mt-3"
-                    (click)="fileInput.click()"
-                    (dragover)="$event.preventDefault()"
-                    (drop)="onDrop($event)"
-                    style="cursor:pointer;  position: relative;"
-                  >
-                    <ng-container *ngIf="!imagePreviewUrl; else previewTpl">
-                      <div class="upload-icon mb-2" style="font-size:2rem; color:#6c757d;">⬆️</div>
-                      <div class="upload-title fw-semibold mb-1" style="color:#10121F;">Upload image</div>
-                      <div class="upload-subtitle text-muted" style="font-size:0.95rem;">Upload your product image</div>
-                    </ng-container>
-                    <ng-template #previewTpl>
-                      <div class="w-100 d-flex flex-column align-items-center">
-                        <img [src]="imagePreviewUrl" alt="Preview" class="preview-img mb-2" style="max-width: 180px; max-height: 120px; border-radius: 6px; object-fit: contain; border:1px solid #e9ecef; background:#fff;" />
-                        <button type="button" class="btn btn-light btn-sm remove-btn" (click)="removeImage($event)">
-                          <i class="mdi mdi-close"></i> Remove
-                        </button>
-                      </div>
-                    </ng-template>
-                    <div
-                      class="uploading-overlay d-flex align-items-center justify-content-center"
-                      *ngIf="uploading"
-                      style="position:absolute; inset:0; background:rgba(255,255,255,0.7); z-index:2; font-weight:500; color:#1976d2; font-size:1.1rem;"
-                    >
-                      <!-- <span>
-                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Uploading...
-                      </span> -->
-                    </div>
-                  </div>
-                  <input #fileInput type="file" accept="image/*" class="d-none" (change)="onFileSelected($event)" />
-                  <div class="text-danger mt-2" *ngIf="uploadError">{{ uploadError }}</div>
-                </div>
-
 
               </div>
             </div>
