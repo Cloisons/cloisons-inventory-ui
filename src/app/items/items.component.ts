@@ -789,7 +789,9 @@ export class ItemsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const item = this.items.find(i => i._id === this.selectedStockItem);
+    this.selectedStockItem;
+    debugger;
+    const item = this.allStockItems.find(i => i._id === this.selectedStockItem);
     if (!item) {
       this.errorMessage = 'Selected item not found.';
       return;
