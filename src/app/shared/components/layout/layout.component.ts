@@ -104,25 +104,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
 
   onNotificationClick(notification: Notification): void {
-    console.log('Notification clicked:', notification);
     this.notificationClick.emit(notification);
     // You can add navigation logic here, e.g., router.navigate(['/notifications', notification.id])
   }
 
   onMessageClick(message: Message): void {
-    console.log('Message clicked:', message);
     this.messageClick.emit(message);
     // You can add navigation logic here, e.g., router.navigate(['/messages', message.id])
   }
 
   onViewAllNotifications(): void {
-    console.log('View all notifications clicked');
     this.viewAllNotifications.emit();
     // You can add navigation logic here, e.g., router.navigate(['/notifications'])
   }
 
   onViewAllMessages(): void {
-    console.log('View all messages clicked');
     this.viewAllMessages.emit();
     // You can add navigation logic here, e.g., router.navigate(['/messages'])
   }

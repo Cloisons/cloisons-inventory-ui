@@ -51,7 +51,6 @@ export class ProjectsComponent {
             this.cdr.markForCheck();
           },
           error: (err) => {
-            console.error('Error enhancing projects with return info:', err);
             // Fallback to original projects if enhancement fails
             this.projects = resp.items.map(p => ({
               ...p,

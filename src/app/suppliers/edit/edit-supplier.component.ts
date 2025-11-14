@@ -56,7 +56,6 @@ export class EditSupplierComponent implements OnInit {
         }));
       },
       error: (error) => {
-        console.error('Failed to load countries:', error);
       }
     });
   }

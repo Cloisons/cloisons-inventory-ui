@@ -7,13 +7,15 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ProductService, Product } from '../../core/services/product.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { ItemService, Item } from '../../core/services/item.service';
+import { CategoryService, Category } from '../../core/services/category.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { ToastService } from '../../core/services/toast.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-edit-product',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, MatInputComponent, NgMultiSelectDropDownModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, MatInputComponent, NgMultiSelectDropDownModule, NgSelectModule],
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,7 +31,11 @@ export class EditProductComponent implements OnInit, OnDestroy {
   uploadError: string = '';
   availableItems: Item[] = [];
   loadingItems = false;
+  loadingCategories = false;
   dropdownSettings: any = null;
+  categories: Category[] = [];
+  categoryOptionsList: any[] = [{ _id: 'all', categoryName: 'All Categories' }];
+  selectedDirectItemsCategoryId: string = 'all';
   private pendingProductItems: any[] = [];
   private destroy$ = new Subject<void>();
 
@@ -38,6 +44,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private s3UploadService: S3UploadService,
     private itemService: ItemService,
+    private categoryService: CategoryService,
     private toastService: ToastService,
     public router: Router,
     private route: ActivatedRoute,
@@ -66,6 +73,7 @@ export class EditProductComponent implements OnInit, OnDestroy {
 
     // Load items first, then load product
     this.loadItems();
+    this.loadCategories();
     this.loadProduct(id);
   }
 
@@ -131,7 +139,6 @@ export class EditProductComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.availableItems = response.data.items;
         this.loadingItems = false;
-        console.log('Loaded available items:', this.availableItems);
         // Check if we have pending product items to set
         this.setItemsIfReady();
         this.cdr.markForCheck();
@@ -143,10 +150,40 @@ export class EditProductComponent implements OnInit, OnDestroy {
     });
   }
 
+  private loadCategories(): void {
+    this.loadingCategories = true;
+    this.categoryService.listCategories(1, 100).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (resp) => {
+        this.categories = resp.items || [];
+        // Build options array with "All Categories" and "Non-categorized" options
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          ...this.categories,
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
+        ];
+        this.loadingCategories = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
+        ];
+        this.loadingCategories = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  onDirectItemsCategoryChange(): void {
+    // Trigger change detection to update filtered items in dropdowns
+    this.cdr.markForCheck();
+  }
+
   private setItemsIfReady(): void {
     if (this.pendingProductItems.length > 0 && this.availableItems.length > 0) {
-      console.log('Setting items from product:', this.pendingProductItems);
-      console.log('Available items:', this.availableItems);
       this.setItemsFromProduct(this.pendingProductItems);
       this.pendingProductItems = []; // Clear pending items
     }
@@ -166,30 +203,22 @@ export class EditProductComponent implements OnInit, OnDestroy {
           ? productItem.itemId 
           : productItem.itemId?._id;
         
-        console.log(`Processing product item ${index}:`, productItem);
-        console.log(`Extracted itemId:`, itemId);
-        
         const fullItem = this.availableItems.filter(item => item._id === itemId);
-        debugger
         
         if (fullItem) {
           const quantity = productItem.quantity || 1;
-          console.log(`Full item:`, fullItem);
           const formGroup = this.fb.group({
             selectedItem: [fullItem], // For ng-multiselect-dropdown
             itemId: [itemId, Validators.required],
             quantity: [quantity, [Validators.required, Validators.min(0.1)]]
           });
           
-          console.log(`Created form group:`, formGroup.value);
           itemsArray.push(formGroup);
           
           // Force update the form control to ensure dropdown shows the selected item
           setTimeout(() => {
             formGroup.get('selectedItem')?.updateValueAndValidity();
           }, 100);
-        } else {
-          console.warn(`Item not found for ID: ${itemId}`);
         }
       });
     }
@@ -298,8 +327,28 @@ export class EditProductComponent implements OnInit, OnDestroy {
       }
     }
     
+    // First filter by category if one is selected
+    let categoryFilteredItems = this.availableItems;
+    if (this.selectedDirectItemsCategoryId && 
+        this.selectedDirectItemsCategoryId !== 'all' && 
+        this.selectedDirectItemsCategoryId !== null) {
+      if (this.selectedDirectItemsCategoryId === 'non-categorized') {
+        // Show only non-categorized items
+        categoryFilteredItems = this.availableItems.filter(item => 
+          !item.categoryId || !item.categoryId._id
+        );
+      } else {
+        // Filter by selected category
+        categoryFilteredItems = this.availableItems.filter(item => {
+          if (!item.categoryId) return false;
+          const categoryId = typeof item.categoryId === 'string' ? item.categoryId : item.categoryId._id;
+          return categoryId === this.selectedDirectItemsCategoryId;
+        });
+      }
+    }
+    
     // Filter out already selected items, but include the currently selected item
-    return this.availableItems.filter(item => 
+    return categoryFilteredItems.filter(item => 
       !selectedItemIds.includes(item._id) || item._id === currentItemId
     );
   }
@@ -312,7 +361,6 @@ export class EditProductComponent implements OnInit, OnDestroy {
     this.submitting = true;
 
     const formValue = this.form.value;
-    debugger
     
     // Filter out items with empty itemId and format for API
     const validItems = formValue.items

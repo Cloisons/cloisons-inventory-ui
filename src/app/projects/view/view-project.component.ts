@@ -78,7 +78,6 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
           this.cdr.markForCheck();
         },
         error: (err) => {
-          console.error('Failed to load categories:', err);
           this.allCategories = [];
           this.isLoadingCategories = false;
           this.cdr.markForCheck();
@@ -169,7 +168,6 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
           this.cdr.markForCheck();
         },
         error: (err) => {
-          console.error('Failed to load item categories:', err);
           this.cdr.markForCheck();
         }
       });
@@ -579,7 +577,6 @@ export class ViewProjectComponent implements OnInit, OnDestroy {
       
       this.toastService.success('Project report downloaded successfully');
     }).catch(error => {
-      console.error('Error generating PDF:', error);
       this.toastService.error('Failed to generate PDF report');
     });
   }

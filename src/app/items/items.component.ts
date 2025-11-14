@@ -124,10 +124,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('🔍 ItemsComponent: ngOnInit() called');
-    console.log('🔍 Auth status on init:', this.authService.isAuthenticated());
-    console.log('🔍 Current user on init:', this.authService.getCurrentUser());
-    
     // Load categories and build expandable table structure
     this.loadCategories();
     
@@ -150,8 +146,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
           ...this.categories,
           { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
         ];
-        console.log('🔍 Categories loaded:', this.categories.length);
-        console.log('🔍 Category options:', this.categoryOptionsList);
         
         // Build category rows for expandable table
         this.buildCategoryRows();
@@ -159,7 +153,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Failed to load categories:', err);
         this.categoryOptionsList = [
           { _id: 'all', categoryName: 'All Categories' },
           { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
@@ -319,7 +312,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('Error loading category items:', error);
         categoryData.errorMessage = 'Failed to load items. Please try again.';
         categoryData.items = [];
         this.cdr.markForCheck();
@@ -410,7 +402,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
     
     // Check if user is authenticated before making the API call
     if (!this.authService.isAuthenticated()) {
-      console.warn('User is not authenticated, redirecting to login');
       this.router.navigate(['/login']);
       return;
     }
@@ -429,7 +420,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
       finalize(() => {
         this.isLoading = false;
         this.isSearching = false;
-        console.log('🔍 API call completed, isLoading set to false');
         this.cdr.markForCheck(); // Trigger change detection
       })
     ).subscribe({
@@ -439,20 +429,17 @@ export class ItemsComponent implements OnInit, OnDestroy {
           // this.allStockItems = response.data.items || []; // Populate stock items for autocomplete
           this.totalItems = response.meta?.total || 0;
           this.totalPages = response.meta?.totalPages || 0;
-          console.log('🔍 Items loaded successfully:', this.items.length, 'items');
           
           // No filter init needed; using Ng Select with built-in search
           
           this.cdr.markForCheck(); // Trigger change detection
         } else {
-          console.error('🔍 API response indicates failure:', response);
           this.errorMessage = 'Failed to load items. Please try again.';
           this.items = [];
           this.cdr.markForCheck(); // Trigger change detection
         }
       },
       error: (error) => {
-        console.error('🔍 Error loading items:', error);
         this.handleLoadItemsError(error);
       }
     });
@@ -536,7 +523,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
       ).subscribe({
         next: (response) => {
           if (response.success) {
-            console.log('Item deleted successfully:', response);
             // Refresh all expanded categories
             this.expandedCategories.forEach(categoryId => {
               const categoryRow = this.categoryRows.find(r => r.id === categoryId);
@@ -550,7 +536,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
           }
         },
         error: (error) => {
-          console.error('Error deleting item:', error);
           this.handleDeleteError(error);
         }
       });
@@ -590,7 +575,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
   onSearchInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.searchQuery = target.value;
-    console.log('🔍 Search input changed:', this.searchQuery);
     // Trigger search with debounce
     this.debouncedSearch();
   }
@@ -598,13 +582,11 @@ export class ItemsComponent implements OnInit, OnDestroy {
   onSearchKeyPress(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
       event.preventDefault();
-      console.log('🔍 Enter key pressed, searching for:', this.searchQuery);
       this.onSearch();
     }
   }
 
   onSearch(): void {
-    console.log('🔍 onSearch() called with query:', this.searchQuery);
     this.currentPage = 1; // Reset to first page when searching
     this.isSearching = true;
     this.errorMessage = '';
@@ -625,7 +607,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
   }
 
   onCategoryChange(): void {
-    console.log('🔍 Category changed to:', this.selectedCategoryId);
     // Ensure we have a valid categoryId (handle null/undefined from clearing)
     if (!this.selectedCategoryId || this.selectedCategoryId === null) {
       this.selectedCategoryId = 'all';
@@ -644,13 +625,11 @@ export class ItemsComponent implements OnInit, OnDestroy {
     
     // Set a new timeout for debounced search
     this.searchTimeout = setTimeout(() => {
-      console.log('🔍 Debounced search triggered for:', this.searchQuery);
       this.onSearch();
     }, 300); // 300ms debounce
   }
 
   clearSearch(): void {
-    console.log('🔍 Clearing search');
     this.searchQuery = '';
     this.selectedCategoryId = 'all';
     this.currentPage = 1;
@@ -695,7 +674,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
   }
 
   onImageError(item: Item): void {
-    console.log('🖼️ Image failed to load for item:', item.itemName, 'URL:', item.itemImage);
     this.imageErrors.add(item._id);
     this.cdr.markForCheck(); // Trigger change detection to update the image
   }
@@ -789,8 +767,6 @@ export class ItemsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.selectedStockItem;
-    debugger;
     const item = this.allStockItems.find(i => i._id === this.selectedStockItem);
     if (!item) {
       this.errorMessage = 'Selected item not found.';
@@ -832,8 +808,6 @@ let message = `Add ${this.stockQuantity} units of "${item.itemName}"?\n\n`;
       this.isLoading = true;
       this.errorMessage = '';
 
-      console.log('Adding stock with payload:', stockPayload);
-
       // Call the real API
       this.itemService.addStock(this.selectedStockItem, stockPayload).pipe(
         takeUntil(this.destroy$),
@@ -844,7 +818,6 @@ let message = `Add ${this.stockQuantity} units of "${item.itemName}"?\n\n`;
       ).subscribe({
         next: (response) => {
           if (response.success) {
-            console.log('Stock added successfully:', response);
             this.toastService.success('Stock added successfully!');
             this.closeStockModal();
             // Refresh all expanded categories
@@ -860,7 +833,6 @@ let message = `Add ${this.stockQuantity} units of "${item.itemName}"?\n\n`;
           }
         },
         error: (error) => {
-          console.error('Error adding stock:', error);
           this.handleAddStockError(error);
         }
       });

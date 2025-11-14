@@ -33,7 +33,6 @@ export class UiLoaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.uiLoaderService.loaderState$.subscribe(state => {
-      console.log('Loader component received state change:', state);
       this.loaderState = state;
       this.cdr.markForCheck();
     });

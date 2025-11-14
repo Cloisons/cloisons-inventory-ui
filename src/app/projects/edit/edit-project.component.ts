@@ -217,7 +217,6 @@ export class EditProjectComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Failed to load categories:', err);
         this.categoryOptionsList = [
           { _id: 'all', categoryName: 'All Categories' },
           { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
@@ -302,7 +301,6 @@ export class EditProjectComponent implements OnInit, OnDestroy {
           : projectProduct.productId?._id;
         
         const fullProduct = this.availableProducts.filter(product => product._id === productId);
-        debugger
         if (fullProduct) {
           const quantity = projectProduct.quantity || 1;
           
@@ -652,7 +650,6 @@ export class EditProjectComponent implements OnInit, OnDestroy {
       
       return `${year}-${month}-${day}`;
     } catch (error) {
-      console.warn('Error formatting date:', error);
       return null;
     }
   }

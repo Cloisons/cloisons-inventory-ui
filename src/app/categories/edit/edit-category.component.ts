@@ -53,7 +53,6 @@ export class EditCategoryComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.error('Failed to load category:', err);
       }
     });
   }

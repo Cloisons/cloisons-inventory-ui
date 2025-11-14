@@ -110,6 +110,31 @@
                 <div class="form-group mb-4 file-upload-block">
                   <label class="mb-2">Items <span class="text-muted">(optional)</span></label>
                   
+                  <!-- Category Filter Card -->
+                  <div class="card mb-3 filter-category">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label for="directItemsCategoryFilter" class="form-label">Filter by Category</label>
+                          <ng-select
+                            id="directItemsCategoryFilter"
+                            class="w-100"
+                            [items]="categoryOptionsList"
+                            bindLabel="categoryName"
+                            bindValue="_id"
+                            placeholder="All Categories"
+                            [(ngModel)]="selectedDirectItemsCategoryId"
+                            [ngModelOptions]="{standalone: true}"
+                            (change)="onDirectItemsCategoryChange()"
+                            [searchable]="true"
+                            [clearable]="true"
+                            [disabled]="categoryOptionsList.length === 0 || loadingCategories">
+                          </ng-select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <!-- Items Table -->
                   <div formArrayName="items" class="table-responsive add-product-item-add mt-2">
                     <table class="table table-bordered table-hover">

@@ -398,9 +398,6 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   // Debug method to check token status
   debugTokenAndNotifications(): void {
-    console.log('🔍 Notification Component Debug:');
     this.authService.debugTokenStatus();
-    console.log('🔔 Current notifications:', this.notifications);
-    console.log('🔔 Unread count:', this.unreadCount);
   }
 }

@@ -7,13 +7,15 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ProductService } from '../../core/services/product.service';
 import { S3UploadService } from '../../shared/services/s3-upload.service';
 import { ItemService, Item } from '../../core/services/item.service';
+import { CategoryService, Category } from '../../core/services/category.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-add-product',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, MatInputComponent, NgMultiSelectDropDownModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule, MatInputComponent, NgMultiSelectDropDownModule, NgSelectModule],
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,7 +28,11 @@ export class AddProductComponent implements OnInit, OnDestroy {
   uploadError: string = '';
   availableItems: Item[] = [];
   loadingItems = false;
+  loadingCategories = false;
   dropdownSettings: any = null;
+  categories: Category[] = [];
+  categoryOptionsList: any[] = [{ _id: 'all', categoryName: 'All Categories' }];
+  selectedDirectItemsCategoryId: string = 'all';
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -34,6 +40,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private s3UploadService: S3UploadService,
     private itemService: ItemService,
+    private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
     public router: Router,
     private toastService: ToastService
@@ -55,6 +62,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
     // Initialize with one empty item
     this.addItem();
     this.loadItems();
+    this.loadCategories();
   }
 
   private initializeDropdownSettings(): void {
@@ -97,6 +105,38 @@ export class AddProductComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  private loadCategories(): void {
+    this.loadingCategories = true;
+    this.categoryService.listCategories(1, 100).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (resp) => {
+        this.categories = resp.items || [];
+        // Build options array with "All Categories" and "Non-categorized" options
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          ...this.categories,
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
+        ];
+        this.loadingCategories = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.categoryOptionsList = [
+          { _id: 'all', categoryName: 'All Categories' },
+          { _id: 'non-categorized', categoryName: 'Non-categorized Items' }
+        ];
+        this.loadingCategories = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  onDirectItemsCategoryChange(): void {
+    // Trigger change detection to update filtered items in dropdowns
+    this.cdr.markForCheck();
   }
 
   addItem(): void {
@@ -161,8 +201,28 @@ export class AddProductComponent implements OnInit, OnDestroy {
       }
     }
     
+    // First filter by category if one is selected
+    let categoryFilteredItems = this.availableItems;
+    if (this.selectedDirectItemsCategoryId && 
+        this.selectedDirectItemsCategoryId !== 'all' && 
+        this.selectedDirectItemsCategoryId !== null) {
+      if (this.selectedDirectItemsCategoryId === 'non-categorized') {
+        // Show only non-categorized items
+        categoryFilteredItems = this.availableItems.filter(item => 
+          !item.categoryId || !item.categoryId._id
+        );
+      } else {
+        // Filter by selected category
+        categoryFilteredItems = this.availableItems.filter(item => {
+          if (!item.categoryId) return false;
+          const categoryId = typeof item.categoryId === 'string' ? item.categoryId : item.categoryId._id;
+          return categoryId === this.selectedDirectItemsCategoryId;
+        });
+      }
+    }
+    
     // Filter out already selected items, but include the currently selected item
-    return this.availableItems.filter(item => 
+    return categoryFilteredItems.filter(item => 
       !selectedItemIds.includes(item._id) || item._id === currentItemId
     );
   }

@@ -200,7 +200,6 @@ export class AddProjectComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Failed to load categories:', err);
         this.categoryOptionsList = [
           { _id: 'all', categoryName: 'All Categories' },
           { _id: 'non-categorized', categoryName: 'Non-categorized Items' }

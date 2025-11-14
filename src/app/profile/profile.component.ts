@@ -71,7 +71,6 @@ export class ProfileComponent implements OnInit {
 
     this.profileService.getProfile().subscribe({
       next: (response) => {
-        console.log('Profile API Response:', response);
         // The response interceptor unwraps the data, so response contains the user object
         if (response && response.user) {
           this.userProfile = response.user;
@@ -79,12 +78,10 @@ export class ProfileComponent implements OnInit {
           // Trigger change detection to ensure the view updates
           this.cdr.detectChanges();
         } else {
-          console.error('Profile response error:', response);
           this.toastService.error('Failed to load profile');
         }
       },
       error: (error) => {
-        console.error('Error loading profile:', error);
         this.toastService.error('Failed to load profile');
       },
       complete: () => {
@@ -144,7 +141,6 @@ export class ProfileComponent implements OnInit {
           }
         },
         error: (error) => {
-          console.error('Error updating profile:', error);
           this.toastService.error('Failed to update profile');
         },
         complete: () => {
@@ -176,7 +172,6 @@ export class ProfileComponent implements OnInit {
           this.toastService.success('Password changed successfully');
         },
         error: (error) => {
-          console.error('Error changing password:', error);
           this.toastService.error('Failed to change password');
         },
         complete: () => {

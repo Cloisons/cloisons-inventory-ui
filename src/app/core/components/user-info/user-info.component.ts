@@ -130,9 +130,7 @@ export class UserInfoComponent implements OnInit {
   toggleProfileDropdown(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    console.log('Profile dropdown clicked, current state:', this.isProfileDropdownOpen);
     this.isProfileDropdownOpen = !this.isProfileDropdownOpen;
-    console.log('Profile dropdown new state:', this.isProfileDropdownOpen);
   }
 
   onSignout(event: Event): void {

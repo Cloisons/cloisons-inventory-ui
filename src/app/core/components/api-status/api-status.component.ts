@@ -104,12 +104,10 @@ export class ApiStatusComponent implements OnInit {
       next: (response) => {
         this.isConnected = true;
         this.isLoading = false;
-        console.log('API connection successful:', response);
       },
       error: (error) => {
         this.isConnected = false;
         this.isLoading = false;
-        console.error('API connection failed:', error);
       }
     });
   }

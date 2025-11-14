@@ -57,30 +57,24 @@ export class ProjectReturnComponent implements OnInit {
   }
 
   loadProjectDetails(): void {
-    console.log('Starting loadProjectDetails, isLoading:', this.isLoading);
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
-    console.log('Set isLoading to true, current value:', this.isLoading);
 
     // Set a timeout fallback to ensure loading state is cleared
     const loadingTimeout = setTimeout(() => {
       if (this.isLoading) {
-        console.warn('Loading timeout - forcing loading state to false');
         this.isLoading = false;
       }
     }, 10000); // 10 second timeout
 
-    console.log('Making API call to getProject with ID:', this.projectId);
     this.projectService.getProject(this.projectId).subscribe({
       next: (project) => {
-        console.log('API call successful, received project:', project);
         clearTimeout(loadingTimeout); // Clear the timeout since we got a response
         this.project = project;
         
         // Check if project is eligible for returns
         if (project.returnEligibility?.isEligible === true) {
-          console.log('Project is eligible for returns');
           this.eligibility = project.returnEligibility;
           
           // Transform project items to match our interface
@@ -92,14 +86,11 @@ export class ProjectReturnComponent implements OnInit {
           // Ensure loading is set to false
           this.isLoading = false;
           this.cdr.detectChanges(); // Force change detection
-          console.log('Set isLoading to false for eligible project, current value:', this.isLoading);
         } else {
-          console.log('Project is not eligible for returns:', project.returnEligibility?.reason);
           // Project is not eligible for returns, show error and redirect
           this.errorMessage = project.returnEligibility?.reason || 'Project is not eligible for returns';
           this.isLoading = false;
           this.cdr.detectChanges(); // Force change detection
-          console.log('Set isLoading to false for non-eligible project, current value:', this.isLoading);
           
           // Redirect after a short delay to show the error message
           setTimeout(() => {
@@ -108,12 +99,10 @@ export class ProjectReturnComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('API call failed:', error);
         clearTimeout(loadingTimeout); // Clear the timeout since we got an error
         this.errorMessage = error.message || 'Failed to load project details';
         this.isLoading = false;
         this.cdr.detectChanges(); // Force change detection
-        console.log('Set isLoading to false for error, current value:', this.isLoading);
       }
     });
   }
